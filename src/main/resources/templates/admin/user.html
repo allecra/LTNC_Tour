@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Quản lý người dùng</title>
+    <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+<!--    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />-->
+<!--    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>-->
+    <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+    <script src="/public/admin/js/moment.min.js"></script>
+    <link href="/public/admin/css/styles.css" rel="stylesheet" />
+<!--    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>-->
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="index.html">Quản lý người dùng</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#!">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/admin/user">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Trang chủ
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Trang quản lý</div>
+                    <a class="nav-link" href="/admin/user">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                        Quản lý người dùng
+                    </a>
+                    <a class="nav-link collapsed" href="/admin/tour" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        Quản lý tour
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="/admin/tour">Danh sách Tour</a>
+                            <a class="nav-link" href="/admin/tour">Ngày khởi hành</a>
+                            <a class="nav-link" href="/admin/tour">Quản lý ảnh</a>
+                        </nav>
+                    </div>
+                    <a class="nav-link" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                        Quản lý booking
+                    </a>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                Admin
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Danh sách người dùng</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Quản lý người dùng</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Bảng dữ liệu người dùng
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Họ và tên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Giới tính</th>
+                                    <th>Email</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Họ và tên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Giới tính</th>
+                                    <th>Email</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </tfoot>
+                            <tbody >
+
+
+                            </tbody>
+                        </table>
+
+
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Xóa người dùng</h5>
+                                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <input type="hidden" id="deleteId" name="deleteId" value="">
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="hideDeleteModal()" data-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-danger" data-id="" onclick="deleteUserAction()" id="confirmDeleteBtn">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="">Khôi phục mật khẩu mặc định</h5>
+                                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <input type="hidden" id="resetId" name="deleteId" value="deleteId">
+                                    <div class="modal-body">
+                                        <p>Khôi phục tài khoản này về mật khẩu mặc định?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="hideResetModal()" data-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-danger" data-id="" onclick="resetPassAction()" id="confirmResetBtn">Xác nhận</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade " id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content p-4">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title p-2" id="editModalLabel">Sửa thông tin user</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editUserForm">
+                                            <input type="hidden" id="id" name="id" value="id">
+                                            <div class="form-group mb-2">
+                                                <label for="username">Username</label>
+                                                <input type="text" class="form-control" id="username" name="username" required>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="ho_ten">Họ tên</label>
+                                                <input type="text" class="form-control" id="ho_ten" name="ho_ten" required>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="sdt">Số điện thoại</label>
+                                                <input type="tel" class="form-control" id="sdt" name="sdt" required>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="gioi_tinh">Giới tính</label>
+                                                <select class="form-control" id="gioi_tinh" name="gioi_tinh">
+                                                    <option value="Nam">Nam</option>
+                                                    <option value="Nữ">Nữ</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="email">Email</label>
+                                                <input type="email" class="form-control" id="email" name="email" required>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="dia_chi">Địa chỉ</label>
+                                                <input type="text" class="form-control" id="dia_chi" name="dia_chi" required>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" onclick="hideModal()" data-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary" onclick="submitEditForm()">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/public/admin/js/jquery.js"></script>
+<script src="/public/admin/js/boostrap-bundle.min.js"></script>
+<script src="/public/admin/js/scripts.js"></script>
+<script type="text/javascript" src="/public/admin/js/datatables.min.js"></script>
+<script src="/public/admin/js/all.min.js"></script>
+<script src="/public/admin/js/ckeditor.js"></script>
+<script>
+
+    function hideModal() {
+        $("#editModal").modal('hide');
+    }
+
+    function hideDeleteModal() {
+        $("#deleteModal").modal('hide');
+    }
+    function deleteUser(id) {
+        $('#deleteModal').modal('show');
+        $('#deleteModal input[name="deleteId"]').val(id);
+    }
+
+    function deleteUserAction() {
+        let id = $('#deleteModal input[name="deleteId"]').val();
+        $.ajax({
+            url: '/api/user/delete/' + id,
+            type: 'DELETE',
+            success: function(response) {
+                // Nếu xóa thành công, cập nhật lại bảng dữ liệu
+                alert(response.message);
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Nếu xóa không thành công, thông báo lỗi
+                alert('Xóa người dùng không thành công: ' + textStatus + ' ' + errorThrown);
+            }
+        });
+
+        // Đóng modal xóa
+        $('#deleteModal').modal('hide');
+    }
+
+    function editUser(id) {
+        // Gọi API lấy thông tin user theo id
+        $.ajax({
+            url: '/api/user/' + id,
+            type: 'GET',
+            success: function(result) {
+                // Hiển thị modal sửa thông tin user và điền dữ liệu vào form
+                $('#editModal input[name="id"]').val(result.data.id);
+                $('#editModal input[name="username"]').val(result.data.username);
+                $('#editModal input[name="ho_ten"]').val(result.data.ho_ten);
+                $('#editModal input[name="sdt"]').val(result.data.sdt);
+                $('#editModal input[name="gioi_tinh"]').val(result.data.gioi_tinh);
+                $('#editModal input[name="email"]').val(result.data.email);
+                $('#editModal input[name="dia_chi"]').val(result.data.dia_chi);
+                $('#editModal select[name="role"]').val(result.data.role);
+                $('#editModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                // Xử lý lỗi khi không lấy được thông tin user
+                console.log(xhr.responseText);
+            }
+        });
+    }
+
+
+    $('#editUserForm').submit(function(e) {
+        e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+        submitEditForm();
+    });
+
+    function submitEditForm() {
+        // Lấy giá trị từ các input trong form
+        var id = $("#id").val();
+        var username = $("#username").val();
+        var hoTen = $("#ho_ten").val();
+        var sdt = $("#sdt").val();
+        var gioiTinh = $("#gioi_tinh").val();
+        var email = $("#email").val();
+        var diaChi = $("#dia_chi").val();
+
+        // Tạo đối tượng UpdateUserDTO để lưu trữ dữ liệu cần cập nhật
+        var updateUserDTO = {
+            username: username,
+            ho_ten: hoTen,
+            sdt: sdt,
+            gioi_tinh: gioiTinh,
+            email: email,
+            dia_chi: diaChi
+        };
+        console.log(updateUserDTO)
+
+        // Gửi yêu cầu Ajax
+        $.ajax({
+            url: "http://localhost:8085/api/user/update/" + id,
+            type: "PUT",
+            data: JSON.stringify(updateUserDTO),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                // Cập nhật dữ liệu thành công, đóng modal và tải lại trang
+                console.log(data)
+                $("#editModal").modal("hide");
+                alert("Sửa thành công !")
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Xử lý lỗi
+                console.log("Error:", jqXHR.responseText);
+            }
+        });
+    }
+
+
+    function resetPass(id) {
+        $('#resetModal').modal('show');
+        $('#resetId').val(id);
+    }
+    function hideResetModal() {
+        $('#resetModal').modal('hide');
+    }
+
+
+    function resetPassAction() {
+        let userId = $('#resetId').val();
+
+        // Gửi yêu cầu Ajax
+        $.ajax({
+            url: "http://localhost:8085/api/user/update/resetPass/" + userId,
+            type: "PUT",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                // Cập nhật dữ liệu thành công, đóng modal và tải lại trang
+                console.log(data)
+                $("#resetModal").modal("hide");
+                alert("Khôi phục thành công !")
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Xử lý lỗi
+                console.log("Error:", jqXHR.responseText);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#datatablesSimple').DataTable({
+            "ajax": {
+                "url": "http://localhost:8085/api/user/getAll?pageIndex=0&pageSize=100",
+                "dataSrc": "data"
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "username" },
+                { "data": "ho_ten" },
+                { "data": "sdt" },
+                { "data": "gioi_tinh" },
+                { "data": "email" },
+                { "data": "dia_chi" },
+                {
+                    "data": null,
+                    "render": function ( data, type, row ) {
+                        return '<button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-primary btn-sm mx-2" onclick="editUser('+data.id+')">Sửa</button>' +
+                            '<button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-primary btn-sm mx-2" onclick="resetPass('+data.id+')">Reset pass</button>' +
+                            '<button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-sm mx-2" onclick="deleteUser('+data.id+')">Xóa</button>';
+                    }
+                }
+            ]
+        } );
+
+
+
+
+        function deleteUser(id) {
+            // Hiển thị modal xác nhận xóa user
+            $('#deleteModal input[name="id"]').val(id);
+            $('#deleteModal').modal('show');
+        }
+
+
+
+    } );
+</script>
+</body>
+</html>
