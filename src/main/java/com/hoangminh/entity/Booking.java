@@ -17,37 +17,47 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "booking")
 public class Booking {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
-    private Long user_id;
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long tour_id;
-    
-    private Integer so_luong_nguoi;
-    
-    private Date ngay_khoi_hanh;
-    
-    private Long tong_tien;
-    
-    private Integer trang_thai;
-	
-    private Date booking_at;
 
-    private Integer pt_thanh_toan;
+    private Integer so_luong_nguoi;
+
+    private Date ngay_khoi_hanh;
+
+    private Long tong_tien;
+
+    private Integer trang_thai;
+
+    private Date booking_at;
 
     private String ghi_chu;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "tour_start_id")
+    private TourStart tourStart;
+
+    @ManyToOne
+    @JoinColumn(name = "pt_thanh_toan")
+    private PaymentMethod paymentMethod;
+
     @PrePersist
     public void onCreate() {
-    	this.booking_at = new Date();
+        this.booking_at = new Date();
     }
-    
+
 }

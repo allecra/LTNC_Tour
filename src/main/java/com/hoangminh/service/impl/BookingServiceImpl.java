@@ -15,9 +15,11 @@ import com.hoangminh.entity.Booking;
 import com.hoangminh.repository.BookingRepository;
 import com.hoangminh.repository.TourRepository;
 import com.hoangminh.service.BookingService;
+import com.hoangminh.repository.UserRepository;
+import com.hoangminh.entity.User;
 
 @Service
-public class BookingServiceImpl implements BookingService{
+public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private BookingRepository bookingRepository;
@@ -25,9 +27,12 @@ public class BookingServiceImpl implements BookingService{
 	@Autowired
 	private TourRepository tourRepository;
 
+	@Autowired
+	private UserRepository userRepository;
+
 	@Override
-	public Page<BookingDTO> findAllBooking(Integer trang_thai,String ten_tour,Pageable pageable) {
-		return this.bookingRepository.findAllBooking(trang_thai,ten_tour, pageable);
+	public Page<BookingDTO> findAllBooking(Integer trang_thai, String ten_tour, Pageable pageable) {
+		return this.bookingRepository.findAllBooking(trang_thai, ten_tour, pageable);
 	}
 
 	@Override
@@ -36,16 +41,15 @@ public class BookingServiceImpl implements BookingService{
 	}
 
 	@Override
-	public Page<BookingDTO> findBookingByTourId(Long tour_Id,Pageable pageable) {
+	public Page<BookingDTO> findBookingByTourId(Long tour_Id, Pageable pageable) {
 		return this.bookingRepository.findBookingByTourId(tour_Id, pageable);
 	}
 
 	@Override
 	public boolean addNewBooking(BookingDTO newBooking) {
 
-
-		List<BookingDTO> checkBooking  = this.bookingRepository.checkBookingByUserId(newBooking.getUser_id());
-		if(checkBooking.size()>0) {
+		List<BookingDTO> checkBooking = this.bookingRepository.checkBookingByUserId(newBooking.getUser_id());
+		if (checkBooking.size() > 0) {
 			return false;
 		}
 
@@ -54,12 +58,12 @@ public class BookingServiceImpl implements BookingService{
 		Booking booking = new Booking();
 		booking.setSo_luong_nguoi(newBooking.getSo_luong_nguoi());
 		booking.setNgay_khoi_hanh(newBooking.getNgay_khoi_hanh());
-		booking.setTong_tien(tourDTO.getGia_tour()*newBooking.getSo_luong_nguoi());
+		booking.setTong_tien(tourDTO.getGia_tour() * newBooking.getSo_luong_nguoi());
 		booking.setTour_id(newBooking.getTour_id());
-		booking.setUser_id(newBooking.getUser_id());
+		User user = userRepository.findById(newBooking.getUser_id()).orElse(null);
+		booking.setUser(user);
 		booking.setSo_luong_nguoi(newBooking.getSo_luong_nguoi());
 		booking.setGhi_chu(newBooking.getGhi_chu());
-		booking.setPt_thanh_toan(newBooking.getPt_thanh_toan());
 		booking.setTrang_thai(0);
 
 		this.bookingRepository.save(booking);
@@ -69,10 +73,10 @@ public class BookingServiceImpl implements BookingService{
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean approveBooking(Long bookingId,Integer trang_thai) {
-		Optional<Booking> booking  = this.bookingRepository.findById(bookingId);
+	public boolean approveBooking(Long bookingId, Integer trang_thai) {
+		Optional<Booking> booking = this.bookingRepository.findById(bookingId);
 
-		if(booking.isPresent()) {
+		if (booking.isPresent()) {
 			Booking bookingUpdated = booking.get();
 			bookingUpdated.setTrang_thai(trang_thai);
 			this.bookingRepository.save(bookingUpdated);
@@ -87,7 +91,7 @@ public class BookingServiceImpl implements BookingService{
 
 		BookingDTO booking = this.getBookingById(id);
 
-		if(booking.getTrang_thai()==3) {
+		if (booking.getTrang_thai() == 3) {
 			this.bookingRepository.deleteById(id);
 			return true;
 		}

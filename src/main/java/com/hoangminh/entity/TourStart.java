@@ -24,8 +24,19 @@ public class TourStart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private Date ngay_khoi_hanh;
 
-	private Long tour_id;
+	@ManyToOne
+	@JoinColumn(name = "tour_id")
+	private Tour tour;
+
+	@ManyToOne
+	@JoinColumn(name = "season_id")
+	private Season season;
+
+	private Integer soChoConLai;
+	private Double giaRieng;
+	private Integer month;
+	private Integer year;
 }

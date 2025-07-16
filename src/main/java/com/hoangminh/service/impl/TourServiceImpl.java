@@ -22,6 +22,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
 @Slf4j
 @Service
 public class TourServiceImpl implements TourService {
@@ -29,16 +30,19 @@ public class TourServiceImpl implements TourService {
 	@Autowired
 	private TourRepository tourRepository;
 
-
 	@Override
-	public Page<TourDTO> findAllTour(String ten_tour,Long gia_tour_from,Long gia_tour_to,Date ngay_khoi_hanh,Integer loai_tour,Pageable pageable) {
-		Page<TourDTO> page = this.tourRepository.findAll(ten_tour, gia_tour_from, gia_tour_to,ngay_khoi_hanh, loai_tour, pageable);
+	public Page<TourDTO> findAllTour(String ten_tour, Long gia_tour_from, Long gia_tour_to, Date ngay_khoi_hanh,
+			Integer loai_tour, Pageable pageable) {
+		Page<TourDTO> page = this.tourRepository.findAll(ten_tour, gia_tour_from, gia_tour_to, ngay_khoi_hanh,
+				loai_tour, pageable);
 		return page;
 	}
 
 	@Override
-	public Page<TourDTO> findAllTourAdmin(String ten_tour,Long gia_tour_from,Long gia_tour_to,Date ngay_khoi_hanh,Integer loai_tour,Pageable pageable) {
-		Page<TourDTO> page = this.tourRepository.findAllAdmin(ten_tour, gia_tour_from, gia_tour_to,ngay_khoi_hanh, loai_tour, pageable);
+	public Page<TourDTO> findAllTourAdmin(String ten_tour, Long gia_tour_from, Long gia_tour_to, Date ngay_khoi_hanh,
+			Integer loai_tour, Pageable pageable) {
+		Page<TourDTO> page = this.tourRepository.findAllAdmin(ten_tour, gia_tour_from, gia_tour_to, ngay_khoi_hanh,
+				loai_tour, pageable);
 		return page;
 	}
 
@@ -51,12 +55,11 @@ public class TourServiceImpl implements TourService {
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		tourDTO.setNgay_khoi_hanh(calendar.getTime());
 
-
 		calendar.setTime(tourDTO.getNgay_ket_thuc());
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		tourDTO.setNgay_ket_thuc(calendar.getTime());
 
-		if(tourDTO!=null) {
+		if (tourDTO != null) {
 			return tourDTO;
 		}
 		return null;
@@ -64,7 +67,7 @@ public class TourServiceImpl implements TourService {
 
 	@Override
 	public boolean saveTour(Tour tour) {
-		if(this.tourRepository.save(tour) != null) {
+		if (this.tourRepository.save(tour) != null) {
 			return true;
 		}
 		return false;
@@ -89,7 +92,7 @@ public class TourServiceImpl implements TourService {
 		tour.setDiem_khoi_hanh(tourDTO.getDiem_khoi_hanh());
 		tour.setNgay_khoi_hanh(tourDTO.getNgay_khoi_hanh());
 		tour.setSo_ngay(tourDTO.getSo_ngay());
-		tour.setTrang_thai(tourDTO.getTrang_thai());
+		tour.setTrangThai(tourDTO.getTrang_thai() != null ? tourDTO.getTrang_thai().toString() : null);
 		tour.setNgay_ket_thuc(tourDTO.getNgay_ket_thuc());
 
 		return this.tourRepository.save(tour);
@@ -98,15 +101,15 @@ public class TourServiceImpl implements TourService {
 	@Override
 	public Tour updateTour(TourDTO newTour, Long id) {
 		Optional<Tour> tour = this.tourRepository.findById(id);
-		log.info("new tour lấy đươc : {}",newTour);
-		if(tour.isPresent()) {
+		log.info("new tour lấy đươc : {}", newTour);
+		if (tour.isPresent()) {
 			Tour updatedTour = tour.get();
 
 			updatedTour.setTen_tour(newTour.getTen_tour());
 			updatedTour.setLoai_tour(newTour.getLoai_tour());
 			updatedTour.setGia_tour(newTour.getGia_tour());
 			updatedTour.setGioi_thieu_tour(newTour.getGioi_thieu_tour());
-			if(newTour.getAnh_tour()!=null) {
+			if (newTour.getAnh_tour() != null) {
 				updatedTour.setAnh_tour(newTour.getAnh_tour());
 			}
 			updatedTour.setDiem_den(newTour.getDiem_den());
@@ -114,7 +117,7 @@ public class TourServiceImpl implements TourService {
 			updatedTour.setDiem_khoi_hanh(newTour.getDiem_khoi_hanh());
 			updatedTour.setNgay_khoi_hanh(newTour.getNgay_khoi_hanh());
 			updatedTour.setSo_ngay(newTour.getSo_ngay());
-			updatedTour.setTrang_thai(newTour.getTrang_thai());
+			updatedTour.setTrangThai(newTour.getTrang_thai() != null ? newTour.getTrang_thai().toString() : null);
 			updatedTour.setNgay_ket_thuc(newTour.getNgay_ket_thuc());
 
 			return this.tourRepository.save(updatedTour);
@@ -126,8 +129,8 @@ public class TourServiceImpl implements TourService {
 	@Override
 	public boolean deleteTour(Long id) {
 		Optional<Tour> tour = this.tourRepository.findById(id);
-		if(tour.isPresent()) {
-			if(this.tourRepository.existsBookingByTourId(id)==false) {
+		if (tour.isPresent()) {
+			if (this.tourRepository.existsBookingByTourId(id) == false) {
 				this.tourRepository.deleteById(id);
 				return true;
 			}

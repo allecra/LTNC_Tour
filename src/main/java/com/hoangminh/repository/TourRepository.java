@@ -14,13 +14,13 @@ import com.hoangminh.dto.TourDTO;
 import com.hoangminh.entity.Tour;
 
 @Repository
-public interface TourRepository extends JpaRepository<Tour, Long>,JpaSpecificationExecutor<Tour> {
-	
-	@Query(value= "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trang_thai,t.gia_tour) FROM Tour t "
+public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificationExecutor<Tour> {
+
+	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trangThai,t.gia_tour) FROM Tour t "
 			+ " WHERE (:ten_tour IS NULL OR :ten_tour='' OR t.ten_tour LIKE CONCAT('%', :ten_tour, '%'))"
 			+ " AND ( :loai_tour IS NULL OR t.loai_tour = :loai_tour )"
 			+ " AND ( :ngay_khoi_hanh IS NULL OR t.ngay_khoi_hanh = :ngay_khoi_hanh )"
-			+ " AND ( :gia_tour_from IS NULL OR  :gia_tour_to IS NULL OR (t.gia_tour BETWEEN :gia_tour_from AND :gia_tour_to)) AND t.trang_thai=1 "
+			+ " AND ( :gia_tour_from IS NULL OR  :gia_tour_to IS NULL OR (t.gia_tour BETWEEN :gia_tour_from AND :gia_tour_to)) AND t.trangThai=1 "
 			+ " ORDER BY t.id ")
 	Page<TourDTO> findAll(
 			@Param("ten_tour") String ten_tour,
@@ -28,11 +28,9 @@ public interface TourRepository extends JpaRepository<Tour, Long>,JpaSpecificati
 			@Param("gia_tour_to") Long gia_tour_to,
 			@Param("ngay_khoi_hanh") Date ngay_khoi_hanh,
 			@Param("loai_tour") Integer loai_tour,
-			Pageable pageable
-			);
+			Pageable pageable);
 
-
-	@Query(value= "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trang_thai,t.gia_tour) FROM Tour t "
+	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trangThai,t.gia_tour) FROM Tour t "
 			+ " WHERE (:ten_tour IS NULL OR :ten_tour='' OR t.ten_tour LIKE CONCAT('%', :ten_tour, '%'))"
 			+ " AND ( :loai_tour IS NULL OR t.loai_tour = :loai_tour )"
 			+ " AND ( :ngay_khoi_hanh IS NULL OR t.ngay_khoi_hanh = :ngay_khoi_hanh )"
@@ -44,15 +42,14 @@ public interface TourRepository extends JpaRepository<Tour, Long>,JpaSpecificati
 			@Param("gia_tour_to") Long gia_tour_to,
 			@Param("ngay_khoi_hanh") Date ngay_khoi_hanh,
 			@Param("loai_tour") Integer loai_tour,
-			Pageable pageable
-	);
-	
-	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trang_thai,t.gia_tour) FROM Tour t "
+			Pageable pageable);
+
+	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trangThai,t.gia_tour) FROM Tour t "
 			+ " WHERE t.id = :id")
 	TourDTO findTourById(Long id);
-	
-	@Query(value ="SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trang_thai,t.gia_tour) FROM Tour t "
-			+ " JOIN Booking b ON t.id = b.tour_id WHERE b.tour_id = :booking_id" )
+
+	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id,t.ten_tour,t.gioi_thieu_tour,t.so_ngay,t.noi_dung_tour,t.ngay_ket_thuc,t.ngay_khoi_hanh,t.diem_den,t.loai_tour,t.anh_tour,t.diem_khoi_hanh,t.trangThai,t.gia_tour) FROM Tour t "
+			+ " JOIN Booking b ON t.id = b.tour_id WHERE b.tour_id = :booking_id")
 	TourDTO findTourByBookingId(@Param("booking_id") Long booking_id);
 
 	@Query("SELECT COUNT(*) > 0 FROM Booking b WHERE b.tour_id = :tourId")

@@ -20,6 +20,8 @@ import com.hoangminh.repository.UserRepository;
 import com.hoangminh.service.UserService;
 import com.hoangminh.utilities.ConvertUserToDto;
 import com.hoangminh.utilities.SessionUtilities;
+import com.hoangminh.repository.RoleRepository;
+import com.hoangminh.entity.Role;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,27 +29,28 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserServiceImpl implements UserService {
 
-
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private BookingRepository bookingRepository;
 
-	@Override
-	public Page<UserDTO> findAllUser(String sdt,String email,String ho_ten,Pageable pageable) {
+	@Autowired
+	private RoleRepository roleRepository;
 
-		Page<User> page = userRepository.findAll(sdt,email,ho_ten,pageable);
+	@Override
+	public Page<UserDTO> findAllUser(String sdt, String email, String ho_ten, Pageable pageable) {
+
+		Page<User> page = userRepository.findAll(sdt, email, ho_ten, pageable);
 
 		Page<UserDTO> pageUserDTO = new PageImpl<>(
-			page.getContent().stream().map(user ->  {
+				page.getContent().stream().map(user -> {
 
-				UserDTO userDTO = ConvertUserToDto.convertUsertoDto(user);
-				return userDTO;
-			}).collect(Collectors.toList()),
+					UserDTO userDTO = ConvertUserToDto.convertUsertoDto(user);
+					return userDTO;
+				}).collect(Collectors.toList()),
 				page.getPageable(),
-				page.getTotalElements()
-		);
+				page.getTotalElements());
 
 		return pageUserDTO;
 	}
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findUserById(Long id) {
 		Optional<User> user = userRepository.findById(id);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			return user.get();
 		}
 		return null;
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findUserByUsername(String username) {
 		User user = userRepository.findByUsername(username);
-		if(user!=null) {
+		if (user != null) {
 			return user;
 		}
 		return null;
@@ -72,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean saveUser(User user) {
-		if(this.userRepository.save(user)!=null) {
+		if (this.userRepository.save(user) != null) {
 			return true;
 		}
 		return false;
@@ -80,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean updateUser(UpdateUserDTO updateUserDTO) {
-		if(SessionUtilities.getUser()!=null) {
+		if (SessionUtilities.getUser() != null) {
 			Long user_id = SessionUtilities.getUser().getId();
 
 			User user = this.userRepository.findById(user_id).get();
@@ -106,8 +109,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean deleteUserById(Long id) {
 		Optional<User> user = this.userRepository.findById(id);
-		if(user.isPresent()) {
-			if(this.bookingRepository.findBookingByUserId(id)==null || this.bookingRepository.findBookingByUserId(id).size()==0) {
+		if (user.isPresent()) {
+			if (this.bookingRepository.findBookingByUserId(id) == null
+					|| this.bookingRepository.findBookingByUserId(id).size() == 0) {
 				this.userRepository.deleteById(id);
 				return true;
 			}
@@ -120,20 +124,19 @@ public class UserServiceImpl implements UserService {
 
 		User userCheck = this.findUserByUsername(user.getUsername());
 
-		if(userCheck==null) {
+		if (userCheck == null) {
 			return false;
 		}
 
-		log.info("userCheck:{}",userCheck.getUsername());
+		log.info("userCheck:{}", userCheck.getUsername());
 
-		if(BCrypt.checkpw(user.getPassword(), userCheck.getPassword())) {
+		if (BCrypt.checkpw(user.getPassword(), userCheck.getPassword())) {
 			SessionUtilities.setUsername(userCheck.getUsername());
 			SessionUtilities.setUser(ConvertUserToDto.convertUsertoDto(userCheck));
 
-			log.info("userCheck:{}",SessionUtilities.getUsername());
+			log.info("userCheck:{}", SessionUtilities.getUsername());
 			return true;
 		}
-
 
 		return false;
 	}
@@ -143,37 +146,44 @@ public class UserServiceImpl implements UserService {
 
 		User userCheckByUserName = this.findUserByUsername(newUser.getUsername());
 		User userCheckByEmail = this.userRepository.getUserByEmail(newUser.getEmail());
-		if(userCheckByUserName!=null || userCheckByEmail!=null) {
+		if (userCheckByUserName != null || userCheckByEmail != null) {
 			return false;
 		}
 
-		User user= new User();
+		User user = new User();
 		user.setUsername(newUser.getUsername());
 		user.setHo_ten(newUser.getHo_ten());
 		user.setPassword(BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt(10)));
 		user.setEmail(newUser.getEmail());
 		user.setGioi_tinh(newUser.getGioi_tinh());
-		user.setRole(1);
+		Role role = null;
+		if (newUser.getRole() != null) {
+			role = roleRepository.findById(newUser.getRole()).orElse(null);
+		}
+		if (role == null) {
+			role = roleRepository.findById(2).orElse(null); // 2 = khách
+		}
+		user.setRole(role);
 		user.setDia_chi(newUser.getDia_chi());
 		user.setSdt(newUser.getSdt());
-
 
 		return this.saveUser(user);
 	}
 
 	@Override
 	public boolean checkLogin() {
-		return SessionUtilities.getUsername()!=null;
+		return SessionUtilities.getUsername() != null;
 	}
 
 	@Override
 	public boolean changePassword(ChangePasswordDTO changePasswordDTO) {
-		if(SessionUtilities.getUser()!=null) {
+		if (SessionUtilities.getUser() != null) {
 			Long user_id = SessionUtilities.getUser().getId();
 
 			User user = this.userRepository.findById(user_id).get();
 
-			if(BCrypt.checkpw(changePasswordDTO.getOldPassword(),user.getPassword()) && changePasswordDTO.getNewPassword()!=null) {
+			if (BCrypt.checkpw(changePasswordDTO.getOldPassword(), user.getPassword())
+					&& changePasswordDTO.getNewPassword() != null) {
 				user.setPassword(BCrypt.hashpw(changePasswordDTO.getNewPassword(), BCrypt.gensalt(10)));
 				this.userRepository.save(user);
 				return true;
@@ -185,10 +195,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean updateUserByAdmin(UpdateUserDTO updateUserDTO,Long id) {
+	public boolean updateUserByAdmin(UpdateUserDTO updateUserDTO, Long id) {
 
 		User user = this.userRepository.findById(id).get();
-		if(user!=null) {
+		if (user != null) {
 			user.setSdt(updateUserDTO.getSdt());
 			user.setUsername(updateUserDTO.getUsername());
 			user.setEmail(updateUserDTO.getEmail());
@@ -208,28 +218,28 @@ public class UserServiceImpl implements UserService {
 	public boolean adminLogin(LoginDTO user) {
 		User userCheck = this.findUserByUsername(user.getUsername());
 
-		if(userCheck==null) {
+		if (userCheck == null) {
 			return false;
 		}
 
-		log.info("userCheck:{}",userCheck.getUsername());
+		log.info("userCheck:{}", userCheck.getUsername());
 
-		if(BCrypt.checkpw(user.getPassword(), userCheck.getPassword()) && userCheck.getRole()==0) {
+		if (BCrypt.checkpw(user.getPassword(), userCheck.getPassword()) && userCheck.getRole() != null
+				&& userCheck.getRole().getId() == 1) {
 
 			SessionUtilities.setAdmin(ConvertUserToDto.convertUsertoDto(userCheck));
 
-			log.info("userCheck:{}",SessionUtilities.getAdmin().getUsername());
+			log.info("userCheck:{}", SessionUtilities.getAdmin().getUsername());
 
 			return true;
 		}
-
 
 		return false;
 	}
 
 	@Override
 	public boolean checkAdminLogin() {
-		return SessionUtilities.getAdmin()!=null;
+		return SessionUtilities.getAdmin() != null;
 	}
 
 	@Override
@@ -243,12 +253,11 @@ public class UserServiceImpl implements UserService {
 
 		user.setPassword(BCrypt.hashpw("123@123a", BCrypt.gensalt(10)));
 
-		if(this.userRepository.save(user)!=null) {
+		if (this.userRepository.save(user) != null) {
 			return true;
 		}
 
 		return false;
 	}
-
 
 }

@@ -18,15 +18,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @NoArgsConstructor
 public class TourDTO {
-	
+
 	private Long id;
 
 	private String ten_tour;
-	
+
 	private String gioi_thieu_tour;
-	
+
 	private Integer so_ngay;
-	
+
 	private String noi_dung_tour;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -36,18 +36,20 @@ public class TourDTO {
 	private Date ngay_khoi_hanh;
 
 	private String diem_den;
-	
+
 	private Integer loai_tour;
-	
+
 	private String anh_tour;
-	
+
 	private String diem_khoi_hanh;
-	
-	private Integer trang_thai;
-	
+
+	private String trang_thai;
+
 	private Long gia_tour;
 
-	public TourDTO(Long id, String ten_tour, String gioi_thieu_tour, Integer so_ngay, String noi_dung_tour, Date ngay_ket_thuc, Date ngay_khoi_hanh, String diem_den, Integer loai_tour, String anh_tour, String diem_khoi_hanh, Integer trang_thai, Long gia_tour) {
+	public TourDTO(Long id, String ten_tour, String gioi_thieu_tour, Integer so_ngay, String noi_dung_tour,
+			Date ngay_ket_thuc, Date ngay_khoi_hanh, String diem_den, Integer loai_tour, String anh_tour,
+			String diem_khoi_hanh, String trang_thai, Long gia_tour) {
 		this.id = id;
 		this.ten_tour = ten_tour;
 		this.gioi_thieu_tour = gioi_thieu_tour;
