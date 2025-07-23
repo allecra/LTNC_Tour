@@ -111,86 +111,36 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="contact-form bg-white" style="padding: 30px;">
-                    <form name="sentMessage" method="post"  th:action="@{/tour/booking/{tour_id}(tour_id=${tour.id})}" id="contactForm"
-                          novalidate="novalidate">
-                        <div class="form-row">
-                            <div class="control-group col-sm-6">
-                                <input type="text" class="form-control p-4" disabled="disabled" name="ho_ten" id="email"
-                                       placeholder="Họ tên"  th:value="${user.ho_ten}" required="required"
-                                       data-validation-required-message="Vui lòng nhập họ và tên"  />
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="control-group col-sm-6">
-                                <input type="text" class="form-control p-4" id="name" disabled="disabled" name="sdt"
-                                       placeholder="Số điện thoại liên hệ" required="required" th:value="${user.sdt}"
-                                       data-validation-required-message="Vui lòng nhập số điện thoại" />
-                                <p class="help-block text-danger"></p>
-                            </div>
+                    <form class="bg-white" style="padding: 30px;" th:action="@{/tour/booking/{tour_start_id}(tour_start_id=${tourStart.id})}" method="post">
+                        <div class="form-group">
+                            <label for="name">Họ tên</label>
+                            <input type="text" class="form-control" id="name" th:value="${user.ho_ten}">
                         </div>
-                        <div class="control-group">
-                            <input type="text" class="form-control p-4" name="dia_chi" id="subject"
-                                   placeholder="Địa chỉ" required="required" disabled="disabled" th:value="${user.dia_chi}"
-                                   data-validation-required-message="Vui lòng nhập địa chỉ" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" th:value="${user.email}">
                         </div>
-                        <div class="control-group">
-                            <input type="email" class="form-control p-4" name="email" id="subjddect"
-                                   placeholder="Email" required="required" disabled="disabled" th:value="${user.email}"
-                                   data-validation-required-message="Vui lòng nhập email" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phone" th:value="${user.sdt}">
                         </div>
-                        <h5 class="text-primary text-uppercase py-4" style="letter-spacing: 5px;">Thông tin chi tiết tour</h5>
-
-                        <div class="control-group">
-                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Tên tour</h6>
-                            <input type="email" class="form-control p-4" name="ten_tour" id="sddsbject"
-                                   placeholder="Tên tour" required="required" disabled="disabled"
-                                   data-validation-required-message="Vui lòng nhập email" th:value="${tour.ten_tour}" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="so_luong_nguoi">Số lượng người</label>
+                            <input type="number" name="so_luong_nguoi" class="form-control" id="so_luong_nguoi" th:value="${so_nguoi}" readonly>
                         </div>
-
-                        <div class="form-row">
-                            <div class="control-group col-sm-6">
-                                <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Ngày khởi hành</h6>
-                                <input type="tel" class="form-control p-4" id="namce"  name="ngay_khoi_hanh"
-                                       placeholder="Ngày khởi hành" required="required"  th:value="${#dates.format(ngay_khoi_hanh, 'yyyy-MM-dd')}"
-                                       data-validation-required-message="Vui lòng nhập số điện thoại" />
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="control-group col-sm-6">
-                                <div class="mb-3 mb-md-0">
-                                    <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Số lượng người</h6>
-                                    <input type="number" value="1" class="form-control p-4" th:value="${so_nguoi}"  id="so_luong_nguoi" name="so_luong_nguoi"
-                                            placeholder="Nhập số người" />
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="ghi_chu">Ghi chú</label>
+                            <textarea name="ghi_chu" id="ghi_chu" cols="30" rows="5" class="form-control"></textarea>
                         </div>
-                        <div class="control-group">
-                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Tổng tiền cần thanh toán</h6>
-                            <h5 class="text-danger mt-4" th:attr="data-price=${tour.gia_tour}" id="gia_tour" th:inline="text">[[${#numbers.formatInteger(tong_tien,3,'POINT')}]] VNĐ </h5>
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="payment_method">Phương thức thanh toán</label>
+                            <select name="payment_method" id="payment_method" class="form-control">
+                                <option value="Chuyển khoản">Chuyển khoản</option>
+                                <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
+                            </select>
                         </div>
-
-                        <div class="control-group">
-                            <h6 class="text-primary text-uppercase"  style="letter-spacing: 5px;">Ghi chú</h6>
-                            <textarea type="email" class="form-control p-4" name="ghi_chu" id="subjcdect"
-                                      placeholder="Ghi chú" required="required"
-                                      data-validation-required-message="Vui lòng nhập email" ></textarea>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Phương thức thanh toán</h6>
-                        <div class="form-row pb-2">
-                            <div class="control-group">
-                                <input type="radio" value="0" checked  class="p-2" id="tien_mat" name="pt_thanh_toan" placeholder="Ngày khởi hành" required="required"/>
-                                <label for="tien_mat">Thanh toán tiền mặt tại công ty</label>
-                            </div>
-                            <div class="control-group">
-                                <input type="radio" value="1"   class="p-2" id="chuyen_khoan" name="pt_thanh_toan"  placeholder="Nhập số người" />
-                                <label for="chuyen_khoan">Chuyển khoản với nội dung: dattour sdt đến stk: 0365666321-MB bank </label>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <button class="btn btn-primary py-3 px-4" type="submit" id="sendMessageButton" >Xác nhận đặt tour</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">Thanh toán</button>
                         </div>
                     </form>
                 </div>

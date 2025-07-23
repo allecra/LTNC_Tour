@@ -11,19 +11,23 @@ import com.hoangminh.entity.Booking;
 
 public interface BookingService {
 
-	Page<BookingDTO> findAllBooking(Integer trang_thai,String ten_tour,Pageable pageable);
-	
-	List<BookingDTO> findBookingByUserId(Long userId);
-	
-	Page<BookingDTO> findBookingByTourId(Long tour_Id,Pageable pageable);
-	
+	Page<BookingDTO> findAllBooking(String trang_thai, String ten_tour, Pageable pageable);
+
+	List<BookingDTO> findBookingByUserId(Long id);
+
+	Page<BookingDTO> findBookingByTourId(Long tour_Id, Pageable pageable);
+
 	boolean addNewBooking(BookingDTO newBooking);
-	
-	boolean approveBooking(Long bookingId,Integer trang_thai);
+
+	boolean approveBooking(Long id, String trang_thai);
 
 	boolean deleteBooking(Long id);
 
 	BookingDTO getBookingById(Long id);
 
 	BookingDetailDTO getBookingDetailById(Long id);
+
+	Boolean saveBooking(Booking booking);
+
+	List<BookingDTO> checkBookingByUserId(Long id);
 }

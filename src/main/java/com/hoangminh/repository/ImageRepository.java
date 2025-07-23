@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 import com.hoangminh.entity.Image;
 
 @Repository
-public interface ImageRepository  extends JpaRepository<Image, Long>{
+public interface ImageRepository extends JpaRepository<Image, Long> {
 
-	@Query(value="select i from Image i where i.tour_id = :id")
-	List<Image> findByTourId(@Param("id") Long id);
+	List<Image> findByTourId(Long tourId);
 
 }

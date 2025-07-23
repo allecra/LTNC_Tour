@@ -23,39 +23,46 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter
+import java.math.BigDecimal;
+import com.hoangminh.entity.TourType;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "tour")
+@Table(name = "tour", schema = "jsb_tour")
 public class Tour {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String ten_tour;
-	
-	private String gioi_thieu_tour;
-	
-	private Integer so_ngay;
-	
-	private String noi_dung_tour;
-	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private Date ngay_khoi_hanh;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private Date ngay_ket_thuc;
-	
-	private String diem_den;
-	
-	private Integer loai_tour;
-	
-	private String anh_tour;
-	
+	@ManyToOne
+	@JoinColumn(name = "destination_id")
+	private Destination destination;
+
 	private String diem_khoi_hanh;
-	
-	private Integer trang_thai;
-	
-	private Long gia_tour;
-	
-	
+
+	private String gioi_thieu_tour;
+
+	private String noi_dung_tour;
+
+	private String anh_dai_dien;
+
+	private BigDecimal gia_tour;
+
+	private BigDecimal sale_price;
+
+	private Integer so_ngay;
+
+	@ManyToOne
+	@JoinColumn(name = "tour_type_id")
+	private TourType tourType;
+
+	private String trang_thai;
+
+	@OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+	private List<TourStart> tour_starts;
 }

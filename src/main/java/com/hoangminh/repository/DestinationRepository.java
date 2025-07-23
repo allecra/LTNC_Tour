@@ -1,5 +1,8 @@
 package com.hoangminh.repository;
 
-public interface DestinationRepository {
+import com.hoangminh.entity.Destination;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DestinationRepository extends JpaRepository<Destination, Long> {
 
 }

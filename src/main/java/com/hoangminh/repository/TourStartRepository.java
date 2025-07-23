@@ -11,8 +11,7 @@ import com.hoangminh.dto.TourStartDTO;
 import com.hoangminh.entity.TourStart;
 
 @Repository
-public interface TourStartRepository extends JpaRepository<TourStart, Long>{
-	
-	@Query("SELECT new com.hoangminh.dto.TourStartDTO(d.id,d.ngay_khoi_hanh) FROM TourStart d WHERE d.tour_id = :tour_id")
-	List<TourStartDTO> getDateStartByTourId(@Param("tour_id") Long tour_id);
+public interface TourStartRepository extends JpaRepository<TourStart, Long> {
+
+	List<TourStart> findByTourId(Long tourId);
 }

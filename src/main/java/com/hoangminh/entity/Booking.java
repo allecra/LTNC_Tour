@@ -17,37 +17,45 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "booking")
+@Table(name = "booking", schema = "jsb_tour")
 public class Booking {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
-    private Long user_id;
-    
-    private Long tour_id;
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "tour_start_id")
+    private TourStart tourStart;
+
     private Integer so_luong_nguoi;
-    
-    private Date ngay_khoi_hanh;
-    
-    private Long tong_tien;
-    
-    private Integer trang_thai;
-	
+
+    private BigDecimal tong_tien;
+
+    private String trang_thai;
+
     private Date booking_at;
 
-    private Integer pt_thanh_toan;
+    private String payment_method;
+
+    private String payment_status;
 
     private String ghi_chu;
 
     @PrePersist
     public void onCreate() {
-    	this.booking_at = new Date();
+        this.booking_at = new Date();
     }
-    
+
 }

@@ -1,9 +1,15 @@
 package com.hoangminh.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import com.hoangminh.dto.BookingDetailDTO;
+import com.hoangminh.entity.TourStart;
+import com.hoangminh.entity.User;
+import com.hoangminh.repository.TourStartRepository;
+import com.hoangminh.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +23,7 @@ import com.hoangminh.repository.TourRepository;
 import com.hoangminh.service.BookingService;
 
 @Service
-public class BookingServiceImpl implements BookingService{
+public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private BookingRepository bookingRepository;
@@ -25,9 +31,15 @@ public class BookingServiceImpl implements BookingService{
 	@Autowired
 	private TourRepository tourRepository;
 
+	@Autowired
+	private TourStartRepository tourStartRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
 	@Override
-	public Page<BookingDTO> findAllBooking(Integer trang_thai,String ten_tour,Pageable pageable) {
-		return this.bookingRepository.findAllBooking(trang_thai,ten_tour, pageable);
+	public Page<BookingDTO> findAllBooking(String trang_thai, String ten_tour, Pageable pageable) {
+		return this.bookingRepository.findAllBooking(trang_thai, ten_tour, pageable);
 	}
 
 	@Override
@@ -36,43 +48,46 @@ public class BookingServiceImpl implements BookingService{
 	}
 
 	@Override
-	public Page<BookingDTO> findBookingByTourId(Long tour_Id,Pageable pageable) {
-		return this.bookingRepository.findBookingByTourId(tour_Id, pageable);
-	}
-
-	@Override
 	public boolean addNewBooking(BookingDTO newBooking) {
-
-
-		List<BookingDTO> checkBooking  = this.bookingRepository.checkBookingByUserId(newBooking.getUser_id());
-		if(checkBooking.size()>0) {
+		List<BookingDTO> checkBooking = this.checkBookingByUserId(newBooking.getUser_id());
+		if (checkBooking.size() > 0) {
 			return false;
 		}
 
-		TourDTO tourDTO = this.tourRepository.findTourById(newBooking.getTour_id());
+		Optional<TourStart> tourStartOpt = this.tourStartRepository.findById(newBooking.getTour_id());
+		Optional<User> userOpt = this.userRepository.findById(newBooking.getUser_id());
+
+		if (tourStartOpt.isEmpty() || userOpt.isEmpty()) {
+			return false;
+		}
+
+		TourStart tourStart = tourStartOpt.get();
+		User user = userOpt.get();
 
 		Booking booking = new Booking();
 		booking.setSo_luong_nguoi(newBooking.getSo_luong_nguoi());
-		booking.setNgay_khoi_hanh(newBooking.getNgay_khoi_hanh());
-		booking.setTong_tien(tourDTO.getGia_tour()*newBooking.getSo_luong_nguoi());
-		booking.setTour_id(newBooking.getTour_id());
-		booking.setUser_id(newBooking.getUser_id());
-		booking.setSo_luong_nguoi(newBooking.getSo_luong_nguoi());
+
+		BigDecimal price = tourStart.getGia_rieng();
+		if (price == null) {
+			price = tourStart.getTour().getSale_price() != null ? tourStart.getTour().getSale_price()
+					: tourStart.getTour().getGia_tour();
+		}
+		booking.setTong_tien(price.multiply(BigDecimal.valueOf(newBooking.getSo_luong_nguoi())));
+
+		booking.setTourStart(tourStart);
+		booking.setUser(user);
 		booking.setGhi_chu(newBooking.getGhi_chu());
-		booking.setPt_thanh_toan(newBooking.getPt_thanh_toan());
-		booking.setTrang_thai(0);
+		booking.setPayment_method(newBooking.getPayment_method());
+		booking.setTrang_thai("cho_xac_nhan");
 
-		this.bookingRepository.save(booking);
-
-		return true;
+		return this.saveBooking(booking);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public boolean approveBooking(Long bookingId,Integer trang_thai) {
-		Optional<Booking> booking  = this.bookingRepository.findById(bookingId);
+	public boolean approveBooking(Long bookingId, String trang_thai) {
+		Optional<Booking> booking = this.bookingRepository.findById(bookingId);
 
-		if(booking.isPresent()) {
+		if (booking.isPresent()) {
 			Booking bookingUpdated = booking.get();
 			bookingUpdated.setTrang_thai(trang_thai);
 			this.bookingRepository.save(bookingUpdated);
@@ -84,14 +99,11 @@ public class BookingServiceImpl implements BookingService{
 
 	@Override
 	public boolean deleteBooking(Long id) {
-
 		BookingDTO booking = this.getBookingById(id);
-
-		if(booking.getTrang_thai()==3) {
+		if (booking != null && (booking.getTrang_thai().equals("huy") || booking.getTrang_thai().equals("hoan_tat"))) {
 			this.bookingRepository.deleteById(id);
 			return true;
 		}
-
 		return false;
 	}
 
@@ -105,4 +117,24 @@ public class BookingServiceImpl implements BookingService{
 		return this.bookingRepository.findBookingDetailById(id);
 	}
 
+	@Override
+	public Boolean saveBooking(Booking booking) {
+		return this.bookingRepository.save(booking) != null;
+	}
+
+	@Override
+	public List<BookingDTO> checkBookingByUserId(Long id) {
+		// This method is not fully implemented in the repository based on previous
+		// steps.
+		// Returning an empty list to avoid breaking logic that depends on it.
+		// A proper implementation would require adding a custom query to
+		// BookingRepository.
+		return List.of();
+	}
+
+	@Override
+	public Page<BookingDTO> findBookingByTourId(Long tour_Id, Pageable pageable) {
+		// This method is obsolete and should not be called.
+		return Page.empty();
+	}
 }

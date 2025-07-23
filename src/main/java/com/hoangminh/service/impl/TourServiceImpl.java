@@ -13,7 +13,9 @@ import com.hoangminh.dto.TourDTO;
 import com.hoangminh.entity.Image;
 import com.hoangminh.entity.Tour;
 import com.hoangminh.entity.TourStart;
+import com.hoangminh.repository.DestinationRepository;
 import com.hoangminh.repository.TourRepository;
+import com.hoangminh.repository.TourTypeRepository;
 import com.hoangminh.service.TourService;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -22,6 +24,9 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
+import java.math.BigDecimal;
+
 @Slf4j
 @Service
 public class TourServiceImpl implements TourService {
@@ -29,16 +34,24 @@ public class TourServiceImpl implements TourService {
 	@Autowired
 	private TourRepository tourRepository;
 
+	@Autowired
+	private DestinationRepository destinationRepository;
+
+	@Autowired
+	private TourTypeRepository tourTypeRepository;
 
 	@Override
-	public Page<TourDTO> findAllTour(String ten_tour,Long gia_tour_from,Long gia_tour_to,Date ngay_khoi_hanh,Integer loai_tour,Pageable pageable) {
-		Page<TourDTO> page = this.tourRepository.findAll(ten_tour, gia_tour_from, gia_tour_to,ngay_khoi_hanh, loai_tour, pageable);
+	public Page<TourDTO> findAllTour(String ten_tour, BigDecimal gia_tour_from, BigDecimal gia_tour_to,
+			Long tour_type_id, Pageable pageable) {
+		Page<TourDTO> page = this.tourRepository.findAll(ten_tour, gia_tour_from, gia_tour_to, tour_type_id, pageable);
 		return page;
 	}
 
 	@Override
-	public Page<TourDTO> findAllTourAdmin(String ten_tour,Long gia_tour_from,Long gia_tour_to,Date ngay_khoi_hanh,Integer loai_tour,Pageable pageable) {
-		Page<TourDTO> page = this.tourRepository.findAllAdmin(ten_tour, gia_tour_from, gia_tour_to,ngay_khoi_hanh, loai_tour, pageable);
+	public Page<TourDTO> findAllTourAdmin(String ten_tour, BigDecimal gia_tour_from, BigDecimal gia_tour_to,
+			Long tour_type_id, Pageable pageable) {
+		Page<TourDTO> page = this.tourRepository.findAllAdmin(ten_tour, gia_tour_from, gia_tour_to, tour_type_id,
+				pageable);
 		return page;
 	}
 
@@ -46,17 +59,7 @@ public class TourServiceImpl implements TourService {
 	public TourDTO findTourById(Long id) {
 		TourDTO tourDTO = this.tourRepository.findTourById(id);
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(tourDTO.getNgay_khoi_hanh());
-		calendar.add(Calendar.DAY_OF_MONTH, 1);
-		tourDTO.setNgay_khoi_hanh(calendar.getTime());
-
-
-		calendar.setTime(tourDTO.getNgay_ket_thuc());
-		calendar.add(Calendar.DAY_OF_MONTH, 1);
-		tourDTO.setNgay_ket_thuc(calendar.getTime());
-
-		if(tourDTO!=null) {
+		if (tourDTO != null) {
 			return tourDTO;
 		}
 		return null;
@@ -64,7 +67,7 @@ public class TourServiceImpl implements TourService {
 
 	@Override
 	public boolean saveTour(Tour tour) {
-		if(this.tourRepository.save(tour) != null) {
+		if (this.tourRepository.save(tour) != null) {
 			return true;
 		}
 		return false;
@@ -80,17 +83,16 @@ public class TourServiceImpl implements TourService {
 
 		Tour tour = new Tour();
 		tour.setTen_tour(tourDTO.getTen_tour());
-		tour.setAnh_tour(tourDTO.getAnh_tour());
-		tour.setLoai_tour(tourDTO.getLoai_tour());
+		tour.setAnh_dai_dien(tourDTO.getAnh_dai_dien());
+		tour.setTourType(this.tourTypeRepository.findById(Long.parseLong(tourDTO.getLoai_tour())).get());
 		tour.setGia_tour(tourDTO.getGia_tour());
 		tour.setGioi_thieu_tour(tourDTO.getGioi_thieu_tour());
-		tour.setDiem_den(tourDTO.getDiem_den());
+		tour.setDestination(this.destinationRepository.findById(Long.parseLong(tourDTO.getDiem_den())).get());
 		tour.setNoi_dung_tour(tourDTO.getNoi_dung_tour());
 		tour.setDiem_khoi_hanh(tourDTO.getDiem_khoi_hanh());
-		tour.setNgay_khoi_hanh(tourDTO.getNgay_khoi_hanh());
 		tour.setSo_ngay(tourDTO.getSo_ngay());
 		tour.setTrang_thai(tourDTO.getTrang_thai());
-		tour.setNgay_ket_thuc(tourDTO.getNgay_ket_thuc());
+		tour.setSale_price(tourDTO.getSale_price());
 
 		return this.tourRepository.save(tour);
 	}
@@ -98,24 +100,24 @@ public class TourServiceImpl implements TourService {
 	@Override
 	public Tour updateTour(TourDTO newTour, Long id) {
 		Optional<Tour> tour = this.tourRepository.findById(id);
-		log.info("new tour lấy đươc : {}",newTour);
-		if(tour.isPresent()) {
+		log.info("new tour lấy đươc : {}", newTour);
+		if (tour.isPresent()) {
 			Tour updatedTour = tour.get();
 
 			updatedTour.setTen_tour(newTour.getTen_tour());
-			updatedTour.setLoai_tour(newTour.getLoai_tour());
+			updatedTour.setTourType(this.tourTypeRepository.findById(Long.parseLong(newTour.getLoai_tour())).get());
 			updatedTour.setGia_tour(newTour.getGia_tour());
 			updatedTour.setGioi_thieu_tour(newTour.getGioi_thieu_tour());
-			if(newTour.getAnh_tour()!=null) {
-				updatedTour.setAnh_tour(newTour.getAnh_tour());
+			if (newTour.getAnh_dai_dien() != null) {
+				updatedTour.setAnh_dai_dien(newTour.getAnh_dai_dien());
 			}
-			updatedTour.setDiem_den(newTour.getDiem_den());
+			updatedTour
+					.setDestination(this.destinationRepository.findById(Long.parseLong(newTour.getDiem_den())).get());
 			updatedTour.setNoi_dung_tour(newTour.getNoi_dung_tour());
 			updatedTour.setDiem_khoi_hanh(newTour.getDiem_khoi_hanh());
-			updatedTour.setNgay_khoi_hanh(newTour.getNgay_khoi_hanh());
 			updatedTour.setSo_ngay(newTour.getSo_ngay());
 			updatedTour.setTrang_thai(newTour.getTrang_thai());
-			updatedTour.setNgay_ket_thuc(newTour.getNgay_ket_thuc());
+			updatedTour.setSale_price(newTour.getSale_price());
 
 			return this.tourRepository.save(updatedTour);
 		}
@@ -126,12 +128,20 @@ public class TourServiceImpl implements TourService {
 	@Override
 	public boolean deleteTour(Long id) {
 		Optional<Tour> tour = this.tourRepository.findById(id);
-		if(tour.isPresent()) {
-			if(this.tourRepository.existsBookingByTourId(id)==false) {
-				this.tourRepository.deleteById(id);
-				return true;
-			}
+		if (tour.isPresent()) {
+			this.tourRepository.deleteById(id);
+			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<TourDTO> findBySeason(Long seasonId) {
+		return tourRepository.findBySeason(seasonId);
+	}
+
+	@Override
+	public List<TourDTO> findByMonth(int month) {
+		return tourRepository.findByMonth(month);
 	}
 }

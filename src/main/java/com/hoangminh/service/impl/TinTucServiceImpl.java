@@ -16,14 +16,12 @@ public class TinTucServiceImpl implements TinTucService {
 
     @Override
     public Page<TinTuc> getAllPage(Pageable pageable) {
-        Page<TinTuc> page = this.tinTucRepository.findAllPage(pageable);
-
-        return page;
+        return this.tinTucRepository.findAll(pageable);
     }
 
     @Override
     public TinTuc findOnePage(Long id) {
-        return this.tinTucRepository.findOnePage(id);
+        return this.tinTucRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -33,7 +31,7 @@ public class TinTucServiceImpl implements TinTucService {
 
     @Override
     public TinTuc createOnePage(TinTuc newTinTuc) {
-        if(this.tinTucRepository.checkExistTieuDe(newTinTuc.getTieu_de())) {
+        if (this.tinTucRepository.existsByTieuDe(newTinTuc.getTieuDe())) {
             return null;
         }
         return this.tinTucRepository.save(newTinTuc);
@@ -42,18 +40,17 @@ public class TinTucServiceImpl implements TinTucService {
     @Override
     public TinTuc updateTinTuc(TinTuc updateTinTuc, Long id) {
 
-        TinTuc tintuc = this.tinTucRepository.findOnePage(id);
+        TinTuc tintuc = this.tinTucRepository.findById(id).orElse(null);
 
-        if(tintuc==null) {
+        if (tintuc == null) {
             return null;
         }
 
-        tintuc.setHinh_anh(updateTinTuc.getHinh_anh());
         tintuc.setNgay_dang(updateTinTuc.getNgay_dang());
         tintuc.setTom_tat(updateTinTuc.getTom_tat());
-        tintuc.setTieu_de(updateTinTuc.getTieu_de());
+        tintuc.setTieuDe(updateTinTuc.getTieuDe());
         tintuc.setNoi_dung(updateTinTuc.getNoi_dung());
-
+        tintuc.setTrang_thai(updateTinTuc.getTrang_thai());
 
         return this.tinTucRepository.save(tintuc);
     }

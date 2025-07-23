@@ -15,15 +15,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "image")
+@Table(name = "image", schema = "jsb_tour")
 public class Image {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String url;
 
-    private Long tour_id;
+	private String object_type;
+
+	private Integer object_id;
+
+	private String caption;
+
+	@ManyToOne
+	@JoinColumn(name = "tour_id")
+	private Tour tour;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 }
