@@ -296,10 +296,10 @@
                 const user = users[i];
                 var row = `<tr>
                     <td class="text-center" style="width:60px;">${i + 1}</td>
-                    <td style="min-width:180px;">${user.hoTen || ''}</td>
+                    <td style="min-width:180px;">${user.ho_ten || ''}</td>
                     <td style="width:140px;">${user.email || ''}</td>
                     <td style="width:120px;">${user.sdt || ''}</td>
-                    <td style="min-width:200px;">${user.diaChi || ''}</td>
+                    <td style="min-width:200px;">${user.dia_chi || ''}</td>
                     <td class="text-center" style="width:90px;">
                         <div class="d-flex justify-content-center align-items-center gap-1" style="width:100%;">
                             <button type="button" class="btn btn-primary btn-sm" onclick="editUser(${user.id})" title="Sửa">
@@ -362,12 +362,25 @@
     });
 
     function editUser(id) {
-        // Implement edit logic here
-        console.log("Edit user with ID: " + id);
-        // Example: Fetch user data and populate the form
-        // You would typically fetch `/api/user/${id}` and then populate the form
-        // For now, we'll just show the modal
-        new bootstrap.Modal(document.getElementById('suaModal')).show();
+        // Gọi API lấy thông tin user theo id
+        $.ajax({
+            url: '/api/user/' + id,
+            type: 'GET',
+            success: function(result) {
+                // Hiển thị modal sửa thông tin user và điền dữ liệu vào form
+                $('#editId').val(result.data.id);
+                $('#editHoTen').val(result.data.ho_ten);
+                $('#editEmail').val(result.data.email);
+                $('#editSdt').val(result.data.sdt);
+                $('#editDiaChi').val(result.data.dia_chi);
+                $('#editRole').val(result.data.role);
+                new bootstrap.Modal(document.getElementById('suaModal')).show();
+            },
+            error: function(xhr, status, error) {
+                // Xử lý lỗi khi không lấy được thông tin user
+                alert('Không lấy được thông tin người dùng!');
+            }
+        });
     }
 
     function resetPass(id) {

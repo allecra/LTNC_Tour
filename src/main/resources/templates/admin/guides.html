@@ -293,12 +293,12 @@
     }
 
     function editUser(id) {
-        // Gọi API lấy thông tin user theo id
+        // Gọi API lấy thông tin hướng dẫn viên theo id
         $.ajax({
             url: '/api/user/' + id,
             type: 'GET',
             success: function(result) {
-                // Hiển thị modal sửa thông tin user và điền dữ liệu vào form
+                // Hiển thị modal sửa thông tin hướng dẫn viên và điền dữ liệu vào form
                 $('#editModal input[name="id"]').val(result.data.id);
                 $('#editModal input[name="username"]').val(result.data.username);
                 $('#editModal input[name="ho_ten"]').val(result.data.ho_ten);
@@ -310,8 +310,8 @@
                 $('#editModal').modal('show');
             },
             error: function(xhr, status, error) {
-                // Xử lý lỗi khi không lấy được thông tin user
-                console.log(xhr.responseText);
+                // Xử lý lỗi khi không lấy được thông tin hướng dẫn viên
+                alert('Không lấy được thông tin hướng dẫn viên!');
             }
         });
     }

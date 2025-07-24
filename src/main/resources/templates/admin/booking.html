@@ -162,7 +162,6 @@
                                     <th style="white-space:nowrap;">Người dùng</th>
                                     <th style="white-space:nowrap;">Tour</th>
                                     <th style="white-space:nowrap;">Hướng dẫn viên</th>
-                                    <th style="white-space:nowrap;">Số sao</th>
                                     <th style="white-space:nowrap;">Nội dung</th>
                                     <th style="white-space:nowrap;">Ngày gửi</th>
                                     <th style="white-space:nowrap;">Trạng thái</th>
@@ -375,15 +374,19 @@
     }
 
     function editBooking(id) {
-        $('#editModal').modal('show');
+        // Gọi API lấy thông tin booking theo id
         $.ajax({
-            url: '/api/booking/'+ id,
+            url: '/api/booking/' + id,
             type: 'GET',
-            success: function (data) {
+            success: function(data) {
+                $('#id').val(id);
                 $('#trang_thai').val(data.data.trang_thai);
+                $('#editModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                alert('Không lấy được thông tin booking!');
             }
         });
-        $('#id').val(id);
     }
 
 

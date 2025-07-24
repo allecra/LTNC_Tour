@@ -273,6 +273,30 @@
             renderTable();
         });
     });
+
+    function editTour(id) {
+        // Gọi API lấy thông tin tour theo id
+        $.ajax({
+            url: '/api/tour/' + id,
+            type: 'GET',
+            success: function(result) {
+                // Hiển thị modal sửa thông tin tour và điền dữ liệu vào form
+                $('#editId').val(result.data.id);
+                $('#editTenTour').val(result.data.ten_tour);
+                $('#editSoNgay').val(result.data.so_ngay);
+                $('#editNgayKhoiHanh').val(result.data.ngay_khoi_hanh);
+                $('#editDiemDen').val(result.data.diem_den);
+                $('#editLoaiTour').val(result.data.loai_tour);
+                $('#editDiemKhoiHanh').val(result.data.diem_khoi_hanh);
+                $('#editTrangThai').val(result.data.trang_thai);
+                $('#editGiaTour').val(result.data.gia_tour);
+                new bootstrap.Modal(document.getElementById('editModal')).show();
+            },
+            error: function(xhr, status, error) {
+                alert('Không lấy được thông tin tour!');
+            }
+        });
+    }
 </script>
 </body>
 </html>
