@@ -2,6 +2,7 @@ package com.hoangminh.repository;
 
 import org.springframework.data.domain.Pageable;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,4 +57,19 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 	boolean existsBookingByTourId(@Param("tourId") Long tourId);
 
 	Tour findFirstByOrderByIdDesc();
+
+	// Thống kê số lượng tour theo tháng trong 12 tháng gần nhất
+	@Query(value = "SELECT MONTH(t.ngay_khoi_hanh) as thang, YEAR(t.ngay_khoi_hanh) as nam, COUNT(t.id) as so_luong " +
+			"FROM Tour t " +
+			"WHERE t.ngay_khoi_hanh >= :startDate AND t.ngay_khoi_hanh <= :endDate " +
+			"GROUP BY YEAR(t.ngay_khoi_hanh), MONTH(t.ngay_khoi_hanh) " +
+			"ORDER BY nam, thang")
+	List<Object[]> countTourByMonth(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+	// Thống kê số lượng tour theo mùa (dựa vào tháng khởi hành và bảng season)
+	@Query(value = "SELECT s.tenMua, COUNT(t.id) as so_luong " +
+			"FROM Tour t, Season s " +
+			"WHERE MONTH(t.ngay_khoi_hanh) BETWEEN s.thangBatDau AND s.thangKetThuc " +
+			"GROUP BY s.tenMua")
+	List<Object[]> countTourBySeason();
 }

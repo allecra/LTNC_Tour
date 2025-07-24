@@ -19,7 +19,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseDTO login(@RequestBody LoginDTO info) {
 		if (this.userService.adminLogin(info)) {
-			return new ResponseDTO("Thành công", SessionUtilities.getAdmin());
+			return new ResponseDTO("Thành công", "/admin/index");
 		}
 		return new ResponseDTO("Thông tin đăng nhập không hợp lệ", null);
 	}
