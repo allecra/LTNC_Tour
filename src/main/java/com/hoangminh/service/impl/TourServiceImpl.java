@@ -144,4 +144,28 @@ public class TourServiceImpl implements TourService {
 	public List<TourDTO> findByMonth(int month) {
 		return tourRepository.findByMonth(month);
 	}
+
+    public List<TourDTO> findAllTourWithStartDate() {
+        List<Object[]> rawList = tourRepository.findAllTourWithStartDate();
+        List<TourDTO> result = new ArrayList<>();
+        for (Object[] row : rawList) {
+            TourDTO dto = new TourDTO();
+            dto.setId(((Number) row[0]).longValue());
+            dto.setTen_tour((String) row[1]);
+            dto.setGioi_thieu_tour((String) row[2]);
+            dto.setSo_ngay(row[3] != null ? ((Number) row[3]).intValue() : null);
+            dto.setNoi_dung_tour((String) row[4]);
+            dto.setDiem_den((String) row[5]);
+            dto.setLoai_tour((String) row[6]);
+            dto.setAnh_dai_dien((String) row[7]);
+            dto.setDiem_khoi_hanh((String) row[8]);
+            dto.setTrang_thai((String) row[9]);
+            dto.setGia_tour(row[10] != null ? new java.math.BigDecimal(row[10].toString()) : null);
+            dto.setSale_price(row[11] != null ? new java.math.BigDecimal(row[11].toString()) : null);
+            dto.setNgay_khoi_hanh(row[12] != null ? row[12].toString() : "");
+            dto.setNgay_ket_thuc(row[13] != null ? row[13].toString() : "");
+            result.add(dto);
+        }
+        return result;
+    }
 }

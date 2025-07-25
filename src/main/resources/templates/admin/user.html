@@ -250,7 +250,7 @@
           <select id="editUserRole" class="form-control" required>
             <option value="1">Admin</option>
             <option value="2">User</option>
-            <option value="3">Hướng dẫn viên</option>
+           
           </select>
         </div>
       </div>
@@ -294,7 +294,7 @@
         // Lấy dữ liệu thật từ backend
         function fetchUsers() {
             $.ajax({
-                url: '/api/user/getAll',
+                url: '/api/admin/user/getAll?pageIndex=0&pageSize=10',
                 method: 'GET',
                 success: function(response) {
                     users = response.data || [];
@@ -336,10 +336,11 @@
             const endIdx = Math.min(startIdx + pageSize, data.length);
             for (let i = startIdx; i < endIdx; i++) {
                 const user = data[i];
+                let roleId = (user.role && user.role.id) ? user.role.id : (user.role_id || user.role);
+                if (roleId === 3) continue; // Ẩn user hướng dẫn viên
                 let roleName = '';
-                if (user.role === 1) roleName = 'Admin';
-                else if (user.role === 2) roleName = 'User';
-                else if (user.role === 3) roleName = 'Hướng dẫn viên';
+                if (roleId === 1) roleName = 'Admin';
+                else if (roleId === 2) roleName = 'User';
                 var row = `<tr>
                     <td class="text-center">${i + 1}</td>
                     <td>${user.ho_ten || ''}</td>
@@ -408,10 +409,10 @@
                 email: $(this).find('input[name="email"]').val(),
                 sdt: $(this).find('input[name="sdt"]').val(),
                 dia_chi: $(this).find('input[name="diaChi"]').val(),
-                role: parseInt($(this).find('select[name="role"]').val())
+                role_id: parseInt($(this).find('select[name="role"]').val())
             };
             $.ajax({
-                url: '/api/user',
+                url: '/api/admin/user',
                 type: 'POST',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
@@ -430,15 +431,21 @@
 
     function editUser(id) {
         $.ajax({
-            url: '/api/user/' + id,
+            url: '/api/admin/user/' + id,
             type: 'GET',
             success: function(result) {
+                console.log('User data:', result.data); // Log dữ liệu user để debug
                 $('#editUserId').val(result.data.id);
                 $('#editUserHoTen').val(result.data.ho_ten);
                 $('#editUserEmail').val(result.data.email);
                 $('#editUserSdt').val(result.data.sdt);
                 $('#editUserDiaChi').val(result.data.dia_chi);
-                $('#editUserRole').val(result.data.role);
+                // Lấy đúng id vai trò và ép kiểu về string
+                var roleValue = result.data.role;
+                if (roleValue && typeof roleValue === 'object') {
+                    roleValue = roleValue.id;
+                }
+                $('#editUserRole').val(roleValue ? roleValue.toString() : '');
                 $('#editUserModal').modal('show');
             },
             error: function() {
@@ -461,7 +468,7 @@
     function deleteUser(id) {
         if (confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
             $.ajax({
-                url: '/api/user/delete/' + id,
+                url: '/api/admin/user/delete/' + id,
                 type: 'DELETE',
                 success: function(response) {
                     alert(response.message || "Xóa thành công!");
@@ -484,7 +491,7 @@
             role: parseInt($('#editUserRole').val())
         };
         $.ajax({
-            url: '/api/user/update/' + id,
+            url: '/api/admin/user/update/' + id,
             type: 'PUT',
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",

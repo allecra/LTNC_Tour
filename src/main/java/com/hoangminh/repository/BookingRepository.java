@@ -36,4 +36,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 			+ " FROM Booking b JOIN b.user u JOIN b.tourStart ts JOIN ts.tour t WHERE b.id = :id")
 	BookingDetailDTO findBookingDetailById(@Param("id") Long id);
 
+    @Query("SELECT SUM(b.tong_tien) FROM Booking b WHERE b.trang_thai = 'da_thanh_toan'")
+    Double sumTotalRevenue();
 }

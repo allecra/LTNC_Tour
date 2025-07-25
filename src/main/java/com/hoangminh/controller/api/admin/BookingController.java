@@ -24,7 +24,7 @@ public class BookingController {
     public ResponseDTO getAllBooking(@RequestParam(value = "trang_thai", required = false) String trang_thai,
             @RequestParam(value = "ten_tour", required = false) String ten_tour,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-            @RequestParam("pageIndex") Integer pageIndex) {
+            @RequestParam(value = "pageIndex", defaultValue = "0") Integer pageIndex) {
 
         if (!this.userService.checkAdminLogin()) {
             return new ResponseDTO("Không có quyền truy cập", null);
@@ -53,6 +53,15 @@ public class BookingController {
         return new ResponseDTO("Thành công", this.bookingService.getBookingDetailById(id));
     }
 
+    @PostMapping("")
+    public ResponseDTO addBooking(@RequestBody BookingDTO bookingDTO) {
+        if (!this.userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
+        boolean ok = this.bookingService.addNewBooking(bookingDTO);
+        return new ResponseDTO(ok ? "Thêm thành công" : "Thêm thất bại", null);
+    }
+
     @PutMapping("/approve/{id}")
     public ResponseDTO changeStatus(@PathVariable("id") Long id, @RequestParam("trang_thai") String trang_thai) {
 
@@ -64,6 +73,15 @@ public class BookingController {
             return new ResponseDTO("Cập nhật thành công", null);
         }
         return new ResponseDTO("Cập nhật thất bại", null);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseDTO updateBooking(@PathVariable("id") Long id, @RequestBody BookingDTO bookingDTO) {
+        if (!this.userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
+        boolean ok = this.bookingService.updateBooking(id, bookingDTO);
+        return new ResponseDTO(ok ? "Cập nhật thành công" : "Cập nhật thất bại", null);
     }
 
     @DeleteMapping("/delete/{id}")

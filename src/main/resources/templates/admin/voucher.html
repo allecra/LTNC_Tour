@@ -160,22 +160,22 @@
 <script src="/public/admin/js/all.min.js"></script>
 <script>
     $(document).ready(function() {
-        let vouchers = [];
-        let filteredVouchers = [];
-        let currentPage = 1;
+        window.vouchers = [];
+        window.filteredVouchers = [];
+        window.currentPage = 1;
         const pageSize = 10;
         function fetchVouchers() {
             $.ajax({
                 url: '/api/voucher/getAll',
                 method: 'GET',
                 success: function(response) {
-                    vouchers = response.data || [];
-                    filteredVouchers = vouchers;
+                    window.vouchers = response.data || [];
+                    window.filteredVouchers = window.vouchers;
                     renderTable();
                 },
                 error: function() {
-                    vouchers = [];
-                    filteredVouchers = [];
+                    window.vouchers = [];
+                    window.filteredVouchers = [];
                     renderTable();
                 }
             });
@@ -184,21 +184,21 @@
         // Tìm kiếm realtime
         $('#searchVoucherInput').on('input', function() {
             const keyword = $(this).val().toLowerCase();
-            filteredVouchers = vouchers.filter(function(v) {
+            window.filteredVouchers = window.vouchers.filter(function(v) {
                 return (
                     (v.code || '').toLowerCase().includes(keyword) ||
                     (v.discount + '').toLowerCase().includes(keyword) ||
                     (v.expiry_date || '').toLowerCase().includes(keyword)
                 );
             });
-            currentPage = 1;
+            window.currentPage = 1;
             renderTable();
         });
         function renderTable() {
             var tbody = $('#voucherTable tbody');
             tbody.empty();
-            const data = filteredVouchers;
-            const startIdx = (currentPage - 1) * pageSize;
+            const data = window.filteredVouchers;
+            const startIdx = (window.currentPage - 1) * pageSize;
             const endIdx = Math.min(startIdx + pageSize, data.length);
             for (let i = startIdx; i < endIdx; i++) {
                 const voucher = data[i];
@@ -207,6 +207,7 @@
                     <td>${voucher.code || ''}</td>
                     <td>${voucher.discount || ''}</td>
                     <td>${voucher.expiry_date || ''}</td>
+                    <td>${voucher.dieuKien || ''}</td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center align-items-center gap-1">
                             <button type="button" class="btn btn-primary btn-sm" onclick="editVoucher(${voucher.id})" title="Sửa">
@@ -223,7 +224,7 @@
             renderPagination();
         }
         function renderPagination() {
-            let totalPages = Math.ceil(filteredVouchers.length / pageSize);
+            let totalPages = Math.ceil(window.filteredVouchers.length / pageSize);
             let paginationHtml = '';
             if (totalPages === 0) {
                 paginationHtml += '<nav><ul class="pagination justify-content-center">';
@@ -233,11 +234,11 @@
                 paginationHtml += '</ul></nav>';
             } else if (totalPages > 0) {
                 paginationHtml = '<nav><ul class="pagination justify-content-center">';
-                paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
+                paginationHtml += `<li class="page-item${window.currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
                 for (let i = 1; i <= totalPages; i++) {
-                    paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                    paginationHtml += `<li class="page-item${i === window.currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
                 }
-                paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
+                paginationHtml += `<li class="page-item${window.currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
                 paginationHtml += '</ul></nav>';
             }
             if ($('#voucherPagination').length === 0) {
@@ -250,13 +251,13 @@
             e.preventDefault();
             const page = $(this).data('page');
             if (page) {
-                currentPage = page;
+                window.currentPage = page;
                 renderTable();
-            } else if ($(this).attr('id') === 'prevPage' && currentPage > 1) {
-                currentPage--;
+            } else if ($(this).attr('id') === 'prevPage' && window.currentPage > 1) {
+                window.currentPage--;
                 renderTable();
-            } else if ($(this).attr('id') === 'nextPage' && currentPage < Math.ceil(filteredVouchers.length / pageSize)) {
-                currentPage++;
+            } else if ($(this).attr('id') === 'nextPage' && window.currentPage < Math.ceil(window.filteredVouchers.length / pageSize)) {
+                window.currentPage++;
                 renderTable();
             }
         });
@@ -266,7 +267,8 @@
             var data = {
                 code: $(this).find('input[name="code"]').val(),
                 discount: $(this).find('input[name="discount"]').val(),
-                expiry_date: $(this).find('input[name="expiry_date"]').val()
+                expiry_date: $(this).find('input[name="expiry_date"]').val(),
+                dieuKien: $(this).find('input[name="dieuKien"]').val()
             };
             $.ajax({
                 url: '/api/voucher',
@@ -285,6 +287,88 @@
         });
     });
     // Các hàm editVoucher, deleteVoucher sẽ được bổ sung ở backend và JS khi cần
+
+    // Xóa voucher
+    function deleteVoucher(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa voucher này?")) {
+            $.ajax({
+                url: '/api/voucher/' + id,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message || "Xóa thành công!");
+                    fetchVouchers();
+                },
+                error: function() {
+                    alert("Xóa không thành công!");
+                }
+            });
+        }
+    }
+
+    // Sửa voucher
+    function editVoucher(id) {
+        const voucher = (window.vouchers || []).find(v => v.id === id) || (window.filteredVouchers || []).find(v => v.id === id);
+        if (!voucher) return alert("Không tìm thấy voucher!");
+        let modalHtml = `
+        <div class="modal fade" id="editVoucherModal" tabindex="-1" aria-labelledby="editVoucherModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" id="formEditVoucher">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editVoucherModalLabel">Sửa Voucher</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Mã giảm giá</label>
+                            <input type="text" name="code" class="form-control" value="${voucher.code || ''}" required />
+                        </div>
+                        <div class="mb-3">
+                            <label>Giá trị</label>
+                            <input type="number" name="discount" class="form-control" value="${voucher.discount || ''}" required />
+                        </div>
+                        <div class="mb-3">
+                            <label>Ngày hết hạn</label>
+                            <input type="date" name="expiry_date" class="form-control" value="${voucher.expiry_date || ''}" required />
+                        </div>
+                        <div class="mb-3">
+                            <label>Điều kiện áp dụng</label>
+                            <input type="text" name="dieuKien" class="form-control" value="${voucher.dieuKien || ''}" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>`;
+        $('#editVoucherModal').remove();
+        $('body').append(modalHtml);
+        $('#editVoucherModal').modal('show');
+        $('#formEditVoucher').submit(function(e) {
+            e.preventDefault();
+            var data = {
+                code: $(this).find('input[name="code"]').val(),
+                discount: $(this).find('input[name="discount"]').val(),
+                expiry_date: $(this).find('input[name="expiry_date"]').val(),
+                dieuKien: $(this).find('input[name="dieuKien"]').val()
+            };
+            $.ajax({
+                url: '/api/voucher/' + id,
+                type: 'PUT',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    alert(response.message || "Cập nhật thành công!");
+                    $('#editVoucherModal').modal('hide');
+                    fetchVouchers();
+                },
+                error: function() {
+                    alert("Cập nhật không thành công!");
+                }
+            });
+        });
+    }
 </script>
 </body>
 </html>

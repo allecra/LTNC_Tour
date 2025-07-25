@@ -31,6 +31,9 @@ public class Review {
 
     private String comment;
 
+    @Column(name = "trang_thai")
+    private String trangThai = "Chờ duyệt";
+
     @Column(name = "created_at")
     private Date createdAt;
 }

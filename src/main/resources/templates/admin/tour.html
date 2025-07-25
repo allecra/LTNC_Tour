@@ -132,7 +132,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-auto">
-                                <button class="btn btn-success" data-toggle="modal" onclick="addTourModel()" data-target="#addTourModal">
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTourModal">
                                     <i class="fas fa-plus"></i> Thêm mới tour
                                 </button>
                             </div>
@@ -186,11 +186,19 @@
         </div>
         <div class="mb-3">
           <label>Điểm đến</label>
-          <input type="text" id="editDiemDen" class="form-control" required />
+          <select id="editDiemDen" class="form-control" required>
+            <option value="1">Vịnh Hạ Long</option>
+            <option value="2">Phố cổ Hội An</option>
+            <option value="3">Paris</option>
+            <option value="4">Tokyo</option>
+          </select>
         </div>
         <div class="mb-3">
           <label>Loại tour</label>
-          <input type="text" id="editLoaiTour" class="form-control" required />
+          <select id="editLoaiTour" class="form-control" required>
+            <option value="1">Trong nước</option>
+            <option value="2">Ngoài nước</option>
+          </select>
         </div>
         <div class="mb-3">
           <label>Điểm khởi hành</label>
@@ -202,7 +210,71 @@
         </div>
         <div class="mb-3">
           <label>Trạng thái</label>
-          <input type="text" id="editTrangThai" class="form-control" required />
+          <select id="editTrangThai" class="form-control" required>
+            <option value="dang_mo_ban">Đang mở bán</option>
+            <option value="da_het_cho">Đã hết chỗ</option>
+            <option value="tam_dung">Tạm dừng</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Modal Thêm Tour -->
+<div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="addTourForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTourModalLabel">Thêm Tour</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Tên tour</label>
+          <input type="text" id="addTenTour" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Số ngày</label>
+          <input type="number" id="addSoNgay" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Điểm đến</label>
+          <input type="text" id="addDiemDen" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Loại tour</label>
+          <select id="addLoaiTour" class="form-control" required>
+            <option value="1">Trong nước</option>
+            <option value="2">Ngoài nước</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Điểm khởi hành</label>
+          <input type="text" id="addDiemKhoiHanh" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Giá tour</label>
+          <input type="number" id="addGiaTour" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Trạng thái</label>
+          <select id="addTrangThai" class="form-control" required>
+            <option value="dang_mo_ban">Đang mở bán</option>
+            <option value="da_het_cho">Đã hết chỗ</option>
+            <option value="tam_dung">Tạm dừng</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Ngày khởi hành</label>
+          <input type="date" id="addNgayKhoiHanh" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Ngày kết thúc</label>
+          <input type="date" id="addNgayKetThuc" class="form-control" required />
         </div>
       </div>
       <div class="modal-footer">
@@ -223,9 +295,9 @@
         let filteredTours = [];
         let currentPage = 1;
         const pageSize = 10;
-        function fetchTours() {
+        function fetchTours(pageIndex = 0, pageSize = 10, search = '') {
             $.ajax({
-                url: '/api/tour/getAllTour',
+                url: '/api/tour/getAllTour?pageIndex=' + pageIndex + '&pageSize=' + pageSize + (search ? ('&ten_tour=' + encodeURIComponent(search)) : ''),
                 method: 'GET',
                 success: function(response) {
                     tours = response.data || [];
@@ -239,7 +311,8 @@
                 }
             });
         }
-        fetchTours();
+        // Gọi fetchTours lần đầu
+        fetchTours(0, 10, '');
         function renderTable() {
             var tbody = $('#datatablesSimple tbody');
             tbody.empty();
@@ -276,6 +349,8 @@
         }
 
 
+
+
         function renderPagination() {
             let totalPages = Math.ceil(filteredTours.length / pageSize);
             let paginationHtml = '<nav><ul class="pagination justify-content-center">';
@@ -296,6 +371,8 @@
         }
 
 
+
+
         // Pagination click events
         $(document).on('click', '#tourPagination .page-link', function(e) {
             e.preventDefault();
@@ -311,6 +388,8 @@
                 renderTable();
             }
         });
+
+
 
 
         // Search filter
@@ -333,6 +412,17 @@
         });
     });
 
+    // Map tên sang id cho Điểm đến và Loại tour
+    const DIEM_DEN_MAP = {
+        "Vịnh Hạ Long": "1",
+        "Phố cổ Hội An": "2",
+        "Paris": "3",
+        "Tokyo": "4"
+    };
+    const LOAI_TOUR_MAP = {
+        "Trong nước": "1",
+        "Ngoài nước": "2"
+    };
 
     function deleteTour(id) {
         if (confirm("Bạn có chắc chắn muốn xóa tour này?")) {
@@ -357,8 +447,9 @@
                 $('#editId').val(result.data.id);
                 $('#editTenTour').val(result.data.ten_tour);
                 $('#editSoNgay').val(result.data.so_ngay);
-                $('#editDiemDen').val(result.data.diem_den);
-                $('#editLoaiTour').val(result.data.loai_tour);
+                // Map tên sang id nếu cần
+                $('#editDiemDen').val(DIEM_DEN_MAP[result.data.diem_den] || result.data.diem_den);
+                $('#editLoaiTour').val(LOAI_TOUR_MAP[result.data.loai_tour] || result.data.loai_tour);
                 $('#editDiemKhoiHanh').val(result.data.diem_khoi_hanh);
                 $('#editGiaTour').val(result.data.gia_tour);
                 $('#editTrangThai').val(result.data.trang_thai);
@@ -396,9 +487,44 @@
             }
         });
     });
+    // Thêm mới tour
+    $('#addTourForm').submit(function(e) {
+        e.preventDefault();
+        var data = {
+            ten_tour: $('#addTenTour').val(),
+            so_ngay: $('#addSoNgay').val(),
+            diem_den: $('#addDiemDen').val(),
+            loai_tour: $('#addLoaiTour').val(),
+            diem_khoi_hanh: $('#addDiemKhoiHanh').val(),
+            gia_tour: $('#addGiaTour').val(),
+            trang_thai: $('#addTrangThai').val(),
+            ngay_khoi_hanh: $('#addNgayKhoiHanh').val(),
+            ngay_ket_thuc: $('#addNgayKetThuc').val()
+        };
+        $.ajax({
+            url: '/api/tour/add',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function(response) {
+                alert(response.message || "Thêm thành công!");
+                $('#addTourModal').modal('hide');
+                fetchTours(0, 10, '');
+            },
+            error: function() {
+                alert("Thêm không thành công!");
+            }
+        });
+    });
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 

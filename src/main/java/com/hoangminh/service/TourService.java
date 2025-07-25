@@ -36,4 +36,6 @@ public interface TourService {
 	Tour updateTour(TourDTO newTour, Long id);
 
 	boolean deleteTour(Long id);
+
+	List<TourDTO> findAllTourWithStartDate();
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,7 @@ public class BookingDTO {
 
     private Integer so_luong_nguoi;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     private Date ngay_khoi_hanh;
 
     private BigDecimal tong_tien;
@@ -32,7 +34,17 @@ public class BookingDTO {
 
     private String ghi_chu;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     private Date booking_at;
+
+    private String payment_status;
+
+    public String getPayment_status() {
+        return payment_status;
+    }
+    public void setPayment_status(String payment_status) {
+        this.payment_status = payment_status;
+    }
 
     public BookingDTO(Long id, Long user_id, Long tour_id, String ten_tour, Integer so_luong_nguoi, Date ngay_khoi_hanh,
             BigDecimal tong_tien, String trang_thai, String payment_method, String ghi_chu, Date booking_at) {

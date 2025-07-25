@@ -45,20 +45,11 @@ public class TourController {
     private UserService userService;
 
     @GetMapping("/getAllTour")
-    public ResponseDTO getAllTour(@RequestParam(value = "ten_tour", required = false) String ten_tour,
-            @RequestParam(value = "gia_tour_from", required = false) BigDecimal gia_tour_from,
-            @RequestParam(value = "gia_tour_to", required = false) BigDecimal gia_tour_to,
-            @RequestParam(value = "tour_type_id", required = false) Long tour_type_id,
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-            @RequestParam(value = "pageIndex") Integer pageIndex) {
+    public ResponseDTO getAllTour() {
         if (!this.userService.checkAdminLogin()) {
             return new ResponseDTO("Không có quyền truy cập", null);
         }
-
-        Page<TourDTO> page = this.tourService.findAllTourAdmin(ten_tour, gia_tour_from, gia_tour_to, tour_type_id,
-                PageRequest.of(pageIndex, pageSize));
-
-        return new ResponseDTO("Thành công", page.getContent());
+        return new ResponseDTO("Thành công", this.tourService.findAllTourWithStartDate());
     }
 
     @GetMapping("/{id}")
@@ -170,17 +161,20 @@ public class TourController {
 
     @PutMapping("/update/{id}")
     public ResponseDTO updateTour(@PathVariable("id") Long id, @RequestBody TourDTO tourDTO) {
-
-        if (!this.userService.checkAdminLogin()) {
-            return new ResponseDTO("Không có quyền truyabek co quyen truy cap", null);
+        try {
+            if (!this.userService.checkAdminLogin()) {
+                return new ResponseDTO("Không có quyền truy cập", null);
+            }
+            Tour updateTour = this.tourService.updateTour(tourDTO, id);
+            if (updateTour != null) {
+                // Trả về message thành công, không trả về entity gốc để tránh lỗi serialize
+                return new ResponseDTO("Thành công", null);
+            }
+            return new ResponseDTO("Update thất bại", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseDTO("Lỗi BE: " + e.getMessage(), null);
         }
-
-        Tour updateTour = this.tourService.updateTour(tourDTO, id);
-        if (updateTour != null) {
-            return new ResponseDTO("Thành công", updateTour);
-        }
-
-        return new ResponseDTO("Update thất bại", null);
     }
 
     @DeleteMapping("/delete/{id}")

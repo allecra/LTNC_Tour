@@ -49,6 +49,31 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public java.util.List<com.hoangminh.dto.ReviewAdminDTO> getAllAdmin() {
+        return reviewRepository.findAllReviewAdmin();
+    }
+
+    @Override
+    public boolean approveReview(Long id) {
+        var review = reviewRepository.findById(id).orElse(null);
+        if (review != null) {
+            review.setTrangThai("Đã duyệt");
+            reviewRepository.save(review);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteReview(Long id) {
+        if (reviewRepository.existsById(id)) {
+            reviewRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     private ReviewDTO convertToDTO(Review review) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(review.getId());
@@ -56,6 +81,10 @@ public class ReviewServiceImpl implements ReviewService {
         dto.setRating(review.getRating());
         dto.setTourId(review.getTour().getId());
         dto.setUserId(review.getUser().getId());
+        dto.setUserName(review.getUser().getHo_ten());
+        dto.setTourName(review.getTour().getTen_tour());
+        dto.setCreatedAt(review.getCreatedAt() != null ? review.getCreatedAt().toString() : null);
+        dto.setTrangThai(review.getTrangThai());
         return dto;
     }
 }

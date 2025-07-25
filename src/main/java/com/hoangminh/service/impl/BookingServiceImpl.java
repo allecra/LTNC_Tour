@@ -21,9 +21,13 @@ import com.hoangminh.entity.Booking;
 import com.hoangminh.repository.BookingRepository;
 import com.hoangminh.repository.TourRepository;
 import com.hoangminh.service.BookingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class BookingServiceImpl implements BookingService {
+
+	private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
 
 	@Autowired
 	private BookingRepository bookingRepository;
@@ -51,6 +55,7 @@ public class BookingServiceImpl implements BookingService {
 	public boolean addNewBooking(BookingDTO newBooking) {
 		List<BookingDTO> checkBooking = this.checkBookingByUserId(newBooking.getUser_id());
 		if (checkBooking.size() > 0) {
+			logger.warn("Booking trùng cho user_id: {}", newBooking.getUser_id());
 			return false;
 		}
 
@@ -58,6 +63,7 @@ public class BookingServiceImpl implements BookingService {
 		Optional<User> userOpt = this.userRepository.findById(newBooking.getUser_id());
 
 		if (tourStartOpt.isEmpty() || userOpt.isEmpty()) {
+			logger.error("Không tìm thấy user_id: {} hoặc tour_start_id: {}", newBooking.getUser_id(), newBooking.getTour_id());
 			return false;
 		}
 
@@ -80,7 +86,11 @@ public class BookingServiceImpl implements BookingService {
 		booking.setPayment_method(newBooking.getPayment_method());
 		booking.setTrang_thai("cho_xac_nhan");
 
-		return this.saveBooking(booking);
+		boolean result = this.saveBooking(booking);
+		if (!result) {
+			logger.error("Lưu booking thất bại cho user_id: {}, tour_start_id: {}", newBooking.getUser_id(), newBooking.getTour_id());
+		}
+		return result;
 	}
 
 	@Override
@@ -136,5 +146,22 @@ public class BookingServiceImpl implements BookingService {
 	public Page<BookingDTO> findBookingByTourId(Long tour_Id, Pageable pageable) {
 		// This method is obsolete and should not be called.
 		return Page.empty();
+	}
+
+	@Override
+	public boolean updateBooking(Long id, BookingDTO bookingDTO) {
+		Optional<Booking> bookingOpt = this.bookingRepository.findById(id);
+		if (bookingOpt.isPresent()) {
+			Booking booking = bookingOpt.get();
+			if (bookingDTO.getSo_luong_nguoi() != null) booking.setSo_luong_nguoi(bookingDTO.getSo_luong_nguoi());
+			if (bookingDTO.getPayment_method() != null) booking.setPayment_method(bookingDTO.getPayment_method());
+			if (bookingDTO.getGhi_chu() != null) booking.setGhi_chu(bookingDTO.getGhi_chu());
+			if (bookingDTO.getTrang_thai() != null) booking.setTrang_thai(bookingDTO.getTrang_thai());
+			if (bookingDTO.getPayment_status() != null) booking.setPayment_status(bookingDTO.getPayment_status());
+			// Có thể cập nhật thêm các trường khác nếu cần
+			this.bookingRepository.save(booking);
+			return true;
+		}
+		return false;
 	}
 }

@@ -104,6 +104,7 @@
                                 <th>Tên phương thức</th>
                                 <th>Mô tả</th>
                                 <th>Trạng thái</th>
+                                <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,8 +132,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
-        let paymentMethods = [];
-        let filteredPaymentMethods = [];
+        window.paymentMethods = [];
+        window.filteredPaymentMethods = [];
         let currentPage = 1;
         const pageSize = 10;
         function fetchPaymentMethods() {
@@ -140,13 +141,13 @@
                 url: '/api/payment-method/getAll',
                 method: 'GET',
                 success: function(response) {
-                    paymentMethods = response.data || [];
-                    filteredPaymentMethods = paymentMethods;
+                    window.paymentMethods = response.data || [];
+                    window.filteredPaymentMethods = window.paymentMethods;
                     renderTable();
                 },
                 error: function() {
-                    paymentMethods = [];
-                    filteredPaymentMethods = [];
+                    window.paymentMethods = [];
+                    window.filteredPaymentMethods = [];
                     renderTable();
                 }
             });
@@ -155,7 +156,7 @@
         // Tìm kiếm realtime
         $('#searchPaymentMethodInput').on('input', function() {
             const keyword = $(this).val().toLowerCase();
-            filteredPaymentMethods = paymentMethods.filter(function(p) {
+            window.filteredPaymentMethods = window.paymentMethods.filter(function(p) {
                 return (
                     (p.name || '').toLowerCase().includes(keyword) ||
                     (p.description || '').toLowerCase().includes(keyword) ||
@@ -168,7 +169,7 @@
         function renderTable() {
             var tbody = $('#paymentMethodTable tbody');
             tbody.empty();
-            const data = filteredPaymentMethods;
+            const data = window.filteredPaymentMethods;
             const startIdx = (currentPage - 1) * pageSize;
             const endIdx = Math.min(startIdx + pageSize, data.length);
             for (let i = startIdx; i < endIdx; i++) {
@@ -191,7 +192,7 @@
                 </tr>`;
                 tbody.append(row);
             }
-            renderPagination();
+            renderPagination(window.filteredPaymentMethods);
         }
         function renderPagination(data) {
             let totalPages = Math.ceil(data.length / pageSize);
@@ -218,17 +219,94 @@
                 const page = e.target.getAttribute('data-page');
                 if (page) {
                     currentPage = parseInt(page);
-                    renderTable(filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
+                    renderTable(window.filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
                 } else if (e.target.id === 'prevPage' && currentPage > 1) {
                     currentPage--;
-                    renderTable(filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
-                } else if (e.target.id === 'nextPage' && currentPage < Math.ceil(filteredPaymentMethods.length / pageSize)) {
+                    renderTable(window.filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
+                } else if (e.target.id === 'nextPage' && currentPage < Math.ceil(window.filteredPaymentMethods.length / pageSize)) {
                     currentPage++;
-                    renderTable(filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
+                    renderTable(window.filteredPaymentMethods); // Pass filteredPaymentMethods to renderTable
                 }
             }
         });
     });
+
+    // Xóa phương thức thanh toán
+    function deletePaymentMethod(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa phương thức này?")) {
+            $.ajax({
+                url: '/api/payment-method/' + id,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message || "Xóa thành công!");
+                    fetchPaymentMethods();
+                },
+                error: function() {
+                    alert("Xóa không thành công!");
+                }
+            });
+        }
+    }
+
+    // Sửa phương thức thanh toán
+    function editPaymentMethod(id) {
+        const p = (window.paymentMethods || []).find(pm => pm.id === id) || (window.filteredPaymentMethods || []).find(pm => pm.id === id);
+        if (!p) return alert("Không tìm thấy phương thức!");
+        let modalHtml = `
+        <div class="modal fade" id="editPaymentMethodModal" tabindex="-1" aria-labelledby="editPaymentMethodModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" id="formEditPaymentMethod">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPaymentMethodModalLabel">Sửa phương thức thanh toán</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Tên phương thức</label>
+                            <input type="text" name="name" class="form-control" value="${p.name || ''}" required />
+                        </div>
+                        <div class="mb-3">
+                            <label>Mô tả</label>
+                            <input type="text" name="description" class="form-control" value="${p.description || ''}" />
+                        </div>
+                        <div class="mb-3">
+                            <label>Trạng thái</label>
+                            <input type="text" name="status" class="form-control" value="${p.status || ''}" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>`;
+        $('#editPaymentMethodModal').remove();
+        $('body').append(modalHtml);
+        $('#editPaymentMethodModal').modal('show');
+        $('#formEditPaymentMethod').submit(function(e) {
+            e.preventDefault();
+            var data = {
+                name: $(this).find('input[name="name"]').val(),
+                description: $(this).find('input[name="description"]').val(),
+                status: $(this).find('input[name="status"]').val()
+            };
+            $.ajax({
+                url: '/api/payment-method/' + id,
+                type: 'PUT',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    alert(response.message || "Cập nhật thành công!");
+                    $('#editPaymentMethodModal').modal('hide');
+                    fetchPaymentMethods();
+                },
+                error: function() {
+                    alert("Cập nhật không thành công!");
+                }
+            });
+        });
+    }
 </script>
 </body>
 </html>

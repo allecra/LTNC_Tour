@@ -68,4 +68,27 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 			"LEFT JOIN t.tour_starts ts " +
 			"WHERE FUNCTION('MONTH', ts.ngay_khoi_hanh) = :month")
 	List<TourDTO> findByMonth(@Param("month") int month);
+
+    @Query("SELECT COUNT(t) FROM Tour t")
+    Long countAllTours();
+
+    @Query("SELECT FUNCTION('MONTH', ts.ngay_khoi_hanh) as month, COUNT(t) as count " +
+           "FROM Tour t JOIN t.tour_starts ts " +
+           "GROUP BY FUNCTION('MONTH', ts.ngay_khoi_hanh) " +
+           "ORDER BY month")
+    List<Object[]> countToursByMonth();
+
+    @Query("SELECT s.ten_mua as season, COUNT(t) as count " +
+           "FROM Tour t JOIN t.tour_starts ts JOIN ts.season s " +
+           "GROUP BY s.ten_mua")
+    List<Object[]> countToursBySeason();
+
+    @Query(value = "SELECT t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name as diem_den, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price, MIN(ts.ngay_khoi_hanh) as ngay_khoi_hanh, MIN(ts.ngay_ket_thuc) as ngay_ket_thuc " +
+            "FROM tour t " +
+            "LEFT JOIN destination d ON t.destination_id = d.id " +
+            "LEFT JOIN tour_type tt ON t.tour_type_id = tt.id " +
+            "LEFT JOIN tour_start ts ON t.id = ts.tour_id " +
+            "GROUP BY t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price " +
+            "ORDER BY t.id", nativeQuery = true)
+    List<Object[]> findAllTourWithStartDate();
 }

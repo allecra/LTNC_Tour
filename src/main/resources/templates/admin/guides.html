@@ -313,7 +313,7 @@
     function deleteUser(id) {
         if (confirm("Bạn có chắc chắn muốn xóa hướng dẫn viên này?")) {
             $.ajax({
-                url: '/api/user/delete/' + id,
+                url: '/api/admin/user/delete/' + id,
                 type: 'DELETE',
                 success: function(response) {
                     alert(response.message || "Xóa thành công!");
@@ -351,7 +351,7 @@
 
     function editUser(id) {
         $.ajax({
-            url: '/api/user/' + id,
+            url: '/api/admin/user/' + id,
             type: 'GET',
             success: function(result) {
                 $('#editGuideId').val(result.data.id);
@@ -469,10 +469,13 @@
         const pageSize = 10;
         function fetchGuides() {
             $.ajax({
-                url: '/api/user/getAll',
+                url: '/api/admin/user/getAll?pageIndex=0&pageSize=100',
                 method: 'GET',
                 success: function(response) {
-                    guides = (response.data || []).filter(function(u) { return u.role === 3; });
+                    guides = (response.data || []).filter(function(u) {
+                        // Hỗ trợ cả trường role là object hoặc số
+                        return (u.role && u.role.id ? u.role.id : u.role_id || u.role) === 3;
+                    });
                     filteredGuides = guides;
                     renderTable();
                 },
@@ -581,10 +584,10 @@
                 email: $(this).find('input[name="email"]').val(),
                 sdt: $(this).find('input[name="sdt"]').val(),
                 dia_chi: $(this).find('input[name="diaChi"]').val(),
-                role: 3
+                role_id: 3
             };
             $.ajax({
-                url: '/api/user',
+                url: '/api/admin/user',
                 type: 'POST',
                 data: JSON.stringify(newGuide),
                 contentType: "application/json; charset=utf-8",
@@ -608,10 +611,11 @@
                 ho_ten: $('#editGuideHoTen').val(),
                 email: $('#editGuideEmail').val(),
                 sdt: $('#editGuideSdt').val(),
-                dia_chi: $('#editGuideDiaChi').val()
+                dia_chi: $('#editGuideDiaChi').val(),
+                role_id: 3
             };
             $.ajax({
-                url: '/api/user/update/' + id,
+                url: '/api/admin/user/update/' + id,
                 type: 'PUT',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
@@ -619,7 +623,7 @@
                 success: function(response) {
                     alert(response.message || "Cập nhật thành công!");
                     $('#editGuideModal').modal('hide');
-                    location.reload();
+                    fetchGuides();
                 },
                 error: function() {
                     alert("Cập nhật không thành công!");

@@ -151,7 +151,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-auto">
-                                <button class="btn btn-success" data-toggle="modal" onclick="addBookingModel()" data-target="#addBookingModal">
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookingModal">
                                     <i class="fas fa-plus"></i> Thêm mới booking
                                 </button>
                             </div>
@@ -237,14 +237,6 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="pt_thanh_toan">Phương thức thanh toán</label>
-                                                <select class="form-control" id="pt_thanh_toan" name="pt_thanh_toan" disabled>
-                                                    <option value="0">Tiền mặt</option>
-                                                    <option value="1">Chuyển khoản</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="trang_thai_view">Trạng thái tour</label>
                                                 <select class="form-control" id="trang_thai_view" disabled name="trang_thai">
                                                     <option value="0">Đang xử lý</option>
                                                     <option value="1">Đã thanh toán</option>
@@ -253,6 +245,7 @@
                                                     <option value="4">Đã hủy</option>
                                                 </select>
                                             </div>
+
                                             <div class="form-group">
                                                 <label for="ghi_chu"> Ghi chú </label>
                                                 <textarea  class="form-control" id="ghi_chu" disabled  name="ghi_chu" ></textarea>
@@ -272,34 +265,64 @@
                         </div>
 
 
-                        <div class="modal fade " id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content p-4">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title p-2" id="editModalLabel">Cập nhật trạng thái cho đơn booking</h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="editBookingForm">
-                                            <input type="hidden" id="id" name="id" value="id">
-                                            <div class="form-group">
-                                                <label for="trang_thai">Trạng thái</label>
-                                                <select class="form-control" id="trang_thai" name="trang_thai">
-                                                    <option value="0">Đang xử lý</option>
-                                                    <option value="1">Đã thanh toán</option>
-                                                    <option value="2">Đang tiến hành</option>
-                                                    <option value="3">Đã hoàn thành</option>
-                                                    <option value="4">Đã hủy</option>
-                                                </select>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" onclick="hideModal()" data-dismiss="modal">Đóng</button>
-                                        <button type="button" class="btn btn-primary" onclick="submitEditForm()">Lưu</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Modal Sửa Booking -->
+<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="editBookingForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBookingModalLabel">Sửa thông tin booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBookingId" />
+        <div class="mb-3">
+          <label>Số lượng người</label>
+          <input type="number" id="editSoLuongNguoi" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Phương thức thanh toán</label>
+          <select id="editPaymentMethod" class="form-control" required>
+            <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
+            <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Trạng thái</label>
+          <select id="editTrangThai" class="form-control" required>
+            <option value="cho_xac_nhan">Chờ xác nhận</option>
+            <option value="da_xac_nhan">Đã xác nhận</option>
+            <option value="dang_tien_hanh">Đang tiến hành</option>
+            <option value="hoan_tat">Hoàn tất</option>
+            <option value="huy">Đã hủy</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Trạng thái thanh toán</label>
+          <select id="editPaymentStatus" class="form-control">
+            <option value="chua_thanh_toan">Chưa thanh toán</option>
+            <option value="da_thanh_toan">Đã thanh toán</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Ngày khởi hành</label>
+          <input type="datetime-local" id="editNgayKhoiHanh" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label>Ngày đặt</label>
+          <input type="datetime-local" id="editBookingAt" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label>Ghi chú</label>
+          <textarea id="editGhiChu" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>
 
                     </div>
                 </div>
@@ -347,30 +370,65 @@
             url: '/api/booking/' + id,
             type: 'GET',
             success: function(data) {
-                $('#id').val(id);
-                $('#trang_thai').val(data.data.trang_thai);
-                $('#editModal').modal('show');
+                $('#editBookingId').val(data.data.id);
+                $('#editSoLuongNguoi').val(data.data.so_luong_nguoi);
+                let paymentMethod = data.data.payment_method;
+                if (paymentMethod === 'Chuyển khoản') paymentMethod = 'Chuyển khoản ngân hàng';
+                $('#editPaymentMethod').val(paymentMethod);
+                $('#editTrangThai').val(data.data.trang_thai);
+                // Map trạng thái thanh toán về value chuẩn
+                let paymentStatus = data.data.payment_status;
+                if (paymentStatus === 'Đã thanh toán') paymentStatus = 'da_thanh_toan';
+                if (paymentStatus === 'Chưa thanh toán') paymentStatus = 'chua_thanh_toan';
+                $('#editPaymentStatus').val(paymentStatus || '');
+                // Format ngày khởi hành và ngày đặt về dạng yyyy-MM-ddTHH:mm
+                if (data.data.ngay_khoi_hanh) {
+                    $('#editNgayKhoiHanh').val(new Date(data.data.ngay_khoi_hanh).toISOString().slice(0,16));
+                } else {
+                    $('#editNgayKhoiHanh').val('');
+                }
+                if (data.data.booking_at) {
+                    $('#editBookingAt').val(new Date(data.data.booking_at).toISOString().slice(0,16));
+                } else {
+                    $('#editBookingAt').val('');
+                }
+                $('#editGhiChu').val(data.data.ghi_chu);
+                $('#editBookingModal').modal('show');
             },
             error: function() {
                 alert('Không lấy được thông tin booking!');
             }
         });
     }
-
     $('#editBookingForm').submit(function(e) {
         e.preventDefault();
-        var id = $('#id').val();
-        var trang_thai = $('#trang_thai').val();
+        var id = $('#editBookingId').val();
+        // Chuyển đổi ngày về dạng có giây
+        let ngayKhoiHanh = $('#editNgayKhoiHanh').val();
+        if (ngayKhoiHanh && ngayKhoiHanh.length === 16) ngayKhoiHanh += ':00';
+        let bookingAt = $('#editBookingAt').val();
+        if (bookingAt && bookingAt.length === 16) bookingAt += ':00';
+        var data = {
+            so_luong_nguoi: parseInt($('#editSoLuongNguoi').val(), 10),
+            payment_method: $('#editPaymentMethod').val(),
+            trang_thai: $('#editTrangThai').val(),
+            payment_status: $('#editPaymentStatus').val(),
+            ngay_khoi_hanh: ngayKhoiHanh,
+            booking_at: bookingAt,
+            ghi_chu: $('#editGhiChu').val()
+        };
         $.ajax({
-            url: "http://localhost:8085/api/booking/approve/" + id +"?trang_thai="+trang_thai,
-            type: "PUT",
-            success: function(data) {
-                alert("Sửa thành công!");
-                $("#editModal").modal("hide");
-                location.reload();
+            url: '/api/booking/update/' + id,
+            type: 'PUT',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function(response) {
+                alert(response.message || 'Cập nhật thành công!');
+                $('#editBookingModal').modal('hide');
+                fetchBookings();
             },
             error: function() {
-                alert("Cập nhật không thành công!");
+                alert('Cập nhật không thành công!');
             }
         });
     });
@@ -454,7 +512,15 @@
                     <td>${booking.ngay_khoi_hanh || ''}</td>
                     <td>${booking.ghi_chu || ''}</td>
                     <td>${booking.booking_at || ''}</td>
-                    <td>${booking.trang_thai || ''}</td>
+                    <td>
+                        <select class="form-select form-select-sm booking-status-select" data-id="${booking.id}">
+                            <option value="cho_xac_nhan" ${booking.trang_thai === 'cho_xac_nhan' ? 'selected' : ''}>Chờ xác nhận</option>
+                            <option value="da_xac_nhan" ${booking.trang_thai === 'da_xac_nhan' ? 'selected' : ''}>Đã xác nhận</option>
+                            <option value="dang_tien_hanh" ${booking.trang_thai === 'dang_tien_hanh' ? 'selected' : ''}>Đang tiến hành</option>
+                            <option value="hoan_tat" ${booking.trang_thai === 'hoan_tat' ? 'selected' : ''}>Hoàn tất</option>
+                            <option value="huy" ${booking.trang_thai === 'huy' ? 'selected' : ''}>Đã hủy</option>
+                        </select>
+                    </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center align-items-center gap-1">
                             <button type="button" class="btn btn-primary btn-sm" onclick="editBooking(${booking.id})" title="Sửa">
@@ -509,18 +575,14 @@
             }
         });
         // Thêm booking
-        $('#formAddBooking').submit(function(e) {
+        $('#addBookingForm').submit(function(e) {
             e.preventDefault();
             var data = {
-                ho_ten: $(this).find('input[name="hoTen"]').val(),
-                ten_tour: $(this).find('input[name="tenTour"]').val(),
-                so_luong_nguoi: $(this).find('input[name="soLuongNguoi"]').val(),
-                tong_tien: $(this).find('input[name="tongTien"]').val(),
-                payment_method: $(this).find('input[name="paymentMethod"]').val(),
-                ngay_khoi_hanh: $(this).find('input[name="ngayKhoiHanh"]').val(),
-                ghi_chu: $(this).find('input[name="ghiChu"]').val(),
-                booking_at: $(this).find('input[name="bookingAt"]').val(),
-                trang_thai: $(this).find('input[name="trangThai"]').val()
+                user_id: parseInt($('#addUserId').val(), 10),
+                tour_id: parseInt($('#addTourStartId').val(), 10),
+                so_luong_nguoi: parseInt($('#addSoLuongNguoi').val(), 10),
+                payment_method: $('#addPaymentMethod').val(),
+                ghi_chu: $('#addGhiChu').val()
             };
             $.ajax({
                 url: '/api/booking',
@@ -528,12 +590,12 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
-                    alert(response.message || "Thêm thành công!");
+                    alert(response.message || 'Thêm thành công!');
                     $('#addBookingModal').modal('hide');
                     fetchBookings();
                 },
                 error: function() {
-                    alert("Thêm không thành công!");
+                    alert('Thêm không thành công!');
                 }
             });
         });
@@ -548,8 +610,67 @@
         }
 
 
+        // Sự kiện đổi trạng thái booking trực tiếp trên bảng
+        $(document).on('change', '.booking-status-select', function() {
+            var id = $(this).data('id');
+            var newStatus = $(this).val();
+            $.ajax({
+                url: '/api/booking/update/' + id,
+                type: 'PUT',
+                data: JSON.stringify({ trang_thai: newStatus }),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    alert(response.message || 'Cập nhật trạng thái thành công!');
+                    fetchBookings();
+                },
+                error: function() {
+                    alert('Cập nhật trạng thái không thành công!');
+                }
+            });
+        });
+
 
     } );
 </script>
+<!-- Modal Thêm Booking -->
+<div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="addBookingForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBookingModalLabel">Thêm booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>User ID</label>
+          <input type="number" id="addUserId" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Tour Start ID</label>
+          <input type="number" id="addTourStartId" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Số lượng người</label>
+          <input type="number" id="addSoLuongNguoi" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Phương thức thanh toán</label>
+          <select id="addPaymentMethod" class="form-control" required>
+            <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
+            <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Ghi chú</label>
+          <textarea id="addGhiChu" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>

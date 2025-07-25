@@ -30,4 +30,6 @@ public interface BookingService {
 	Boolean saveBooking(Booking booking);
 
 	List<BookingDTO> checkBookingByUserId(Long id);
+
+	boolean updateBooking(Long id, BookingDTO bookingDTO);
 }

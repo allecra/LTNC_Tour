@@ -1,16 +1,11 @@
 package com.hoangminh.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -20,11 +15,16 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ma_giam_gia;
+    @Column(name = "ma_giam_gia")
+    private String maGiamGia;
 
-    private BigDecimal gia_tri;
+    @Column(name = "gia_tri")
+    private BigDecimal giaTri;
 
-    private Date ngay_het_han;
+    @Column(name = "ngay_het_han")
+    @Temporal(TemporalType.DATE)
+    private Date ngayHetHan;
 
-    private String dieu_kien_ap_dung;
+    @Column(name = "dieu_kien_ap_dung")
+    private String dieuKienApDung;
 }

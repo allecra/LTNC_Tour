@@ -1,10 +1,12 @@
 package com.hoangminh.controller;
 
+import com.hoangminh.service.DashboardService;
 import com.hoangminh.service.UserService;
 import com.hoangminh.utilities.SessionUtilities;
 import jakarta.servlet.annotation.HandlesTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +18,22 @@ public class AdminController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    DashboardService dashboardService;
+
     @GetMapping({"/index", "", "/"})
-    public String adminIndex() {
+    public String adminIndex(Model model) {
         if(!this.userService.checkAdminLogin()) {
             return "redirect:/admin/login";
         }
+        model.addAttribute("userCount", dashboardService.getUserCount());
+        model.addAttribute("tourCount", dashboardService.getTourCount());
+        model.addAttribute("totalRevenue", dashboardService.getTotalRevenue());
+        model.addAttribute("averageRating", dashboardService.getAverageRating());
+        model.addAttribute("monthLabels", java.util.List.of("Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"));
+        model.addAttribute("monthData", dashboardService.getTourCountByMonth());
+        model.addAttribute("seasonLabels", java.util.List.of("Xuân", "Hạ", "Thu", "Đông"));
+        model.addAttribute("seasonData", dashboardService.getTourCountBySeason());
         return "admin/index";
     }
 
@@ -52,9 +65,11 @@ public class AdminController {
 
     @GetMapping("/login")
     public String adminLogin() {
+        if (this.userService.checkAdminLogin()) {
+            return "redirect:/admin/index";
+        }
         return "admin/login";
     }
-
     @GetMapping("/tourStart/{id}")
     public String tourStart(@PathVariable("id")Long id) {
         if(!this.userService.checkAdminLogin()) {

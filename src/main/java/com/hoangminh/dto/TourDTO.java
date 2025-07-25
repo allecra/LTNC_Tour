@@ -45,6 +45,22 @@ public class TourDTO {
 
 	private BigDecimal sale_price;
 
+	private String ngay_khoi_hanh;
+	private String ngay_ket_thuc;
+
+	public String getNgay_khoi_hanh() {
+		return ngay_khoi_hanh;
+	}
+	public void setNgay_khoi_hanh(String ngay_khoi_hanh) {
+		this.ngay_khoi_hanh = ngay_khoi_hanh;
+	}
+	public String getNgay_ket_thuc() {
+		return ngay_ket_thuc;
+	}
+	public void setNgay_ket_thuc(String ngay_ket_thuc) {
+		this.ngay_ket_thuc = ngay_ket_thuc;
+	}
+
 	public TourDTO(Long id, String ten_tour, String gioi_thieu_tour, Integer so_ngay, String noi_dung_tour,
 			String diem_den, String loai_tour, String anh_dai_dien, String diem_khoi_hanh, String trang_thai,
 			BigDecimal gia_tour, BigDecimal sale_price) {

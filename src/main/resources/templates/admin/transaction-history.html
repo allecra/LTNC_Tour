@@ -158,11 +158,12 @@
                 const t = transactions[i];
                 var row = `<tr>
                     <td class="text-center">${i + 1}</td>
-                    <td>${t.user_name || ''}</td>
-                    <td>${t.amount ? t.amount.toLocaleString() : ''}</td>
-                    <td>${t.method || ''}</td>
-                    <td>${t.status || ''}</td>
-                    <td>${t.created_at || ''}</td>
+                    <td>${t.id || ''}</td>
+                    <td>${t.hoTenNguoiNhan || ''}</td>
+                    <td>${t.soTaiKhoan || ''}</td>
+                    <td>${t.paymentMethod || ''}</td>
+                    <td>${t.tenNganHang || ''}</td>
+                    <td>${t.chiNhanh || ''}</td>
                 </tr>`;
                 tbody.append(row);
             }

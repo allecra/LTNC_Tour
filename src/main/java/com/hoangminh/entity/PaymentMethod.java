@@ -19,6 +19,12 @@ public class PaymentMethod {
 
     private String ten_phuong_thuc;
 
+    @Column(name = "mo_ta")
+    private String moTa;
+
+    @Column(name = "trang_thai")
+    private String trangThai;
+
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;
