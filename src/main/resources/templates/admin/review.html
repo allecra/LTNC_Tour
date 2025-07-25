@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản lý đánh giá</title>
+  <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+  <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+  <link href="/public/admin/css/styles.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    label { padding: 10px 0; }
+    table.dataTable tbody td:last-child { text-align: center; }
+    table.dataTable tbody td:last-child button { margin: 4px; }
+    .dataTables_wrapper td, .dataTables_wrapper thead th { font-size: 13px; }
+  </style>
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand ps-3" href="/admin/index">Dashboard Quản trị</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." />
+            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/admin/index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Trang quản lý</div>
+                    <a class="nav-link" href="/admin/user">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
+                    </a>
+                    <a class="nav-link" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                    </a>
+                    <a class="nav-link" href="/admin/tour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                    </a>
+                    <a class="nav-link" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                    </a>
+                    <a class="nav-link active" href="/admin/review">
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                    </a>
+                    <a class="nav-link" href="/admin/voucher">
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                    </a>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                Admin
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main class="container-fluid px-4">
+            <h1 class="mt-4">Quản lý đánh giá</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Quản lý đánh giá</li>
+                </ol>
+            </nav>
+            <div class="card mb-4 rounded">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchReviewInput" />
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Tour</th>
+                                <th>Hướng dẫn viên</th>
+                                <th>Số sao</th>
+                                <th>Nội dung</th>
+                                <th>Ngày gửi</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviewTableBody">
+                            <!-- Dữ liệu sẽ được render bằng JS -->
+                        </tbody>
+                    </table>
+                    <div id="reviewPagination"></div>
+                </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">&copy; 2025 Travel Admin</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="/public/admin/js/jquery.js"></script>
+<script src="/public/admin/js/boostrap-bundle.min.js"></script>
+<script src="/public/admin/js/scripts.js"></script>
+<script src="/public/admin/js/datatables.min.js"></script>
+<script src="/public/admin/js/all.min.js"></script>
+<script src="/public/admin/js/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let reviews = [];
+        let filteredReviews = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        function fetchReviews() {
+            $.ajax({
+                url: '/api/review/getAll',
+                method: 'GET',
+                success: function(response) {
+                    reviews = response.data || [];
+                    filteredReviews = reviews;
+                    renderTable();
+                },
+                error: function() {
+                    reviews = [];
+                    filteredReviews = [];
+                    renderTable();
+                }
+            });
+        }
+        fetchReviews();
+        // Tìm kiếm realtime
+        $('#searchReviewInput').on('input', function() {
+            const keyword = $(this).val().toLowerCase();
+            filteredReviews = reviews.filter(function(r) {
+                return (
+                    (r.user_name || '').toLowerCase().includes(keyword) ||
+                    (r.tour_name || '').toLowerCase().includes(keyword) ||
+                    (r.guide_name || '').toLowerCase().includes(keyword) ||
+                    (r.trang_thai || '').toLowerCase().includes(keyword) ||
+                    (r.comment || '').toLowerCase().includes(keyword) ||
+                    (r.created_at || '').toLowerCase().includes(keyword)
+                );
+            });
+            currentPage = 1;
+            renderTable();
+        });
+        function renderTable() {
+            const tbody = document.getElementById('reviewTableBody');
+            tbody.innerHTML = '';
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, filteredReviews.length);
+            for (let i = startIdx; i < endIdx; i++) {
+                const r = filteredReviews[i];
+                let stars = '<span style="color: #ffc107;">' + '★'.repeat(r.rating || r.star || 0) + '</span>';
+                let statusBadge = '';
+                let actionBtns = `<button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">Xóa</button>`;
+                if (r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt') {
+                    statusBadge = '<span class="badge bg-success">Đã duyệt</span>';
+                } else {
+                    statusBadge = '<span class="badge bg-warning text-dark">Chờ duyệt</span>';
+                    actionBtns = `<button class="btn btn-success btn-sm" onclick="approveReview(${i})">Duyệt</button> ` + actionBtns;
+                }
+                tbody.innerHTML += `<tr>
+                    <td>${r.user_name || r.user || ''}</td>
+                    <td>${r.tour_name || r.tour || ''}</td>
+                    <td>${r.guide_name || r.guide || ''}</td>
+                    <td>${stars}</td>
+                    <td>${r.comment || r.content || ''}</td>
+                    <td>${r.created_at || r.date || ''}</td>
+                    <td>${statusBadge}</td>
+                    <td>${actionBtns}</td>
+                </tr>`;
+            }
+            renderPagination();
+        }
+        function approveReview(idx) {
+            // Gọi API duyệt review ở đây, ví dụ:
+            // $.ajax({ url: '/api/review/approve/' + reviews[idx].id, type: 'PUT', ... })
+            reviews[idx].status = 'Đã duyệt';
+            renderTable();
+        }
+        function deleteReview(idx) {
+            if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+                // Gọi API xóa review ở đây, ví dụ:
+                // $.ajax({ url: '/api/review/delete/' + reviews[idx].id, type: 'DELETE', ... })
+                reviews.splice(idx, 1);
+                renderTable();
+            }
+        }
+        function renderPagination() {
+            let totalPages = Math.ceil(filteredReviews.length / pageSize);
+            let paginationHtml = '<nav><ul class="pagination justify-content-center">';
+            if (totalPages === 0) {
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
+                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
+                paginationHtml += '</ul></nav>';
+                document.getElementById('reviewPagination').innerHTML = paginationHtml;
+                return;
+            }
+            paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+            }
+            paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
+            paginationHtml += '</ul></nav>';
+            document.getElementById('reviewPagination').innerHTML = paginationHtml;
+        }
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('page-link')) {
+                e.preventDefault();
+                const page = e.target.getAttribute('data-page');
+                if (page) {
+                    currentPage = parseInt(page);
+                    renderTable();
+                } else if (e.target.id === 'prevPage' && currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                } else if (e.target.id === 'nextPage' && currentPage < Math.ceil(filteredReviews.length / pageSize)) {
+                    currentPage++;
+                    renderTable();
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
+
+
+

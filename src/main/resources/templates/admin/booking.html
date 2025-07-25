@@ -29,27 +29,63 @@
         .dataTables_wrapper thead th {
             font-size: 13px;
         }
+        .pagination .page-item .page-link {
+            color: #333;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+            min-width: 38px;
+            text-align: center;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        .pagination .page-item .page-link:hover {
+            background: #f0f0f0;
+            color: #0d6efd;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #aaa;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        .table td, .table th {
+            padding-top: 0.35rem;
+            padding-bottom: 0.35rem;
+        }
+        .btn-sm {
+            line-height: 1;
+        }
+        .table .btn-sm {
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .table .d-flex {
+          flex-direction: row !important;
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="index.html">Quản lý booking</a>
-    <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-    <!-- Navbar Search-->
+    <a class="navbar-brand ps-3" href="/admin/index">Dashboard Quản trị</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            <input class="form-control" type="text" placeholder="Search for..." />
+            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
         </div>
     </form>
-    <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
+                <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
             </ul>
         </li>
     </ul>
@@ -60,31 +96,39 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="/admin/user">
+                    <a class="nav-link" href="/admin/index">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Trang chủ
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Quản lý người dùng
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
                     </a>
-                    <a class="nav-link collapsed" href="/admin/tour" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Quản lý tour
+                    <a class="nav-link" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                    </a>
+                    <a class="nav-link" href="/admin/tour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                    </a>
+                    <a class="nav-link active" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                    </a>
+                    <a class="nav-link" href="/admin/review">
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                    </a>
+                    <a class="nav-link" href="/admin/voucher">
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                    </a>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="/admin/tour">Danh sách Tour</a>
-                            <a class="nav-link" href="/admin/tour">Ngày khởi hành</a>
-                            <a class="nav-link" href="/admin/tour">Quản lý ảnh</a>
+                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
                         </nav>
                     </div>
-                    <a class="nav-link" href="/admin/booking">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Quản lý booking
-                    </a>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -97,54 +141,45 @@
         <main>
             <div class="container-fluid px-4">
                 <h1 class="mt-4">Danh sách booking</h1>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
-                    <li class="breadcrumb-item active">Quản lý booking</li>
-                </ol>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-table me-1"></i>
-                        Bảng dữ liệu booking
-                    </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Quản lý booking</li>
+                    </ol>
+                </nav>
+                <div class="card mb-4 rounded">
                     <div class="card-body">
-                        <table id="datatablesSimple">
-                            <thead>
+                        <div class="row mb-3">
+                            <div class="col-auto">
+                                <button class="btn btn-success" data-toggle="modal" onclick="addBookingModel()" data-target="#addBookingModal">
+                                    <i class="fas fa-plus"></i> Thêm mới booking
+                                </button>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchBookingInput" />
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-hover" id="datatablesSimple">
+                            <thead class="table-dark">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>User ID</th>
-                                    <th>Tour ID</th>
-                                    <th>Tên tour</th>
+                                    <th>STT</th>
+                                    <th>Người dùng</th>
+                                    <th>Tour</th>
                                     <th>Số lượng người</th>
-                                    <th>Ngày khởi hành</th>
                                     <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
                                     <th>Phương thức thanh toán</th>
+                                    <th>Ngày khởi hành</th>
                                     <th>Ghi chú</th>
-                                    <th>Booking at</th>
-                                    <th>Actions</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-center">Hành động</th>
                                 </tr>
                             </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User ID</th>
-                                    <th>Tour ID</th>
-                                    <th>Tên tour</th>
-                                    <th>Số lượng người</th>
-                                    <th>Ngày khởi hành</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                    <th>Phương thức thanh toán</th>
-                                    <th>Ghi chú</th>
-                                    <th>Booking at</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </tfoot>
-                            <tbody >
-
-
+                            <tbody>
                             </tbody>
                         </table>
+                    </div>
+                </div>
 
 
                         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -292,70 +327,53 @@
         $("#deleteModal").modal('hide');
     }
     function deleteBooking(id) {
-        $('#deleteModal').modal('show');
-        $('#deleteModal input[name="deleteId"]').val(id);
+        if (confirm("Bạn có chắc chắn muốn xóa booking này?")) {
+            $.ajax({
+                url: '/api/booking/delete/' + id,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message || "Xóa thành công!");
+                    location.reload();
+                },
+                error: function() {
+                    alert("Xóa không thành công!");
+                }
+            });
+        }
     }
 
-    function deleteBookingAction() {
-        let id = $('#deleteModal input[name="deleteId"]').val();
+    function editBooking(id) {
         $.ajax({
-            url: '/api/booking/delete/' + id,
-            type: 'DELETE',
-            success: function(response) {
-                // Nếu xóa thành công, cập nhật lại bảng dữ liệu
-                alert(response.message);
-                location.reload();
+            url: '/api/booking/' + id,
+            type: 'GET',
+            success: function(data) {
+                $('#id').val(id);
+                $('#trang_thai').val(data.data.trang_thai);
+                $('#editModal').modal('show');
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Nếu xóa không thành công, thông báo lỗi
-                alert('Xóa người dùng không thành công: ' + textStatus + ' ' + errorThrown);
+            error: function() {
+                alert('Không lấy được thông tin booking!');
             }
         });
-
-        // Đóng modal xóa
-        $('#deleteModal').modal('hide');
     }
 
-
     $('#editBookingForm').submit(function(e) {
-        e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
-        submitEditForm();
-    });
-
-    function submitEditForm() {
-        // Lấy giá trị từ các input trong form
-        var id = $("#id").val();
-        var trang_thai = $("#trang_thai").val();
-
-        // Gửi yêu cầu Ajax
+        e.preventDefault();
+        var id = $('#id').val();
+        var trang_thai = $('#trang_thai').val();
         $.ajax({
             url: "http://localhost:8085/api/booking/approve/" + id +"?trang_thai="+trang_thai,
             type: "PUT",
             success: function(data) {
-                // Cập nhật dữ liệu thành công, đóng modal và tải lại trang
-                console.log(data)
+                alert("Sửa thành công!");
                 $("#editModal").modal("hide");
-                alert("Sửa thành công !")
                 location.reload();
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Xử lý lỗi
-                console.log("Error:", jqXHR.responseText);
+            error: function() {
+                alert("Cập nhật không thành công!");
             }
         });
-    }
-
-    function editBooking(id) {
-        $('#editModal').modal('show');
-        $.ajax({
-            url: '/api/booking/'+ id,
-            type: 'GET',
-            success: function (data) {
-                $('#trang_thai').val(data.data.trang_thai);
-            }
-        });
-        $('#id').val(id);
-    }
+    });
 
 
     function viewDetailBooking(id) {
@@ -380,58 +398,145 @@
 
 
     $(document).ready(function() {
-        $('#datatablesSimple').DataTable({
-            "ajax": {
-                "url": "http://localhost:8085/api/booking/getAllBooking?pageIndex=0&pageSize=100",
-                "dataSrc": "data"
-            },
-            "columns": [
-                { "data": "id" },
-                { "data": "user_id" },
-                { "data": "tour_id" },
-                { "data": "ten_tour" },
-                { "data": "so_luong_nguoi" },
-                { "data": "ngay_khoi_hanh" },
-                { "data": "tong_tien" ,"render":function (data,type,row) {
-                        return data.toLocaleString();
-                    }
+        let bookings = [];
+        let filteredBookings = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        function fetchBookings() {
+            $.ajax({
+                url: '/api/booking/getAllBooking',
+                method: 'GET',
+                success: function(response) {
+                    bookings = response.data || [];
+                    filteredBookings = bookings;
+                    renderTable();
                 },
-                { "data": "trang_thai", "render": function (data, type, row) {
-                        if (data == 0) {
-                            return "Đang xử lý";
-                        } else if (data == 1) {
-                            return "Đã thanh toán";
-                        } else if (data == 2) {
-                            return "Đang tiến hành";
-                        } else if (data == 3) {
-                            return "Đã hoàn thành";
-                        } else if (data == 4) {
-                            return "Đã hủy";
-                        } else {
-                            return "";
-                        }
-                    }},
-                { "data": "pt_thanh_toan" ,"render":function (data, type, row) {
-                        if(data==0) {
-                            return "Tiền mặt";
-                        }else {
-                            return "Chuyển khoản";
-                        }
-                    }
-                },
-                { "data": "ghi_chu" },
-                { "data": "booking_at" },
-                {
-                    "data": null,
-                    "render": function ( data, type, row ) {
-                        return '<div class="d-flex flex-row">'+'<button type="button" class="btn btn-primary btn-sm mx-2" data-toggle="modal" data-target="#editModal" onclick="editBooking('+row.id+')"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                            '<button type="button" class="btn btn-danger btn-sm ml-2" onclick="deleteBooking('+row.id+')"><i class="fa-solid fa-trash"></i></button>'+'</div>'+
-                            '<div>'+ '<button onclick="viewDetailBooking('+row.id+')"  class="btn btn-sm btn-info mx-2"><i class="fa-solid fa-circle-info"></i></button>'+
-                            '<a href="/admin/tourStart/'+row.id+'"  class="btn btn-sm btn-info"><i class="fa-solid fa-calendar-days"></i></a>'+'</div>';
-                    }
+                error: function() {
+                    bookings = [];
+                    filteredBookings = [];
+                    renderTable();
                 }
-            ]
-        } );
+            });
+        }
+        fetchBookings();
+        // Tìm kiếm realtime
+        $('#searchBookingInput').on('input', function() {
+            const keyword = $(this).val().toLowerCase();
+            filteredBookings = bookings.filter(function(b) {
+                return (
+                    (b.ho_ten || '').toLowerCase().includes(keyword) ||
+                    (b.ten_tour || '').toLowerCase().includes(keyword) ||
+                    (b.payment_method || '').toLowerCase().includes(keyword) ||
+                    (b.trang_thai || '').toLowerCase().includes(keyword) ||
+                    (b.ghi_chu || '').toLowerCase().includes(keyword) ||
+                    (b.booking_at || '').toLowerCase().includes(keyword) ||
+                    (b.ngay_khoi_hanh || '').toLowerCase().includes(keyword)
+                );
+            });
+            currentPage = 1;
+            renderTable();
+        });
+        function renderTable() {
+            var tbody = $('#datatablesSimple tbody');
+            tbody.empty();
+            const data = filteredBookings;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, data.length);
+            for (let i = startIdx; i < endIdx; i++) {
+                const booking = data[i];
+                var row = `<tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td>${booking.ho_ten || ''}</td>
+                    <td>${booking.ten_tour || ''}</td>
+                    <td>${booking.so_luong_nguoi || ''}</td>
+                    <td>${booking.tong_tien ? booking.tong_tien.toLocaleString() : ''}</td>
+                    <td>${booking.payment_method || ''}</td>
+                    <td>${booking.ngay_khoi_hanh || ''}</td>
+                    <td>${booking.ghi_chu || ''}</td>
+                    <td>${booking.booking_at || ''}</td>
+                    <td>${booking.trang_thai || ''}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center align-items-center gap-1">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="editBooking(${booking.id})" title="Sửa">
+                                <i class="fas fa-wrench"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteBooking(${booking.id})" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+                tbody.append(row);
+            }
+            renderPagination();
+        }
+        function renderPagination() {
+            let totalPages = Math.ceil(filteredBookings.length / pageSize);
+            let paginationHtml = '';
+            if (totalPages === 0) {
+                paginationHtml += '<nav><ul class="pagination justify-content-center">';
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
+                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
+                paginationHtml += '</ul></nav>';
+            } else if (totalPages > 0) {
+                paginationHtml = '<nav><ul class="pagination justify-content-center">';
+                paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                }
+                paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
+                paginationHtml += '</ul></nav>';
+            }
+            if ($('#bookingPagination').length === 0) {
+                $('#datatablesSimple').after('<div id="bookingPagination"></div>');
+            }
+            $('#bookingPagination').html(paginationHtml);
+        }
+        // Pagination click events
+        $(document).on('click', '#bookingPagination .page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            if (page) {
+                currentPage = page;
+                renderTable();
+            } else if ($(this).attr('id') === 'prevPage' && currentPage > 1) {
+                currentPage--;
+                renderTable();
+            } else if ($(this).attr('id') === 'nextPage' && currentPage < Math.ceil(filteredBookings.length / pageSize)) {
+                currentPage++;
+                renderTable();
+            }
+        });
+        // Thêm booking
+        $('#formAddBooking').submit(function(e) {
+            e.preventDefault();
+            var data = {
+                ho_ten: $(this).find('input[name="hoTen"]').val(),
+                ten_tour: $(this).find('input[name="tenTour"]').val(),
+                so_luong_nguoi: $(this).find('input[name="soLuongNguoi"]').val(),
+                tong_tien: $(this).find('input[name="tongTien"]').val(),
+                payment_method: $(this).find('input[name="paymentMethod"]').val(),
+                ngay_khoi_hanh: $(this).find('input[name="ngayKhoiHanh"]').val(),
+                ghi_chu: $(this).find('input[name="ghiChu"]').val(),
+                booking_at: $(this).find('input[name="bookingAt"]').val(),
+                trang_thai: $(this).find('input[name="trangThai"]').val()
+            };
+            $.ajax({
+                url: '/api/booking',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    alert(response.message || "Thêm thành công!");
+                    $('#addBookingModal').modal('hide');
+                    fetchBookings();
+                },
+                error: function() {
+                    alert("Thêm không thành công!");
+                }
+            });
+        });
 
 
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Dashboard</title>
+   
+    <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+    <link href="/public/admin/css/styles.css" rel="stylesheet" />
+    <script src="/public/admin/js/moment.min.js"></script>
+
+
+    <style>
+        label { padding: 10px 0; }
+        table.dataTable tbody td:last-child { text-align: center; }
+        table.dataTable tbody td:last-child button { margin: 4px; }
+        .dataTables_wrapper td, .dataTables_wrapper thead th { font-size: 13px; }
+    </style>
+</head>
+
+
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand ps-3" href="/admin/index">Dashboard Quản trị</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+
+
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." />
+            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+
+
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link active" href="/admin/index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Trang quản lý</div>
+                    <a class="nav-link" href="/admin/user">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
+                    </a>
+                    <a class="nav-link" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                    </a>
+                    <a class="nav-link" href="/admin/tour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                    </a>
+                    <a class="nav-link" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                    </a>
+                    <a class="nav-link" href="/admin/review">
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                    </a>
+                    <a class="nav-link" href="/admin/voucher">
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                    </a>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>Admin
+            </div>
+        </nav>
+    </div>
+
+
+    <div id="layoutSidenav_content">
+        <main class="container-fluid px-4">
+            <h1 class="mt-4">Thống kê tổng quan</h1>
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">Người dùng: <span th:text="${userCount}">0</span></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-success text-white mb-4">
+                        <div class="card-body">Tour: <span th:text="${tourCount}">0</span></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-warning text-white mb-4">
+                        <div class="card-body">Tổng doanh thu: <span th:text="${totalRevenue}">0</span></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-danger text-white mb-4">
+                        <div class="card-body">Đánh giá: <span th:text="${averageRating}">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6 mb-4 d-flex align-items-stretch">
+                    <div class="card h-100 w-100">
+                        <div class="card-header"><i class="fas fa-chart-bar"></i> Thống kê tour theo tháng</div>
+                        <div class="card-body d-flex justify-content-center align-items-center" style="height:220px;">
+                            <canvas id="tourMonthChart" style="max-width:100%; height:180px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4 d-flex align-items-stretch">
+                    <div class="card h-100 w-100">
+                        <div class="card-header"><i class="fas fa-sun"></i> Thống kê tour theo mùa</div>
+                        <div class="card-body d-flex flex-row justify-content-center align-items-center" style="height:220px;">
+                            <div class="d-flex flex-column align-items-center justify-content-center" style="min-width:120px;">
+                                <canvas id="tourSeasonChart" style="width:120px; height:120px;"></canvas>
+                            </div>
+                            <div id="seasonLegend" class="ms-3 d-flex flex-column align-items-start justify-content-center"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">&copy; 2025 Travel Admin</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+
+<script src="/public/admin/js/jquery.js"></script>
+<script src="/public/admin/js/boostrap-bundle.min.js"></script>
+<script src="/public/admin/js/scripts.js"></script>
+<script src="/public/admin/js/datatables.min.js"></script>
+<script src="/public/admin/js/all.min.js"></script>
+<script src="/public/admin/js/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Dữ liệu tour theo tháng (từ data.sql)
+var monthLabels = ['Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+var monthData = [1, 1, 1, 1, 1, 4, 2, 2, 1, 1];
+// Dữ liệu tour theo mùa (từ data.sql)
+var seasonLabels = ['Xuân', 'Hạ', 'Thu', 'Đông'];
+var seasonData = [2, 4, 5, 1];
+
+document.addEventListener("DOMContentLoaded", function () {
+  new Chart(document.getElementById('tourMonthChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: [{
+        label: 'Số tour',
+        data: monthData,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+        pointRadius: 3,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } },
+      plugins: {
+        title: { display: false }
+      }
+    }
+  });
+
+  const seasonChart = new Chart(document.getElementById('tourSeasonChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: seasonLabels,
+      datasets: [{
+        label: 'Số tour',
+        data: seasonData,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(255, 206, 86, 0.7)',
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(153, 102, 255, 0.7)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)'
+        ],
+        borderWidth: 2,
+        hoverOffset: 8,
+        cutout: '65%'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: false },
+        legend: { display: false }
+      }
+    }
+  });
+
+  // Custom legend for season chart
+  const legendColors = [
+    'rgba(255, 99, 132, 0.7)',
+    'rgba(255, 206, 86, 0.7)',
+    'rgba(75, 192, 192, 0.7)',
+    'rgba(153, 102, 255, 0.7)'
+  ];
+  const legendContainer = document.getElementById('seasonLegend');
+  legendContainer.innerHTML = '';
+  seasonLabels.forEach(function(label, idx) {
+    const color = legendColors[idx % legendColors.length];
+    const legendItem = document.createElement('div');
+    legendItem.className = 'd-flex align-items-center my-1';
+    legendItem.innerHTML = `<span style="display:inline-block;width:14px;height:14px;background:${color};border-radius:3px;margin-right:6px;"></span><span style="font-size:13px">${label}</span>`;
+    legendContainer.appendChild(legendItem);
+  });
+});
+</script>
+
+
+</body>
+</html>
+
+
+

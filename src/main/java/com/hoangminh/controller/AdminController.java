@@ -16,6 +16,14 @@ public class AdminController {
     @Autowired
     UserService userService;
 
+    @GetMapping({"/index", "", "/"})
+    public String adminIndex() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/index";
+    }
+
     @GetMapping("/user")
     public String userManage() {
 
@@ -60,6 +68,46 @@ public class AdminController {
             return "redirect:/admin/login";
         }
         return "admin/tourImage";
+    }
+
+    @GetMapping("/guides")
+    public String guidesManage() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/guides";
+    }
+
+    @GetMapping("/review")
+    public String reviewManage() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/review";
+    }
+
+    @GetMapping("/payment-method")
+    public String paymentMethodManage() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/payment-method";
+    }
+
+    @GetMapping("/transaction-history")
+    public String transactionHistoryManage() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/transaction-history";
+    }
+
+    @GetMapping("/voucher")
+    public String voucherManage() {
+        if(!this.userService.checkAdminLogin()) {
+            return "redirect:/admin/login";
+        }
+        return "admin/voucher";
     }
 
     @GetMapping("/logout")

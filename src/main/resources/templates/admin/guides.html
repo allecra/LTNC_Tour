@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+  <title>Quản lý Hướng dẫn viên</title>
+    <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+<!--    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />-->
+<!--    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>-->
+    <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+    <script src="/public/admin/js/moment.min.js"></script>
+    <link href="/public/admin/css/styles.css" rel="stylesheet" />
+<!--    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>-->
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="/admin/index">Dashboard Quản trị</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#!">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/admin/index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Trang quản lý</div>
+                    <a class="nav-link" href="/admin/user">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
+                    </a>
+                    <a class="nav-link active" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                    </a>
+                    <a class="nav-link" href="/admin/tour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                    </a>
+                    <a class="nav-link" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                    </a>
+                    <a class="nav-link" href="/admin/review">
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                    </a>
+                    <a class="nav-link" href="/admin/voucher">
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                    </a>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                Admin
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Danh sách hướng dẫn viên</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Quản lý hướng dẫn viên</li>
+                    </ol>
+                </nav>
+                <div class="card mb-4 rounded">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-auto">
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGuideModal">
+        <i class="fas fa-plus"></i> Thêm Hướng dẫn viên
+      </button>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchGuideInput" />
+                            </div>
+    </div>
+                        <table class="table table-bordered table-hover" id="guidesTable">
+      <thead class="table-dark">
+        <tr>
+                                    <th class="text-center" style="width:60px; white-space:nowrap;">STT</th>
+                                    <th style="min-width:180px; white-space:nowrap;">Họ tên</th>
+                                    <th style="width:140px; white-space:nowrap;">Email</th>
+                                    <th style="width:120px; white-space:nowrap;">SĐT</th>
+                                    <th style="min-width:200px; white-space:nowrap;">Địa chỉ</th>
+                                    <th class="text-center" style="width:90px; white-space:nowrap;">Hành động</th>
+        </tr>
+      </thead>
+                            <tbody>
+        <!-- Dữ liệu sẽ được render ở đây -->
+      </tbody>
+    </table>
+                    </div>
+                </div>
+
+
+
+
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Xóa hướng dẫn viên</h5>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <input type="hidden" id="deleteId" name="deleteId" value="">
+                            <div class="modal-body">
+                                <p>Bạn có chắc chắn muốn xóa hướng dẫn viên này không?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="hideDeleteModal()" data-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-danger" data-id="" onclick="deleteUserAction()" id="confirmDeleteBtn">Xóa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">Khôi phục mật khẩu mặc định</h5>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <input type="hidden" id="resetId" name="deleteId" value="deleteId">
+                            <div class="modal-body">
+                                <p>Khôi phục tài khoản này về mật khẩu mặc định?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="hideResetModal()" data-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-primary" onclick="resetPassAction()" id="confirmResetBtn">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>
+  </div>
+
+
+                <div class="modal fade " id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="modal-title p-2" id="editModalLabel">Sửa thông tin user</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editUserForm">
+                                    <input type="hidden" id="id" name="id" value="id">
+                                    <div class="form-group mb-2">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="ho_ten">Họ tên</label>
+                                        <input type="text" class="form-control" id="ho_ten" name="ho_ten" required>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="sdt">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="sdt" name="sdt" required>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="gioi_tinh">Giới tính</label>
+                                        <select class="form-control" id="gioi_tinh" name="gioi_tinh">
+                                            <option value="Nam">Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="dia_chi">Địa chỉ</label>
+                                        <input type="text" class="form-control" id="dia_chi" name="dia_chi" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Vai trò</label>
+                                        <select name="role" id="editRole" class="form-control" required>
+                                            <option value="1">Admin</option>
+                                            <option value="2">User</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" onclick="hideModal()" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-primary" onclick="submitEditForm()">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+  <!-- Modal Thêm -->
+<div class="modal fade" id="addGuideModal" tabindex="-1" aria-labelledby="addGuideModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <form class="modal-content" id="formAddGuide">
+        <div class="modal-header">
+        <h5 class="modal-title" id="addGuideModalLabel">Thêm Hướng dẫn viên</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Họ tên</label>
+            <input type="text" name="hoTen" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label>SĐT</label>
+            <input type="text" name="sdt" class="form-control" required />
+          </div>
+          <div class="mb-3">
+          <label>Địa chỉ</label>
+          <input type="text" name="diaChi" class="form-control" />
+          </div>
+        <!-- Thêm trường role nếu cần -->
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lưu</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<!-- Modal Sửa Guide -->
+<div class="modal fade" id="editGuideModal" tabindex="-1">
+                    <div class="modal-dialog">
+    <form class="modal-content" id="editGuideForm">
+                            <div class="modal-header">
+        <h5 class="modal-title">Sửa Hướng dẫn viên</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+        <input type="hidden" id="editGuideId" />
+          <div class="mb-3">
+            <label>Họ tên</label>
+          <input type="text" id="editGuideHoTen" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label>Email</label>
+          <input type="email" id="editGuideEmail" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label>SĐT</label>
+          <input type="text" id="editGuideSdt" class="form-control" required />
+          </div>
+          <div class="mb-3">
+          <label>Địa chỉ</label>
+          <input type="text" id="editGuideDiaChi" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lưu</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<script src="/public/admin/js/jquery.js"></script>
+<script src="/public/admin/js/boostrap-bundle.min.js"></script>
+<script src="/public/admin/js/scripts.js"></script>
+<script type="text/javascript" src="/public/admin/js/datatables.min.js"></script>
+<script src="/public/admin/js/all.min.js"></script>
+<script src="/public/admin/js/ckeditor.js"></script>
+  <script>
+
+
+    function hideModal() {
+        $("#editModal").modal('hide');
+    }
+
+
+    function hideDeleteModal() {
+        $("#deleteModal").modal('hide');
+    }
+    function deleteUser(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa hướng dẫn viên này?")) {
+            $.ajax({
+                url: '/api/user/delete/' + id,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message || "Xóa thành công!");
+                    location.reload();
+                },
+                error: function() {
+                    alert("Xóa không thành công!");
+                }
+            });
+        }
+    }
+
+
+    function deleteUserAction() {
+        let id = $('#deleteModal input[name="deleteId"]').val();
+        $.ajax({
+            url: '/api/user/delete/' + id,
+            type: 'DELETE',
+            success: function(response) {
+                // Nếu xóa thành công, cập nhật lại bảng dữ liệu
+                alert(response.message);
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Nếu xóa không thành công, thông báo lỗi
+                alert('Xóa người dùng không thành công: ' + textStatus + ' ' + errorThrown);
+            }
+        });
+
+
+        // Đóng modal xóa
+        $('#deleteModal').modal('hide');
+    }
+
+
+    function editUser(id) {
+        $.ajax({
+            url: '/api/user/' + id,
+            type: 'GET',
+            success: function(result) {
+                $('#editGuideId').val(result.data.id);
+                $('#editGuideHoTen').val(result.data.ho_ten);
+                $('#editGuideEmail').val(result.data.email);
+                $('#editGuideSdt').val(result.data.sdt);
+                $('#editGuideDiaChi').val(result.data.dia_chi);
+                $('#editGuideModal').modal('show');
+            },
+            error: function() {
+                alert('Không lấy được thông tin hướng dẫn viên!');
+            }
+        });
+    }
+
+
+
+
+    $('#editUserForm').submit(function(e) {
+        e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+        submitEditForm();
+    });
+
+
+    function submitEditForm() {
+        // Lấy giá trị từ các input trong form
+        var id = $("#id").val();
+        var username = $("#username").val();
+        var hoTen = $("#ho_ten").val();
+        var sdt = $("#sdt").val();
+        var gioiTinh = $("#gioi_tinh").val();
+        var email = $("#email").val();
+        var diaChi = $("#dia_chi").val();
+        var role = $("#editRole").val(); // Lấy giá trị role từ select
+
+
+        // Tạo đối tượng UpdateUserDTO để lưu trữ dữ liệu cần cập nhật
+        var updateUserDTO = {
+            username: username,
+            ho_ten: hoTen,
+            sdt: sdt,
+            gioi_tinh: gioiTinh,
+            email: email,
+            dia_chi: diaChi,
+            role: role // Thêm role vào đối tượng
+        };
+        console.log(updateUserDTO)
+
+
+        // Gửi yêu cầu Ajax
+        $.ajax({
+            url: "http://localhost:8085/api/user/update/" + id,
+            type: "PUT",
+            data: JSON.stringify(updateUserDTO),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                // Cập nhật dữ liệu thành công, đóng modal và tải lại trang
+                console.log(data)
+                $("#editModal").modal("hide");
+                alert("Sửa thành công !")
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Xử lý lỗi
+                console.log("Error:", jqXHR.responseText);
+            }
+        });
+    }
+
+
+
+
+    function resetPass(id) {
+        $('#resetModal').modal('show');
+        $('#resetId').val(id);
+    }
+    function hideResetModal() {
+        $('#resetModal').modal('hide');
+    }
+
+
+
+
+    function resetPassAction() {
+        let userId = $('#resetId').val();
+
+
+        // Gửi yêu cầu Ajax
+        $.ajax({
+            url: "http://localhost:8085/api/user/update/resetPass/" + userId,
+            type: "PUT",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                // Cập nhật dữ liệu thành công, đóng modal và tải lại trang
+                console.log(data)
+                $("#resetModal").modal("hide");
+                alert("Khôi phục thành công !")
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Xử lý lỗi
+                console.log("Error:", jqXHR.responseText);
+            }
+        });
+    }
+
+
+    // Hiển thị danh sách hướng dẫn viên (role = 3) với phân trang client-side
+    $(document).ready(function() {
+        let guides = [];
+        let filteredGuides = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        function fetchGuides() {
+            $.ajax({
+                url: '/api/user/getAll',
+                method: 'GET',
+                success: function(response) {
+                    guides = (response.data || []).filter(function(u) { return u.role === 3; });
+                    filteredGuides = guides;
+                    renderTable();
+                },
+                error: function() {
+                    guides = [];
+                    filteredGuides = [];
+                    renderTable();
+                }
+            });
+        }
+        fetchGuides();
+        // Tìm kiếm realtime
+        $('#searchGuideInput').on('input', function() {
+            const keyword = $(this).val().toLowerCase();
+            filteredGuides = guides.filter(function(u) {
+                let roleName = 'hướng dẫn viên';
+                return (
+                    (u.ho_ten || '').toLowerCase().includes(keyword) ||
+                    (u.email || '').toLowerCase().includes(keyword) ||
+                    (u.sdt || '').toLowerCase().includes(keyword) ||
+                    (u.dia_chi || '').toLowerCase().includes(keyword) ||
+                    roleName.includes(keyword)
+                );
+            });
+            currentPage = 1;
+            renderTable();
+        });
+        function renderTable() {
+            var tbody = $('#guidesTable tbody');
+            tbody.empty();
+            const data = filteredGuides;
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, data.length);
+            for (let i = startIdx; i < endIdx; i++) {
+                const guide = data[i];
+                var row = `<tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td>${guide.ho_ten || ''}</td>
+                    <td>${guide.email || ''}</td>
+                    <td>${guide.sdt || ''}</td>
+                    <td>${guide.dia_chi || ''}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center align-items-center gap-1">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="editUser(${guide.id})" title="Sửa">
+                                <i class="fas fa-wrench"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser(${guide.id})" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+            </td>
+                </tr>`;
+                tbody.append(row);
+            }
+            renderPagination();
+    }
+
+
+        function renderPagination() {
+            let totalPages = Math.ceil(filteredGuides.length / pageSize);
+            let paginationHtml = '';
+            if (totalPages === 0) {
+                paginationHtml += '<nav><ul class="pagination justify-content-center">';
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
+                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
+                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
+                paginationHtml += '</ul></nav>';
+            } else if (totalPages > 0) {
+                paginationHtml = '<nav><ul class="pagination justify-content-center">';
+                paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                }
+                paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
+                paginationHtml += '</ul></nav>';
+            }
+            if ($('#guidesPagination').length === 0) {
+                $('#guidesTable').after('<div id="guidesPagination"></div>');
+            }
+            $('#guidesPagination').html(paginationHtml);
+        }
+
+
+        // Pagination click events
+        $(document).on('click', '#guidesPagination .page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            if (page) {
+                currentPage = page;
+                renderTable();
+            } else if ($(this).attr('id') === 'prevPage' && currentPage > 1) {
+                currentPage--;
+                renderTable();
+            } else if ($(this).attr('id') === 'nextPage' && currentPage < Math.ceil(filteredGuides.length / pageSize)) {
+                currentPage++;
+                renderTable();
+            }
+    });
+
+
+        // Thêm hướng dẫn viên
+        $('#formAddGuide').submit(function(e) {
+            e.preventDefault();
+            const newGuide = {
+                ho_ten: $(this).find('input[name="hoTen"]').val(),
+                email: $(this).find('input[name="email"]').val(),
+                sdt: $(this).find('input[name="sdt"]').val(),
+                dia_chi: $(this).find('input[name="diaChi"]').val(),
+                role: 3
+            };
+            $.ajax({
+                url: '/api/user',
+                type: 'POST',
+                data: JSON.stringify(newGuide),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    alert("Thêm thành công!");
+                    $('#addGuideModal').modal('hide');
+                    fetchGuides();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert("Thêm hướng dẫn viên không thành công: " + textStatus + " " + errorThrown);
+                }
+            });
+        });
+
+        // Xử lý sửa hướng dẫn viên
+        $('#editGuideForm').submit(function(e) {
+            e.preventDefault();
+            var id = $('#editGuideId').val();
+            var data = {
+                ho_ten: $('#editGuideHoTen').val(),
+                email: $('#editGuideEmail').val(),
+                sdt: $('#editGuideSdt').val(),
+                dia_chi: $('#editGuideDiaChi').val()
+            };
+            $.ajax({
+                url: '/api/user/update/' + id,
+                type: 'PUT',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response) {
+                    alert(response.message || "Cập nhật thành công!");
+                    $('#editGuideModal').modal('hide');
+                    location.reload();
+                },
+                error: function() {
+                    alert("Cập nhật không thành công!");
+                }
+            });
+        });
+    });
+  </script>
+<style>
+.table td, .table th {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    font-size: 1rem;
+}
+.btn-sm {
+    line-height: 1;
+}
+.pagination .page-item .page-link {
+    color: #333;
+    font-weight: 500;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    margin: 0 2px;
+    min-width: 38px;
+    text-align: center;
+}
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+.pagination .page-item .page-link:hover {
+    background: #f0f0f0;
+    color: #0d6efd;
+}
+.pagination .page-item.disabled .page-link {
+    color: #aaa;
+    background: #f8f9fa;
+    border-color: #dee2e6;
+}
+.table .btn-sm {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.table .d-flex {
+  flex-direction: row !important;
+}
+</style>
+</body>
+</html>
+
+
+
