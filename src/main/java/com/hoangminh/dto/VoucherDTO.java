@@ -9,4 +9,6 @@ public class VoucherDTO {
     private Double discount;
     private String expiry_date;
     private String dieuKien;
+    private Boolean isUsed;
+    private String receivedAt;
 } 

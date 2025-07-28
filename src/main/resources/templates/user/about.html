@@ -36,154 +36,96 @@
 <body>
 
 
-	<!-- Topbar Start -->
-	<div class="container-fluid bg-light pt-3 d-none d-lg-block">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-					<div class="d-inline-flex align-items-center">
-						<p>
-							<i class="fa fa-envelope mr-2"></i>allecra.ira@gmail.com
-						</p>
-						<p class="text-body px-3">|</p>
-						<p>
-							<i class="fa fa-phone-alt mr-2"></i>0365666321
-						</p>
-					</div>
-				</div>
-				<div class="col-lg-6 text-center text-lg-right">
-					<div class="d-inline-flex align-items-center">
-						<a class="text-primary px-3" href=""> <i
-							class="fab fa-facebook-f"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-twitter"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-linkedin-in"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-instagram"></i>
-						</a> <a class="text-primary pl-3" href=""> <i
-							class="fab fa-youtube"></i>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Topbar End -->
+		<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
+	
 
 
-	<!-- Navbar Start -->
-	<div class="container-fluid position-relative nav-bar p-0">
-		<div class="container-lg position-relative p-0 px-lg-3"
-			style="z-index: 9;">
-			<nav
-				class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-				<a href="" class="navbar-brand">
-					<h1 class="m-0 text-primary">
-						<span class="text-dark">CAMPUCHIA</span> TOUR
-					</h1>
-				</a>
-				<button type="button" class="navbar-toggler" data-toggle="collapse"
-					data-target="#navbarCollapse">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse justify-content-between px-3"
-					id="navbarCollapse">
-					<div class="navbar-nav ml-auto py-0">
-						<a href="/" class="nav-item nav-link active">Trang chủ</a> <a
-							href="/tour/trong-nuoc" class="nav-item nav-link">Tour trong
-							nước</a> <a href="/tour/ngoai-nuoc" class="nav-item nav-link">Tour
-							ngoài nước</a> <a href="/tin-tuc" class="nav-item nav-link">Tin
-							tức</a> <a href="/lien-he" class="nav-item nav-link">Liên hệ</a> <a
-							href="/account" class="nav-item nav-link">Tài khoản</a>
-					</div>
-				</div>
-			</nav>
-		</div>
-	</div>
-
-	<!-- Contact Start -->
+	<!-- About Start -->
 	<div class="container-fluid py-5">
 		<div class="container py-5">
 			<div class="text-center mb-3 pb-3">
-				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Tài
-					khoản</h6>
-				<h1>Thông tin tài khoản</h1>
+				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Về chúng tôi</h6>
+				<h1>Giới thiệu về CAMPUCHIA TOUR</h1>
 			</div>
-			<div class="row justify-content-center">
-				<div class="col-lg-8">
-					<div class="contact-form bg-white" style="padding: 30px;">
-						<div id="help-block text-succces" style="color:green;" th:if="${message != null}">[[${message}]]</div>
-						<div class="align-content-end py-4">
-							<a class="btn btn-primary py-3 px-4" href="/user/tour"
-									id="">Quản lý tour đã đặt</a>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="mb-4">
+						<h4 class="mb-3">Chào mừng đến với CAMPUCHIA TOUR</h4>
+						<p class="mb-4">Chúng tôi là công ty du lịch hàng đầu chuyên cung cấp các tour du lịch chất lượng cao đến Campuchia và các điểm đến hấp dẫn khác trong khu vực Đông Nam Á.</p>
+						<p class="mb-4">Với hơn 10 năm kinh nghiệm trong ngành du lịch, chúng tôi tự hào mang đến cho quý khách những trải nghiệm du lịch tuyệt vời với dịch vụ chuyên nghiệp và giá cả hợp lý.</p>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="d-flex flex-column">
+								<div class="d-flex align-items-center mb-3">
+									<i class="fa fa-check text-primary mr-3"></i>
+									<h6 class="font-weight-bold m-0">Dịch vụ chất lượng</h6>
+								</div>
+								<div class="d-flex align-items-center mb-3">
+									<i class="fa fa-check text-primary mr-3"></i>
+									<h6 class="font-weight-bold m-0">Giá cả hợp lý</h6>
+								</div>
+							</div>
 						</div>
-						<form name="sentMessage"  method="post" action="/updateAccount"
-							id="contactForm" novalidate="novalidate">
-							<div class="form-row">
-								<div class="control-group col-sm-6">
-									<input type="text" class="form-control p-4" id="username"
-										disabled="disabled" name="username" th:value="${user.username}"
-										placeholder="Tên người dùng" required="required"
-										data-validation-required-message="Vui lòng nhập tên người dùng" />
-									<p class="help-block text-danger"></p>
+						<div class="col-sm-6">
+							<div class="d-flex flex-column">
+								<div class="d-flex align-items-center mb-3">
+									<i class="fa fa-check text-primary mr-3"></i>
+									<h6 class="font-weight-bold m-0">Hướng dẫn viên chuyên nghiệp</h6>
 								</div>
-								<div class="control-group col-sm-6">
-									<input type="text" class="form-control p-4" name="ho_ten" id="email" placeholder="Họ tên"
-										required="required" th:value="${user.ho_ten}"
-										data-validation-required-message="Vui lòng nhập họ và tên"
-										disabled="disabled" />
-									<p class="help-block text-danger"></p>
+								<div class="d-flex align-items-center mb-3">
+									<i class="fa fa-check text-primary mr-3"></i>
+									<h6 class="font-weight-bold m-0">An toàn tuyệt đối</h6>
 								</div>
 							</div>
-							<div class="control-group">
-								<input type="email" class="form-control p-4" name="email"
-									id="subjectd" placeholder="Email" required="required"
-									disabled="disabled" th:value="${user.email}"
-									data-validation-required-message="Vui lòng nhập email" />
-								<p class="help-block text-danger"></p>
-							</div>
-							<div class="form-row">
-								<div class="control-group col-sm-6">
-									<input type="tel" class="form-control p-4" id="name" name="sdt"
-										placeholder="Số điện thoại" required="required"
-										disabled="disabled" th:value="${user.sdt}"
-										data-validation-required-message="Vui lòng nhập số điện thoại" />
-									<p class="help-block text-danger"></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="d-flex flex-column align-items-center text-center mb-4">
+								<div class="d-inline-flex align-items-center justify-content-center bg-white shadow rounded-circle mb-3" style="width: 100px; height: 100px;">
+									<i class="fa fa-users text-primary" style="font-size: 2rem;"></i>
 								</div>
-								<div class="control-group col-sm-6">
-									<div class="mb-3 mb-md-0">
-										<select class="custom-select px-4" id="select-gender" disabled="disabled"
-											name="gioi_tinh" th:value="${user.gioi_tinh}" style="height: 47px;">
-											<option value="Nam">Nam</option>
-											<option value="Nữ">Nữ</option>
-										</select>
-									</div>
+								<h4 class="font-weight-bold">5000+</h4>
+								<span class="text-muted">Khách hàng hài lòng</span>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="d-flex flex-column align-items-center text-center mb-4">
+								<div class="d-inline-flex align-items-center justify-content-center bg-white shadow rounded-circle mb-3" style="width: 100px; height: 100px;">
+									<i class="fa fa-route text-primary" style="font-size: 2rem;"></i>
 								</div>
+								<h4 class="font-weight-bold">100+</h4>
+								<span class="text-muted">Tour đa dạng</span>
 							</div>
-							<div class="control-group">
-								<input type="text" class="form-control p-4" name="dia_chi"
-									id="subject" placeholder="Địa chỉ" required="required"
-									disabled="disabled" th:value="${user.dia_chi}"
-									data-validation-required-message="Vui lòng nhập địa chỉ" />
-								<p class="help-block text-danger"></p>
+						</div>
+						<div class="col-sm-6">
+							<div class="d-flex flex-column align-items-center text-center mb-4">
+								<div class="d-inline-flex align-items-center justify-content-center bg-white shadow rounded-circle mb-3" style="width: 100px; height: 100px;">
+									<i class="fa fa-award text-primary" style="font-size: 2rem;"></i>
+								</div>
+								<h4 class="font-weight-bold">10+</h4>
+								<span class="text-muted">Năm kinh nghiệm</span>
 							</div>
-							<div class="text-center">
-								<button class="btn btn-primary py-3 px-4"
-									id="sendMessageButton">Cập nhật thông tin tài khoản</button>
+						</div>
+						<div class="col-sm-6">
+							<div class="d-flex flex-column align-items-center text-center mb-4">
+								<div class="d-inline-flex align-items-center justify-content-center bg-white shadow rounded-circle mb-3" style="width: 100px; height: 100px;">
+									<i class="fa fa-star text-primary" style="font-size: 2rem;"></i>
+								</div>
+								<h4 class="font-weight-bold">4.8/5</h4>
+								<span class="text-muted">Đánh giá trung bình</span>
 							</div>
-							<div class="control-group d-flex justify-content-between">
-								<a href="/changepassword" class="pt-4 d-block">Đổi mật khẩu</a>
-								<a href="/logout" onclick="return confirm('Bạn có chắc chắn đăng xuất');" class="text-danger pt-4 d-block">Đăng xuất</a>									
-							</div>
-						</form>
-						
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Contact End -->
+	<!-- About End -->
 
 	<!-- Footer Start -->
 	<div class="container-fluid bg-dark text-white-50 py-5 px-sm-3 px-lg-5"
@@ -288,8 +230,8 @@
 
 
 	<!-- JavaScript Libraries -->
-	<script src="/public/js/boostrap-bundle.min.js"></script>
 	<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/boostrap-bundle.min.js"></script>
 	<script src="public/lib/easing/easing.min.js"></script>
 	<script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="public/lib/tempusdominus/js/moment.min.js"></script>
@@ -315,6 +257,35 @@
 				document.getElementById("contactForm").submit();
 			}
 		};
+		
+		// Dropdown functionality cho trang về chúng tôi
+		$(document).ready(function() {
+			console.log('About page loaded');
+			
+			// Thêm event listener cho dropdown toggle
+			$(document).on('click', '.dropdown-toggle', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				console.log('About: Dropdown clicked');
+				
+				var dropdownMenu = $(this).next('.dropdown-menu');
+				dropdownMenu.toggleClass('show');
+				
+				return false;
+			});
+			
+			// Đóng dropdown khi click ra ngoài
+			$(document).on('click', function(e) {
+				if (!$(e.target).closest('.dropdown').length) {
+					$('.dropdown-menu').removeClass('show');
+				}
+			});
+			
+			// Đóng dropdown khi click vào link trong dropdown
+			$(document).on('click', '.dropdown-menu a', function() {
+				$('.dropdown-menu').removeClass('show');
+			});
+		});
 	</script>
 </body>
 

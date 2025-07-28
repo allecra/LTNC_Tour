@@ -1,5 +1,10 @@
 package com.hoangminh.service;
 
-public interface DestinationService {
+import com.hoangminh.entity.Destination;
+import java.util.List;
 
+public interface DestinationService {
+    List<Destination> findAllDestinations();
+    List<Destination> findDomesticDestinations();
+    List<Destination> findInternationalDestinations();
 }

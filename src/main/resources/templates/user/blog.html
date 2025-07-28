@@ -27,70 +27,8 @@
 </head>
 
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-light pt-3 d-none d-lg-block">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <p><i class="fa fa-envelope mr-2"></i>allecra.ira@gmail.com</p>
-                        <p class="text-body px-3">|</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+(84)365666321</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="text-primary pl-3" href="">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative nav-bar p-0">
-        <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-            <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-                <a href="" class="navbar-brand">
-                    <h1 class="m-0 text-primary"><span class="text-dark">TRAVEL</span>ER</h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="index.html" class="nav-item nav-link">Home</a>
-                        <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Services</a>
-                        <a href="package.html" class="nav-item nav-link">Tour Packages</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu border-0 rounded-0 m-0">
-                                <a href="blog.html" class="dropdown-item active">Blog Grid</a>
-                                <a href="single.html" class="dropdown-item">Blog Detail</a>
-                                <a href="destination.html" class="dropdown-item">Destination</a>
-                                <a href="guide.html" class="dropdown-item">Travel Guides</a>
-                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
-                    </div>
+    	<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
                 </div>
             </nav>
         </div>
@@ -173,136 +111,23 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="row pb-3">
-                        <div class="col-md-6 mb-4 pb-2">
+                        <div th:each="blog : ${blogList}" class="col-md-6 mb-4 pb-2">
                             <div class="blog-item">
                                 <div class="position-relative">
                                     <img class="img-fluid w-100" src="img/blog-1.jpg" alt="">
                                     <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
+                                        <h6 class="font-weight-bold mb-n1" th:text="${#dates.format(blog.ngay_dang, 'dd')}">01</h6>
+                                        <small class="text-white text-uppercase" th:text="${#dates.format(blog.ngay_dang, 'MMM')}">Jan</small>
                                     </div>
                                 </div>
                                 <div class="bg-white p-4">
                                     <div class="d-flex mb-2">
                                         <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
                                         <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
+                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tin tức du lịch</a>
                                     </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-2.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-3.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-1.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-2.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-3.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4 pb-2">
-                            <div class="blog-item">
-                                <div class="position-relative">
-                                    <img class="img-fluid w-100" src="img/blog-1.jpg" alt="">
-                                    <div class="blog-date">
-                                        <h6 class="font-weight-bold mb-n1">01</h6>
-                                        <small class="text-white text-uppercase">Jan</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4">
-                                    <div class="d-flex mb-2">
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                                        <span class="text-primary px-2">|</span>
-                                        <a class="text-primary text-uppercase text-decoration-none" href="">Tours & Travel</a>
-                                    </div>
-                                    <a class="h5 m-0 text-decoration-none" href="">Dolor justo sea kasd lorem clita justo diam amet</a>
+                                    <a class="h5 m-0 text-decoration-none" href="" th:text="${blog.tieu_de}">Tiêu đề bài viết</a>
+                                    <p class="mt-2" th:text="${blog.tom_tat}">Tóm tắt bài viết</p>
                                 </div>
                             </div>
                         </div>

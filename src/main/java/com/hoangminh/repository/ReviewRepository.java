@@ -11,6 +11,8 @@ import com.hoangminh.dto.ReviewDTO;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByUserId(Long userId);
+    
+    List<Review> findByTrangThai(String trangThai);
 
     @Query("SELECT AVG(r.rating) FROM Review r")
     Double averageRating();

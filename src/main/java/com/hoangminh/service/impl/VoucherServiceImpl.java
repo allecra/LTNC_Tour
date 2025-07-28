@@ -64,6 +64,15 @@ public class VoucherServiceImpl implements VoucherService {
         return false;
     }
 
+    @Override
+    public List<VoucherDTO> getActiveVouchers() {
+        Date currentDate = new Date();
+        return voucherRepository.findAll().stream()
+                .filter(v -> v.getNgayHetHan() == null || v.getNgayHetHan().after(currentDate))
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     private VoucherDTO toDTO(Voucher v) {
         VoucherDTO dto = new VoucherDTO();
         dto.setId(v.getId());

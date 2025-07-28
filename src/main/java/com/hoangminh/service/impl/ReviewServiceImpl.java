@@ -74,6 +74,13 @@ public class ReviewServiceImpl implements ReviewService {
         return false;
     }
 
+    @Override
+    public List<ReviewDTO> getAllApprovedReviews() {
+        return reviewRepository.findByTrangThai("Đã duyệt").stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private ReviewDTO convertToDTO(Review review) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(review.getId());

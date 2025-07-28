@@ -91,10 +91,10 @@ INSERT INTO `booking` (`id`, `tour_start_id`, `user_id`, `so_luong_nguoi`, `tong
 (3, 4, 2, 2, 57000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', NULL, NOW());
 
 -- Dữ liệu mẫu cho bảng 'review'
-INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
-(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', NOW()),
-(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', NOW()),
-(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', NOW());
+INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `trang_thai`, `created_at`) VALUES
+(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', 'Đã duyệt', NOW()),
+(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', 'Đã duyệt', NOW()),
+(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', 'Đã duyệt', NOW());
 
 -- Dữ liệu mẫu cho bảng 'favorite'
 INSERT INTO `favorite` (`id`, `user_id`, `tour_id`) VALUES
@@ -119,4 +119,9 @@ INSERT INTO `payment` (`id`, `ho_ten_nguoi_nhan`, `so_tai_khoan`, `ten_ngan_hang
 -- Dữ liệu mẫu cho bảng 'notification'
 INSERT INTO `notification` (`user_id`, `message`, `is_read`, `created_at`) VALUES
 (1, 'Chào mừng bạn đến với hệ thống!', 0, NOW()),
-(2, 'Bạn vừa đặt tour thành công.', 0, NOW()); 
+(2, 'Bạn vừa đặt tour thành công.', 0, NOW());
+
+-- Dữ liệu mẫu cho bảng 'user_voucher'
+INSERT INTO `user_voucher` (`id`, `user_id`, `voucher_id`, `is_used`, `received_at`) VALUES
+(1, 2, 1, 0, NOW()),
+(2, 2, 2, 0, NOW()); 

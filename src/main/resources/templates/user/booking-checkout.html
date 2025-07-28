@@ -35,67 +35,8 @@
 
 <body>
 
-<!-- Topbar Start -->
-<div class="container-fluid bg-light pt-3 d-none d-lg-block">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <p>
-                        <i class="fa fa-envelope mr-2"></i>allecra.ira@gmail.com
-                    </p>
-                    <p class="text-body px-3">|</p>
-                    <p>
-                        <i class="fa fa-phone-alt mr-2"></i>+(84)365666321
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-primary px-3" href=""> <i
-                            class="fab fa-facebook-f"></i>
-                    </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-twitter"></i>
-                </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-linkedin-in"></i>
-                </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-instagram"></i>
-                </a> <a class="text-primary pl-3" href=""> <i
-                        class="fab fa-youtube"></i>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Topbar End -->
-
-
-<!-- Navbar Start -->
-<div class="container-fluid position-relative nav-bar p-0">
-    <div class="container-lg position-relative p-0 px-lg-3"
-         style="z-index: 9;">
-        <nav
-                class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-            <a href="/" class="navbar-brand">
-                <h1 class="m-0 text-primary">
-                    <span class="text-dark">CAMPUCHIA</span> TOUR
-                </h1>
-            </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse"
-                    data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between px-3"
-                 id="navbarCollapse">
-                <div class="navbar-nav ml-auto py-0">
-                    <a href="/" class="nav-item nav-link active">Trang chủ</a> <a
-                        href="/tour/trong-nuoc" class="nav-item nav-link">Tour trong
-                    nước</a> <a href="/tour/ngoai-nuoc" class="nav-item nav-link">Tour
-                    ngoài nước</a> <a href="/tin-tuc" class="nav-item nav-link">Tin
-                    tức</a> <a href="/lien-he" class="nav-item nav-link">Liên hệ</a> <a
-                        href="/account" class="nav-item nav-link">Tài khoản</a>
-                </div>
+	<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
             </div>
         </nav>
     </div>
@@ -132,6 +73,26 @@
                             <label for="ghi_chu">Ghi chú</label>
                             <textarea name="ghi_chu" id="ghi_chu" cols="30" rows="5" class="form-control"></textarea>
                         </div>
+                        
+                        <!-- Voucher Section -->
+                        <div class="form-group">
+                            <label for="voucher_code">Mã voucher (nếu có)</label>
+                            <div class="input-group">
+                                <input type="text" name="voucher_code" id="voucher_code" class="form-control" placeholder="Nhập mã voucher">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-primary" onclick="checkVoucher()">Kiểm tra</button>
+                                </div>
+                            </div>
+                            <small class="text-muted">Bạn có thể xem voucher của mình <a href="/voucher" target="_blank">tại đây</a></small>
+                        </div>
+                        
+                        <div class="form-group" id="voucher_info" style="display: none;">
+                            <div class="alert alert-success">
+                                <strong>Voucher hợp lệ!</strong>
+                                <div id="voucher_details"></div>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="payment_method">Phương thức thanh toán</label>
                             <select name="payment_method" id="payment_method" class="form-control">
@@ -253,8 +214,8 @@
 
 
 <!-- JavaScript Libraries -->
-<script src="/public/js/boostrap-bundle.min.js"></script>
-<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/boostrap-bundle.min.js"></script>
 <script src="../../public/lib/easing/easing.min.js"></script>
 <script src="../../public/lib/owlcarousel/owl.carousel.min.js"></script>
 <script src="../../public/lib/tempusdominus/js/moment.min.js"></script>
@@ -280,6 +241,41 @@
     //         document.getElementById("contactForm").submit();
     //     }
     // };
+    
+    function checkVoucher() {
+        const voucherCode = document.getElementById('voucher_code').value;
+        if (!voucherCode) {
+            alert('Vui lòng nhập mã voucher');
+            return;
+        }
+        
+        // Gọi API kiểm tra voucher
+        fetch('/api/user/check-voucher', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                voucherCode: voucherCode
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('voucher_info').style.display = 'block';
+                document.getElementById('voucher_details').innerHTML = 
+                    `Giảm giá: ${data.discount} VNĐ<br>` +
+                    `Điều kiện: ${data.dieuKien}`;
+            } else {
+                alert('Voucher không hợp lệ hoặc đã được sử dụng');
+                document.getElementById('voucher_info').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi kiểm tra voucher');
+        });
+    }
 </script>
 </body>
 

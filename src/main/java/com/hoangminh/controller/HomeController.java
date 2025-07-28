@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.hoangminh.dto.*;
 import com.hoangminh.service.BookingService;
+import com.hoangminh.service.DestinationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hoangminh.entity.Destination;
 import com.hoangminh.entity.Image;
 import com.hoangminh.entity.Tour;
 import com.hoangminh.repository.ImageRepository;
@@ -30,6 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import com.hoangminh.entity.TourStart;
+import com.hoangminh.entity.TinTuc;
+import com.hoangminh.service.TinTucService;
+import com.hoangminh.service.ReviewService;
+import com.hoangminh.service.VoucherService;
+import com.hoangminh.service.UserVoucherService;
 
 @Slf4j
 @Controller
@@ -52,6 +59,21 @@ public class HomeController {
 	private BookingService bookingService;
 
 	@Autowired
+	private DestinationService destinationService;
+
+	@Autowired
+	private TinTucService tinTucService;
+
+	@Autowired
+	private ReviewService reviewService;
+
+	@Autowired
+	private VoucherService voucherService;
+
+	@Autowired
+	private UserVoucherService userVoucherService;
+
+	@Autowired
 	private HttpServletRequest request;
 
 	@GetMapping("")
@@ -61,8 +83,25 @@ public class HomeController {
 		Page<TourDTO> tourPage = this.tourService.findAllTour(null, null, null, null, PageRequest.of(0, 6));
 
 		List<TourDTO> tours = tourPage.getContent();
+		List<Destination> destinations = this.destinationService.findAllDestinations();
+		List<VoucherDTO> activeVouchers = this.voucherService.getActiveVouchers();
+		List<ReviewDTO> featuredReviews = this.reviewService.getAllApprovedReviews().stream()
+				.limit(3)
+				.collect(java.util.stream.Collectors.toList());
+
+		// Lấy user từ session
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
 
 		mdv.addObject("tours", tours);
+		mdv.addObject("destinations", destinations);
+		mdv.addObject("activeVouchers", activeVouchers);
+		mdv.addObject("featuredReviews", featuredReviews);
+		mdv.addObject("active", "home");
 
 		return mdv;
 	}
@@ -90,6 +129,16 @@ public class HomeController {
 		List<TourDTO> tours = tourPage.getContent();
 
 		mdv.addObject("tours", tours);
+		mdv.addObject("active", "domestic");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
 		return mdv;
 	}
 
@@ -118,6 +167,16 @@ public class HomeController {
 		List<TourDTO> tours = tourPage.getContent();
 
 		mdv.addObject("tours", tours);
+		mdv.addObject("active", "international");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
 		return mdv;
 	}
 
@@ -133,16 +192,33 @@ public class HomeController {
 		mdv.addObject("tour", tour);
 		mdv.addObject("listDate", listDate);
 		mdv.addObject("imageList", imageList);
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
 
 		return mdv;
 	}
 
 	@GetMapping("/login")
 	ModelAndView login() {
-		if (this.userService.checkLogin()) {
+		if (SessionUtilities.getUsername() != null && SessionUtilities.getUser() != null) {
 			return this.account();
 		}
 		ModelAndView mdv = new ModelAndView("user/login");
+		mdv.addObject("active", "login");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
 
 		return mdv;
 	}
@@ -150,11 +226,20 @@ public class HomeController {
 	@GetMapping("/register")
 	ModelAndView register() {
 
-		if (this.userService.checkLogin()) {
+		if (SessionUtilities.getUsername() != null && SessionUtilities.getUser() != null) {
 			return this.account();
 		}
 
 		ModelAndView mdv = new ModelAndView("user/register");
+		mdv.addObject("active", "register");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
 
 		return mdv;
 	}
@@ -200,13 +285,15 @@ public class HomeController {
 	ModelAndView account() {
 		ModelAndView mdv = new ModelAndView();
 
-		if (SessionUtilities.getUsername() == null) {
+		UserDTO user = SessionUtilities.getUser();
+		if (user == null || SessionUtilities.getUsername() == null) {
 			ModelAndView loginView = new ModelAndView("redirect:/login");
 			return loginView;
 		}
 
 		mdv.setViewName("user/account");
-		mdv.addObject("user", SessionUtilities.getUser());
+		mdv.addObject("user", user);
+		mdv.addObject("active", "account");
 
 		return mdv;
 	}
@@ -220,6 +307,16 @@ public class HomeController {
 			return mdv;
 		}
 		mdv.setViewName("user/changepassword");
+		mdv.addObject("active", "account");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
 		return mdv;
 
 	}
@@ -331,6 +428,14 @@ public class HomeController {
 		List<BookingDTO> bookingList = this.bookingService.findBookingByUserId(SessionUtilities.getUser().getId());
 
 		mdv.addObject("bookingList", bookingList);
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
 
 		return mdv;
 
@@ -350,6 +455,15 @@ public class HomeController {
 		if (booking != null) {
 			mdv.setViewName("user/user-booking");
 			mdv.addObject("booking", booking);
+			
+			// Add user info for dropdown
+			try {
+				UserDTO user = SessionUtilities.getUser();
+				mdv.addObject("user", user);
+			} catch (Exception e) {
+				mdv.addObject("user", null);
+			}
+			
 			return mdv;
 		}
 
@@ -384,18 +498,134 @@ public class HomeController {
 	}
 
 	@GetMapping("/about")
-	public String about() {
-		return "/user/about";
+	public ModelAndView about() {
+		ModelAndView mdv = new ModelAndView("user/about");
+		mdv.addObject("active", "about");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
 	}
 
 	@GetMapping("/tin-tuc")
-	public String news() {
-		return "/user/tin-tuc";
+	ModelAndView news() {
+		ModelAndView mdv = new ModelAndView("user/tin-tuc");
+		
+		// Lấy tất cả tin tức đã đăng
+		List<TinTuc> tinTucList = this.tinTucService.getAllPage(PageRequest.of(0, 10)).getContent();
+		
+		mdv.addObject("tinTucList", tinTucList);
+		mdv.addObject("active", "news");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
 	}
 
 	@GetMapping("/contact")
-	public String contact() {
-		return "/user/contact";
+	public ModelAndView contact() {
+		ModelAndView mdv = new ModelAndView("user/contact");
+		mdv.addObject("active", "contact");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
+	}
+
+	@GetMapping("/testimonial")
+	ModelAndView testimonial() {
+		ModelAndView mdv = new ModelAndView("user/testimonial");
+		
+		// Lấy tất cả review đã được approve
+		List<ReviewDTO> reviewList = this.reviewService.getAllApprovedReviews();
+		
+		mdv.addObject("reviewList", reviewList);
+		mdv.addObject("active", "testimonial");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
+	}
+
+	@GetMapping("/blog")
+	ModelAndView blog() {
+		ModelAndView mdv = new ModelAndView("user/blog");
+		
+		// Lấy tất cả tin tức đã đăng cho trang blog
+		List<TinTuc> blogList = this.tinTucService.getAllPage(PageRequest.of(0, 12)).getContent();
+		
+		mdv.addObject("blogList", blogList);
+		mdv.addObject("active", "blog");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
+	}
+
+	@GetMapping("/voucher")
+	ModelAndView voucher() {
+		ModelAndView mdv = new ModelAndView("user/voucher");
+		
+		if (!this.userService.checkLogin()) {
+			ModelAndView loginView = new ModelAndView("redirect:/login");
+			return loginView;
+		}
+		
+		try {
+			Long userId = SessionUtilities.getUser().getId();
+			List<VoucherDTO> userVouchers = this.userVoucherService.getUserVouchers(userId);
+			List<VoucherDTO> availableVouchers = this.voucherService.getActiveVouchers();
+			
+			mdv.addObject("userVouchers", userVouchers);
+			mdv.addObject("availableVouchers", availableVouchers);
+		} catch (Exception e) {
+			// Nếu có lỗi, trả về danh sách voucher có sẵn
+			List<VoucherDTO> availableVouchers = this.voucherService.getActiveVouchers();
+			mdv.addObject("userVouchers", java.util.Collections.emptyList());
+			mdv.addObject("availableVouchers", availableVouchers);
+		}
+		
+		mdv.addObject("active", "voucher");
+		
+		// Add user info for dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
 	}
 
 }

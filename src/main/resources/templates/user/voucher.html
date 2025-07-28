@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>CAMPUCHIA TOUR - Voucher</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="public/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="/public/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="public/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="public/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="public/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    	<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
+
+    <!-- Header Start -->
+    <div class="container-fluid page-header">
+        <div class="container">
+            <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
+                <h3 class="display-4 text-white text-uppercase">Voucher</h3>
+                <div class="d-inline-flex text-white">
+                    <p class="m-0 text-uppercase"><a class="text-white" href="/">Trang chủ</a></p>
+                    <i class="fa fa-angle-double-right pt-1 px-3"></i>
+                    <p class="m-0 text-uppercase">Voucher</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Voucher Start -->
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <div class="text-center mb-3 pb-3">
+                <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Khuyến mãi</h6>
+                <h1>Voucher giảm giá của bạn</h1>
+            </div>
+            
+            <!-- Thông báo nếu không có voucher -->
+            <div th:if="${#lists.isEmpty(userVouchers)}" class="text-center py-5">
+                <i class="fa fa-tag text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">Bạn chưa có voucher nào</h4>
+                <p class="text-muted">Hãy đặt tour để nhận voucher giảm giá!</p>
+                <a href="/tour/trong-nuoc" class="btn btn-primary">Xem tour ngay</a>
+            </div>
+
+            <!-- Danh sách voucher -->
+            <div th:if="${not #lists.isEmpty(userVouchers)}" class="row">
+                <div th:each="voucher : ${userVouchers}" class="col-lg-4 col-md-6 mb-4">
+                    <div class="package-item bg-white mb-2">
+                        <div class="p-4 text-center">
+                            <div class="mb-3">
+                                <i class="fa fa-tag text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-primary mb-3" th:text="${voucher.code}">Mã voucher</h4>
+                            <div class="mb-3">
+                                <span class="badge badge-success" th:if="${voucher.discount != null}" 
+                                      th:text="'Giảm ' + ${#numbers.formatInteger(voucher.discount,3,'POINT')} + ' VNĐ'">Giảm giá</span>
+                            </div>
+                            <p class="mb-3" th:text="${voucher.dieuKien}">Điều kiện áp dụng</p>
+                            <div class="text-muted mb-3">
+                                <small th:if="${voucher.expiry_date != null}" th:text="'Hết hạn: ' + ${voucher.expiry_date}">Ngày hết hạn</small>
+                            </div>
+                            <div class="mt-3">
+                                <span class="badge badge-info" th:if="${voucher.isUsed}" th:text="'Đã sử dụng'">Đã sử dụng</span>
+                                <span class="badge badge-success" th:if="${!voucher.isUsed}" th:text="'Có thể sử dụng'">Có thể sử dụng</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voucher có sẵn cho tất cả -->
+            <div class="text-center mb-3 pb-3 mt-5">
+                <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Khuyến mãi</h6>
+                <h1>Voucher có sẵn</h1>
+            </div>
+            <div class="row">
+                <div th:each="voucher : ${availableVouchers}" class="col-lg-4 col-md-6 mb-4">
+                    <div class="package-item bg-white mb-2">
+                        <div class="p-4 text-center">
+                            <div class="mb-3">
+                                <i class="fa fa-gift text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-warning mb-3" th:text="${voucher.code}">Mã voucher</h4>
+                            <div class="mb-3">
+                                <span class="badge badge-success" th:if="${voucher.discount != null}" 
+                                      th:text="'Giảm ' + ${#numbers.formatInteger(voucher.discount,3,'POINT')} + ' VNĐ'">Giảm giá</span>
+                            </div>
+                            <p class="mb-3" th:text="${voucher.dieuKien}">Điều kiện áp dụng</p>
+                            <div class="text-muted">
+                                <small th:if="${voucher.expiry_date != null}" th:text="'Hết hạn: ' + ${voucher.expiry_date}">Ngày hết hạn</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Voucher End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white-50 py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
+        <div class="row pt-5">
+            <div class="col-lg-4 col-md-6 mb-5">
+                <a href="" class="navbar-brand">
+                    <h1 class="text-primary">
+                        <span class="text-white">CAMPUCHIA</span> TOUR
+                    </h1>
+                </a>
+                <p>Công ty dịch vụ du lịch và vận chuyển Campuchia</p>
+                <h6 class="text-white text-uppercase mt-4 mb-3" style="letter-spacing: 5px;">Theo dõi chúng tôi</h6>
+                <div class="d-flex justify-content-start">
+                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Dịch vụ của chúng tôi</h5>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Về chúng tôi</a>
+                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Đặt tour</a>
+                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Liên hệ</a>
+                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tin tức</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Liên hệ</h5>
+                <p><i class="fa fa-map-marker-alt mr-2"></i>123 Đường ABC, TP.HCM, Việt Nam</p>
+                <p><i class="fa fa-phone-alt mr-2"></i>+(84)365666321</p>
+                <p><i class="fa fa-envelope mr-2"></i>allecra.ira@gmail.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <div class="row">
+            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
+                <p class="m-0 text-white-50">Copyright &copy; <a href="#">CAMPUCHIA TOUR</a>. All Rights Reserved.</p>
+            </div>
+            <div class="col-lg-6 text-center text-md-right">
+                <p class="m-0 text-white-50">Designed by <a href="#">CAMPUCHIA TOUR</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="public/lib/easing/easing.min.js"></script>
+    <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="public/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="public/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="public/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="public/js/main.js"></script>
+</body>
+
+</html> 

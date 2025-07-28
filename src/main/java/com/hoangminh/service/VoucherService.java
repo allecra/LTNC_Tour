@@ -8,4 +8,7 @@ public interface VoucherService {
     boolean add(VoucherDTO dto);
     boolean update(Long id, VoucherDTO dto);
     boolean delete(Long id);
+    
+    // Thêm method để lấy voucher còn hiệu lực
+    List<VoucherDTO> getActiveVouchers();
 } 

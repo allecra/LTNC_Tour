@@ -12,4 +12,7 @@ public interface ReviewService {
     java.util.List<com.hoangminh.dto.ReviewAdminDTO> getAllAdmin();
     boolean approveReview(Long id);
     boolean deleteReview(Long id);
+    
+    // Thêm method để lấy tất cả review đã được approve
+    List<ReviewDTO> getAllApprovedReviews();
 }

@@ -36,67 +36,10 @@
 <body>
 
 
-<!-- Topbar Start -->
-<div class="container-fluid bg-light pt-3 d-none d-lg-block">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <p>
-                        <i class="fa fa-envelope mr-2"></i>allecra.ira@gmail.com
-                    </p>
-                    <p class="text-body px-3">|</p>
-                    <p>
-                        <i class="fa fa-phone-alt mr-2"></i>+(84)365666321
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-primary px-3" href=""> <i
-                            class="fab fa-facebook-f"></i>
-                    </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-twitter"></i>
-                </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-linkedin-in"></i>
-                </a> <a class="text-primary px-3" href=""> <i
-                        class="fab fa-instagram"></i>
-                </a> <a class="text-primary pl-3" href=""> <i
-                        class="fab fa-youtube"></i>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Topbar End -->
+	<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
+	
 
-
-<!-- Navbar Start -->
-<div class="container-fluid position-relative nav-bar p-0">
-    <div class="container-lg position-relative p-0 px-lg-3"
-         style="z-index: 9;">
-        <nav
-                class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-            <a href="" class="navbar-brand">
-                <h1 class="m-0 text-primary">
-                    <span class="text-dark">CAMPUCHIA</span> TOUR
-                </h1>
-            </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse"
-                    data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between px-3"
-                 id="navbarCollapse">
-                <div class="navbar-nav ml-auto py-0">
-                    <a href="/" class="nav-item nav-link active">Trang chủ</a>
-                    <a href="/tour/trong-nuoc" class="nav-item nav-link">Tour trong nước</a>
-                    <a href="/tour/ngoai-nuoc" class="nav-item nav-link">Tour ngoài nước</a>
-                    <a href="/tin-tuc" class="nav-item nav-link">Tin tức</a>
-                    <a href="/about" class="nav-item nav-link">Về chúng tôi</a>
-                    <a href="/account" class="nav-item nav-link">Tài khoản</a>
-                </div>
             </div>
         </nav>
     </div>
@@ -160,16 +103,20 @@
 <!-- Blog Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
+        <div class="text-center mb-3 pb-3">
+            <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Tin tức</h6>
+            <h1>Tin tức du lịch mới nhất</h1>
+        </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div th:each="tinTuc : ${tinTucList}" class="col-lg-12 mb-4">
                 <!-- Blog Detail Start -->
                 <div class="pb-3">
                     <div class="blog-item">
                         <div class="position-relative">
                             <img class="img-fluid w-100" src="public/img/blog-1.jpg" alt="">
                             <div class="blog-date">
-                                <h6 class="font-weight-bold mb-n1">01</h6>
-                                <small class="text-white text-uppercase">Jan</small>
+                                <h6 class="font-weight-bold mb-n1" th:text="${#dates.format(tinTuc.ngay_dang, 'dd')}">01</h6>
+                                <small class="text-white text-uppercase" th:text="${#dates.format(tinTuc.ngay_dang, 'MMM')}">Jan</small>
                             </div>
                         </div>
                     </div>
@@ -179,21 +126,14 @@
                             <span class="text-primary px-2">|</span>
                             <a class="text-primary text-uppercase text-decoration-none" href="">Tin tức du lịch</a>
                         </div>
-                        <h2 class="mb-3">Khám phá Vẻ Đẹp Bãi Biển Việt Nam Trong Mùa Hè 2023</h2>
-                        <p>Việt Nam - Với mùa hè đang đến gần, du lịch biển tại Việt Nam đang sẵn sàng chào đón du khách từ khắp nơi trên thế giới. Với hàng dãy bãi biển nổi tiếng và vẻ đẹp hoang sơ của thiên nhiên, Việt Nam tự hào là một điểm đến lý tưởng cho những người yêu thích khám phá và tận hưởng bầu không khí mát mẻ của biển cả.</p>
-                        <p>Bãi biển Nha Trang, với bãi cát trắng mịn và nước biển trong xanh, hứa hẹn mang đến cho du khách những trải nghiệm tuyệt vời. Du khách có thể tham gia các hoạt động như lặn biển, lướt ván, snorkeling hoặc đơn giản chỉ thư giãn trên bãi cát. Bên cạnh đó, Nha Trang còn có các khu nghỉ dưỡng cao cấp, nhà hàng và các quán bar đẳng cấp quốc tế để đáp ứng mọi nhu cầu giải trí và thư giãn của du khách.</p>
-                        <h4 class="mb-3">Hãy cùng khám phá</h4>
-                        <img class="img-fluid w-50 float-left mr-4 mb-2" src="/public/img/blog-2.jpg">
-                        <p>Đảo Phú Quốc, còn được gọi là "Ngọc Đảo" của Việt Nam, nằm ở phía Nam của quốc gia. Đảo này là một thiên đường hoang sơ với bãi biển trải dài, rừng nhiệt đới và nước biển trong xanh. Du khách có thể thăm quan các vườn quốc gia, tham gia các hoạt động như đi bộ đường dài, câu cá và chèo thuyền kayak. Đảo Phú Quốc cũng nổi tiếng với các khu nghỉ dưỡng sang trọng và các nhà hàng độc đáo, nơi du khách có thể thưởng thức những món ăn hảo hạng từ hải sản tươi ngon.</p>
-                        <h5 class="mb-3">Thật tuyệt vời đúng không</h5>
-                        <img class="img-fluid w-50 float-right ml-4 mb-2" src="/public/img/blog-3.jpg">
-                        <p>Hội An, một thành phố cổ bên bờ sông Thu Bồn, là một điểm đến lý tưởng cho những ai muốn kết hợp giữa du lịch biển và du lịch văn hóa. Với kiến trúc độc đáo và phong cách cổ điển, Hội An thu hút du khách bằng các phố cổ nhộn nhịp, chợ đêm và các ngôi đền lịch sử. Du khách cũng có thể dạo chơi trên các bãi biển xung quanh Hội An như An Bàng hay Cửa Đại, nơi có những bãi cát trắng tinh khiết và không gian yên bình.</p>
-                        <p>Đến với Việt Nam trong mùa hè 2023, du khách không chỉ được trải nghiệm vẻ đẹp của bãi biển, mà còn có cơ hội khám phá văn hóa độc đáo và thưởng thức ẩm thực tuyệt vời của đất nước này. Việt Nam, với thiên nhiên tươi đẹp và sự mến khách của người dân, chắc chắn sẽ mang lại những kỷ niệm khó quên cho du khách trên hành trình khám phá hè biển năm nay.</p>
-                        <p>Đến với Việt Nam trong mùa hè 2023, du khách không chỉ được trải nghiệm vẻ đẹp của bãi biển, mà còn có cơ hội khám phá văn hóa độc đáo và thưởng thức ẩm thực tuyệt vời của đất nước này. Việt Nam, với thiên nhiên tươi đẹp và sự mến khách của người dân, chắc chắn sẽ mang lại những kỷ niệm khó quên cho du khách trên hành trình khám phá hè biển năm nay.</p>
+                        <h2 class="mb-3" th:text="${tinTuc.tieuDe}">Tiêu đề tin tức</h2>
+                        <p th:text="${tinTuc.tom_tat}">Tóm tắt tin tức</p>
+                        <div th:utext="${tinTuc.noi_dung}">
+                            Nội dung tin tức
+                        </div>
                     </div>
                 </div>
                 <!-- Blog Detail End -->
-
             </div>
         </div>
     </div>
@@ -303,8 +243,8 @@
 
 
 <!-- JavaScript Libraries -->
-<script src="/public/js/boostrap-bundle.min.js"></script>
-<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/boostrap-bundle.min.js"></script>
 <script src="public/lib/easing/easing.min.js"></script>
 <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
 <script src="public/lib/tempusdominus/js/moment.min.js"></script>
@@ -319,8 +259,34 @@
 <!-- Template Javascript -->
 <script src="public/js/main.js"></script>
 <script type="text/javascript">
-
-
+	// Dropdown functionality cho trang tin tức
+	$(document).ready(function() {
+		console.log('Tin tuc page loaded');
+		
+		// Thêm event listener cho dropdown toggle
+		$(document).on('click', '.dropdown-toggle', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			console.log('Tin tuc: Dropdown clicked');
+			
+			var dropdownMenu = $(this).next('.dropdown-menu');
+			dropdownMenu.toggleClass('show');
+			
+			return false;
+		});
+		
+		// Đóng dropdown khi click ra ngoài
+		$(document).on('click', function(e) {
+			if (!$(e.target).closest('.dropdown').length) {
+				$('.dropdown-menu').removeClass('show');
+			}
+		});
+		
+		// Đóng dropdown khi click vào link trong dropdown
+		$(document).on('click', '.dropdown-menu a', function() {
+			$('.dropdown-menu').removeClass('show');
+		});
+	});
 </script>
 </body>
 

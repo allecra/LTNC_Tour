@@ -36,66 +36,8 @@
 <body>
 
 
-	<!-- Topbar Start -->
-	<div class="container-fluid bg-light pt-3 d-none d-lg-block">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-					<div class="d-inline-flex align-items-center">
-						<p>
-							<i class="fa fa-envelope mr-2"></i>info@example.com
-						</p>
-						<p class="text-body px-3">|</p>
-						<p>
-							<i class="fa fa-phone-alt mr-2"></i>+012 345 6789
-						</p>
-					</div>
-				</div>
-				<div class="col-lg-6 text-center text-lg-right">
-					<div class="d-inline-flex align-items-center">
-						<a class="text-primary px-3" href=""> <i
-							class="fab fa-facebook-f"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-twitter"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-linkedin-in"></i>
-						</a> <a class="text-primary px-3" href=""> <i
-							class="fab fa-instagram"></i>
-						</a> <a class="text-primary pl-3" href=""> <i
-							class="fab fa-youtube"></i>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Topbar End -->
-
-
-	<!-- Navbar Start -->
-	<div class="container-fluid position-relative nav-bar p-0">
-		<div class="container-lg position-relative p-0 px-lg-3"
-			style="z-index: 9;">
-			<nav
-				class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-				<a href="" class="navbar-brand">
-					<h1 class="m-0 text-primary">
-						<span class="text-dark">HOÀNG MINH</span> TOUR
-					</h1>
-				</a>
-				<button type="button" class="navbar-toggler" data-toggle="collapse"
-					data-target="#navbarCollapse">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse justify-content-between px-3"
-					id="navbarCollapse">
-					<div class="navbar-nav ml-auto py-0">
-						<a href="/" class="nav-item nav-link active">Trang chủ</a> <a
-							href="/tour/trong-nuoc" class="nav-item nav-link">Tour trong
-							nước</a> <a href="/tour/ngoai-nuoc" class="nav-item nav-link">Tour
-							ngoài nước</a> <a href="/tin-tuc" class="nav-item nav-link">Tin
-							tức</a> <a href="/lien-he" class="nav-item nav-link">Liên hệ</a> <a
-							href="/account" class="nav-item nav-link">Tài khoản</a>
+	<!-- Include Header Fragment -->
+	<div th:replace="user/fragments/header :: header"></div>
 					</div>
 				</div>
 			</nav>
@@ -123,14 +65,14 @@
 							<div class="form-row">
 								<div class="control-group col-sm-6">
 									<input type="text" class="form-control p-4" id="username"
-										disabled="disabled" name="username" th:value="${user.username}"
+										disabled="disabled" name="username" th:value="${user != null ? user.username : ''}"
 										placeholder="Tên người dùng" required="required"
 										data-validation-required-message="Vui lòng nhập tên người dùng" />
 									<p class="help-block text-danger"></p>
 								</div>
 								<div class="control-group col-sm-6">
 									<input type="text" class="form-control p-4" name="ho_ten" id="email" placeholder="Họ tên"
-										required="required" th:value="${user.ho_ten}"
+										required="required" th:value="${user != null ? user.ho_ten : ''}"
 										data-validation-required-message="Vui lòng nhập họ và tên"
 										disabled="disabled" />
 									<p class="help-block text-danger"></p>
@@ -139,7 +81,7 @@
 							<div class="control-group">
 								<input type="email" class="form-control p-4" name="email"
 									id="subjectd" placeholder="Email" required="required"
-									disabled="disabled" th:value="${user.email}"
+									disabled="disabled" th:value="${user != null ? user.email : ''}"
 									data-validation-required-message="Vui lòng nhập email" />
 								<p class="help-block text-danger"></p>
 							</div>
@@ -147,14 +89,14 @@
 								<div class="control-group col-sm-6">
 									<input type="tel" class="form-control p-4" id="name" name="sdt"
 										placeholder="Số điện thoại" required="required"
-										disabled="disabled" th:value="${user.sdt}"
+										disabled="disabled" th:value="${user != null ? user.sdt : ''}"
 										data-validation-required-message="Vui lòng nhập số điện thoại" />
 									<p class="help-block text-danger"></p>
 								</div>
 								<div class="control-group col-sm-6">
 									<div class="mb-3 mb-md-0">
 										<select class="custom-select px-4" id="select-gender" disabled="disabled"
-											name="gioi_tinh" th:value="${user.gioi_tinh}" style="height: 47px;">
+											name="gioi_tinh" th:value="${user != null ? user.gioi_tinh : ''}" style="height: 47px;">
 											<option value="Nam">Nam</option>
 											<option value="Nữ">Nữ</option>
 										</select>
@@ -164,7 +106,7 @@
 							<div class="control-group">
 								<input type="text" class="form-control p-4" name="dia_chi"
 									id="subject" placeholder="Địa chỉ" required="required"
-									disabled="disabled" th:value="${user.dia_chi}"
+									disabled="disabled" th:value="${user != null ? user.dia_chi : ''}"
 									data-validation-required-message="Vui lòng nhập địa chỉ" />
 								<p class="help-block text-danger"></p>
 							</div>
@@ -289,8 +231,8 @@
 
 
 	<!-- JavaScript Libraries -->
-	<script src="/public/js/boostrap-bundle.min.js"></script>
 	<script src="/public/js/jquery.js"></script>
+	<script src="/public/js/boostrap-bundle.min.js"></script>
 	<script src="public/lib/easing/easing.min.js"></script>
 	<script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="public/lib/tempusdominus/js/moment.min.js"></script>
