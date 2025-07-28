@@ -28,7 +28,8 @@
 	rel="stylesheet" />
 
 <!-- Customized Bootstrap Stylesheet -->
-<link href="/public/css/style.css" rel="stylesheet">
+    <link href="/public/css/style.css" rel="stylesheet">
+    <link href="/public/css/blue-white-override.css" rel="stylesheet">
 <style>
 	.dropdown-menu.show {
 		display: block !important;
@@ -249,9 +250,8 @@
 							</div>
 							<div class="row">
 								<div class="col-12">
-									<button type="submit" class="btn btn-warning btn-lg btn-block" style="height: 50px; font-size: 1.2rem; font-weight: bold; background-color: #ff6b35; border: none;">
-										<i class="fa fa-search mr-2"></i>Tìm
-									</button>
+									<!-- Thay đổi nút tìm kiếm về xanh-trắng -->
+									<button type="submit" class="btn btn-primary btn-lg btn-block" style="height: 50px; font-size: 1.2rem; font-weight: bold;"> <i class="fa fa-search mr-2"></i>Tìm </button>
 								</div>
 							</div>
 						</form>
@@ -286,7 +286,7 @@
 						<div class="mr-4">
 							<div class="position-relative d-inline-block">
 								<i class="fa fa-smile fa-3x text-primary"></i>
-								<i class="fa fa-star fa-1x text-warning position-absolute" style="top: -5px; right: -5px;"></i>
+								<i class="fa fa-star fa-1x text-primary position-absolute" style="top: -5px; right: -5px;"></i>
 							</div>
 						</div>
 						<div>
@@ -484,7 +484,8 @@
 							</div>
 							<h4 class="text-primary mb-3" th:text="${voucher.code}">Mã voucher</h4>
 							<div class="mb-3">
-								<span class="badge badge-success" th:if="${voucher.discount != null}" th:text="'Giảm ' + ${#numbers.formatInteger(voucher.discount,3,'POINT')} + ' VNĐ'">Giảm giá</span>
+								<!-- Thay đổi các icon, badge, text-warning, text-danger, text-success, text-info, text-secondary, text-muted thành xanh-trắng -->
+								<span class="badge badge-primary" th:if="${voucher.discount != null}" th:text="'Giảm ' + ${#numbers.formatInteger(voucher.discount,3,'POINT')} + ' VNĐ'">Giảm giá</span>
 							</div>
 							<p class="mb-3" th:text="${voucher.dieuKien}">Điều kiện áp dụng</p>
 							<div class="text-muted">

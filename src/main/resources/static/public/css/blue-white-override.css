@@ -1,0 +1,261 @@
+/* ===== BLUE-WHITE THEME OVERRIDE ===== */
+/* This file should be loaded AFTER all other CSS files */
+
+:root {
+  --blue: #1e3a8a !important;
+  --indigo: #1e3a8a !important;
+  --purple: #1e3a8a !important;
+  --pink: #1e3a8a !important;
+  --red: #1e3a8a !important;
+  --orange: #1e3a8a !important;
+  --yellow: #1e3a8a !important;
+  --green: #1e3a8a !important;
+  --teal: #1e3a8a !important;
+  --cyan: #1e3a8a !important;
+  --white: #fff !important;
+  --gray: #1e3a8a !important;
+  --gray-dark: #1e3a8a !important;
+  --primary: #1e3a8a !important;
+  --secondary: #fff !important;
+  --success: #1e3a8a !important;
+  --info: #1e3a8a !important;
+  --warning: #1e3a8a !important;
+  --danger: #1e3a8a !important;
+  --light: #fff !important;
+  --dark: #1e3a8a !important;
+}
+
+/* Override all buttons */
+.btn, .btn-primary, .btn-secondary, .btn-success, .btn-info, .btn-warning, .btn-danger, .btn-light, .btn-dark {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+  border-color: #1e3a8a !important;
+}
+
+.btn:hover, .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-info:hover, .btn-warning:hover, .btn-danger:hover, .btn-light:hover, .btn-dark:hover {
+  background-color: #60a5fa !important;
+  color: #fff !important;
+  border-color: #60a5fa !important;
+}
+
+/* Override outline buttons */
+.btn-outline-primary, .btn-outline-secondary, .btn-outline-success, .btn-outline-info, .btn-outline-warning, .btn-outline-danger, .btn-outline-light, .btn-outline-dark {
+  color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-secondary:hover, .btn-outline-success:hover, .btn-outline-info:hover, .btn-outline-warning:hover, .btn-outline-danger:hover, .btn-outline-light:hover, .btn-outline-dark:hover {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+/* Override backgrounds */
+.bg-primary, .bg-secondary, .bg-success, .bg-info, .bg-warning, .bg-danger, .bg-dark {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+.bg-light, .bg-white {
+  background-color: #fff !important;
+  color: #1e3a8a !important;
+}
+
+/* Override text colors */
+.text-primary, .text-secondary, .text-success, .text-info, .text-warning, .text-danger, .text-dark {
+  color: #1e3a8a !important;
+}
+
+.text-light, .text-white {
+  color: #fff !important;
+}
+
+/* Override badges */
+.badge, .badge-primary, .badge-secondary, .badge-success, .badge-info, .badge-warning, .badge-danger, .badge-dark {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+.badge-light {
+  background-color: #fff !important;
+  color: #1e3a8a !important;
+  border: 1px solid #1e3a8a !important;
+}
+
+/* Override navbar */
+.navbar {
+  background-color: #1e3a8a !important;
+}
+
+.navbar-light .navbar-nav .nav-link.active,
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.show {
+  color: #1e3a8a !important;
+  font-weight: bold !important;
+}
+
+.navbar .nav-link, .navbar-brand {
+  color: #fff !important;
+}
+
+.navbar .nav-link:hover, .navbar-brand:hover {
+  color: #93c5fd !important;
+}
+
+.navbar .nav-link.active, .navbar-brand.active {
+  color: #fff !important;
+  font-weight: bold !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+/* Override dropdown */
+.dropdown-menu {
+  background-color: #fff !important;
+  border: 1px solid #1e3a8a !important;
+}
+
+.dropdown-item {
+  color: #1e3a8a !important;
+}
+
+.dropdown-item:hover {
+  background-color: #dbeafe !important;
+  color: #1e3a8a !important;
+}
+
+/* Override form controls */
+.form-control {
+  border-color: #1e3a8a !important;
+  color: #1e3a8a !important;
+}
+
+.form-control:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 .2rem rgba(59,130,246,.25) !important;
+}
+
+/* Override cards and items */
+.card, .package-item, .service-item, .team-item, .blog-item {
+  border-color: #1e3a8a !important;
+  background-color: #fff !important;
+}
+
+.card:hover, .package-item:hover, .service-item:hover, .team-item:hover, .blog-item:hover {
+  box-shadow: 0 0 20px rgba(59,130,246,.2) !important;
+}
+
+/* Override blog date */
+.blog-date {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+.blog-date::after {
+  border-color: transparent #1e3a8a #1e3a8a transparent !important;
+}
+
+/* Override carousel dots */
+.testimonial-carousel .owl-dot.active {
+  background-color: #1e3a8a !important;
+}
+
+/* Override service icons */
+.service-item i {
+  color: #1e3a8a !important;
+}
+
+.service-item:hover i {
+  color: #60a5fa !important;
+}
+
+/* Override footer */
+.footer {
+  background-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+.footer a {
+  color: #fff !important;
+}
+
+.footer a:hover {
+  color: #93c5fd !important;
+}
+
+/* Override any inline styles with green/yellow/orange colors */
+*[style*="green"], *[style*="#1e3a8a"], *[style*="#66CC33"] {
+  color: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+}
+
+*[style*="yellow"], *[style*="orange"], *[style*="#FFCC00"], *[style*="#ffc107"] {
+  color: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+}
+
+/* Override pagination */
+.page-link {
+  color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+}
+
+.page-item.active .page-link {
+  background-color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+/* Override alerts */
+.alert-primary, .alert-success, .alert-info, .alert-warning, .alert-danger {
+  background-color: #dbeafe !important;
+  border-color: #1e3a8a !important;
+  color: #1e3a8a !important;
+}
+
+/* Override progress bars */
+.progress-bar {
+  background-color: #1e3a8a !important;
+}
+
+/* Override list group items */
+.list-group-item.active {
+  background-color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+  color: #fff !important;
+}
+
+/* Override custom controls */
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+}
+
+/* Override range sliders */
+.custom-range::-webkit-slider-thumb,
+.custom-range::-moz-range-thumb,
+.custom-range::-ms-thumb {
+  background-color: #1e3a8a !important;
+}
+
+/* Override any remaining Bootstrap colors */
+.border-primary, .border-success, .border-info, .border-warning, .border-danger {
+  border-color: #1e3a8a !important;
+}
+
+/* Force override any remaining colors */
+* {
+  color: inherit !important;
+}
+
+/* Ensure all text is either blue or white */
+body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, td, th {
+  color: #1e3a8a !important;
+}
+
+/* White text for dark backgrounds */
+.navbar *, .footer *, .bg-primary *, .bg-dark *, .btn *, .badge * {
+  color: #fff !important;
+} 

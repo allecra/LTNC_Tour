@@ -13,7 +13,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> 
 
     <!-- Font Awesome -->
     <link href="/public/css/all.min.css" rel="stylesheet">
@@ -31,7 +31,7 @@
 	<div th:replace="user/fragments/header :: header"></div>
 	
 
-					</div>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -127,7 +127,7 @@
                             <span th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="text-muted">
                                 <i class="fa fa-star"></i>
                             </span>
-                        </div>
+                    </div>
                         <h5 class="text-truncate" th:text="${review.user_name}">Tên khách hàng</h5>
                         <span th:text="${review.tour_name}">Tên tour</span>
                     </div>

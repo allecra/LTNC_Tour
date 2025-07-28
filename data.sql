@@ -119,7 +119,7 @@ INSERT INTO `payment` (`id`, `ho_ten_nguoi_nhan`, `so_tai_khoan`, `ten_ngan_hang
 -- Dữ liệu mẫu cho bảng 'notification'
 INSERT INTO `notification` (`user_id`, `message`, `is_read`, `created_at`) VALUES
 (1, 'Chào mừng bạn đến với hệ thống!', 0, NOW()),
-(2, 'Bạn vừa đặt tour thành công.', 0, NOW());
+(2, 'Bạn vừa đặt tour thành công.', 0, NOW()); 
 
 -- Dữ liệu mẫu cho bảng 'user_voucher'
 INSERT INTO `user_voucher` (`id`, `user_id`, `voucher_id`, `is_used`, `received_at`) VALUES
