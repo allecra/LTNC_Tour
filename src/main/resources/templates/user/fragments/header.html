@@ -55,28 +55,28 @@
                                     <i class="fa fa-user mr-1"></i>Tài khoản
                                     <i class="fa fa-chevron-down ml-1" style="font-size: 12px;"></i>
                                 </a>
-                                <div class="dropdown-menu" style="min-width: 280px; padding: 20px;">
+                                <div class="dropdown-menu" style="min-width: 280px; padding: 20px; background-color: #ffffff; border: 2px solid #e3f2fd; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
                                     <!-- Chưa đăng nhập -->
                                     <div th:if="${user == null}">
-                                        <a href="/register" class="btn btn-primary btn-block mb-3" style="background-color: #007bff; border: none; padding: 12px; font-weight: bold; border-radius: 8px; text-decoration: none; display: block; text-align: center;">
+                                        <a href="/register" class="btn btn-primary btn-block mb-3" style="background-color: #1e3a8a; border: none; padding: 12px; font-weight: bold; border-radius: 8px; text-decoration: none; display: block; text-align: center; transition: all 0.3s ease;">
                                             Đăng ký
                                         </a>
-                                        <p class="text-center mb-0" style="font-size: 14px; color: #666;">
+                                        <p class="text-center mb-0" style="font-size: 14px; color: #333 !important; font-weight: 400;">
                                             Quý khách đã có tài khoản? 
-                                            <a href="/login" style="color: #007bff; text-decoration: underline;">Đăng nhập ngay</a>
+                                            <a href="/login" style="color: #007bff !important; text-decoration: underline; font-weight: 500;">Đăng nhập ngay</a>
                                         </p>
                                     </div>
                                     <!-- Đã đăng nhập -->
                                     <div th:if="${user != null}">
-                                        <div class="dropdown-header">
+                                        <div class="dropdown-header" style="color: #1e3a8a; font-weight: 600; padding: 8px 0;">
                                             <strong>Xin chào, <span th:text="${user.ho_ten}">User</span></strong>
                                         </div>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/account">👤 Thông tin tài khoản</a>
-                                        <a class="dropdown-item" href="/user/tour">📋 Lịch sử đặt tour</a>
-                                        <a class="dropdown-item" href="/changepassword">🔑 Đổi mật khẩu</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/logout">🚪 Đăng xuất</a>
+                                        <div class="dropdown-divider" style="border-color: #e3f2fd;"></div>
+                                        <a class="dropdown-item" href="/account" style="padding: 10px 15px; color: #1e3a8a; text-decoration: none; display: block; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; margin-bottom: 3px; border: 1px solid transparent;">👤 Thông tin tài khoản</a>
+                                        <a class="dropdown-item" href="/user/tour" style="padding: 10px 15px; color: #1e3a8a; text-decoration: none; display: block; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; margin-bottom: 3px; border: 1px solid transparent;">📋 Lịch sử đặt tour</a>
+                                        <a class="dropdown-item" href="/changepassword" style="padding: 10px 15px; color: #1e3a8a; text-decoration: none; display: block; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; margin-bottom: 3px; border: 1px solid transparent;">🔑 Đổi mật khẩu</a>
+                                        <div class="dropdown-divider" style="border-color: #e3f2fd;"></div>
+                                        <a class="dropdown-item" href="/logout" style="padding: 10px 15px; color: #dc3545; text-decoration: none; display: block; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; border: 1px solid transparent;">🚪 Đăng xuất</a>
                                     </div>
                                 </div>
                             </li>
@@ -242,6 +242,23 @@
         .dropdown-item:hover i {
             color: #007bff !important;
             transform: scale(1.1) !important;
+        }
+        
+        /* Account dropdown specific styling */
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #e3f2fd !important;
+            color: #1e3a8a !important;
+            transform: translateX(5px) !important;
+            border-color: #007bff !important;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2) !important;
+        }
+        
+        /* Special styling for logout button */
+        .dropdown-menu .dropdown-item[href="/logout"]:hover {
+            background-color: #f8d7da !important;
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            box-shadow: 0 2px 8px rgba(220,53,69,0.2) !important;
         }
         
         /* Responsive adjustments */
