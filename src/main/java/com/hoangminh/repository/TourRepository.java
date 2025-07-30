@@ -23,7 +23,7 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, t.destination.name, t.tourType.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price) FROM Tour t "
 			+ " WHERE (:ten_tour IS NULL OR :ten_tour='' OR t.ten_tour LIKE CONCAT('%', :ten_tour, '%'))"
 			+ " AND ( :tour_type_id IS NULL OR t.tourType.id = :tour_type_id )"
-			+ " AND ( :gia_tour_from IS NULL OR  :gia_tour_to IS NULL OR (t.gia_tour BETWEEN :gia_tour_from AND :gia_tour_to)) AND t.trang_thai='dang_mo_ban' "
+			+ " AND ( :gia_tour_from IS NULL OR  :gia_tour_to IS NULL OR (t.gia_tour BETWEEN :gia_tour_from AND :gia_tour_to)) AND (t.trang_thai='dang_mo_ban' OR t.trang_thai='da_het_cho') "
 			+ " ORDER BY t.id ")
 	Page<TourDTO> findAll(
 			@Param("ten_tour") String ten_tour,

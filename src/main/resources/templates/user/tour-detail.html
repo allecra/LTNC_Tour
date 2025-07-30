@@ -154,29 +154,56 @@
 				</div>
 
 				<div class="col-lg-4 mt-5 mt-lg-0">
-					<!-- Author Bio -->
-					<form th:action="@{/tour/booking}" method="GET"
-						class="d-flex flex-column text-center bg-white mb-5 py-5 px-4">
+					<!-- Tour Info Card -->
+					<div class="d-flex flex-column text-center bg-white mb-5 py-5 px-4">
 						<img th:src="'/public/img/' + ${tour.anh_dai_dien}" class="img-fluid mx-auto mb-3"
 							style="width: 100px;">
 						<h3 class="text-primary mb-3" th:text="${tour.ten_tour}"></h3>
 						<p th:text="${tour.gioi_thieu_tour}">Conset elitr erat vero
 							dolor ipsum et diam, eos dolor lorem, ipsum sit no ut est ipsum
 							erat kasd amet elitr</p>
-						<h4 class="text-danger mb-3">Lịch khởi hành và giá</h4>
-						<select class="custom-select px-4" name="id" style="height: 47px;">
-							<option th:each="date : ${listDate}" th:value="${date.id}"
-								th:text="${#dates.format(date.ngay_khoi_hanh, 'dd-MM-yyyy')}">Chọn
-								ngày khởi hành</option>
-						</select>
-						<input type="hidden" name="tong_tien" id="input_tong_tien" value="">
-						<h5 class="text-danger mt-4" th:attr="data-price=${tour.gia_tour}" id="gia_tour"
-							th:inline="text">Giá : [[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ / người</h5>
-						<input type="number" value="1" class="form-control p-4" id="so_nguoi" name="so_nguoi"
-							placeholder="Nhập số người" />
-						<h5 class="text-danger mt-4 mb-2" id="tong_tien">Tông tiền : 15.000.000 đ</h5>
-						<button type="submit" class="btn btn-primary py-md-3 px-md-5 mt-2">Đặt tour ngay</button>
-					</form>
+						
+						<!-- Hiển thị trạng thái tour -->
+						<div class="mb-3">
+							<span th:if="${tour.trang_thai == 'dang_mo_ban'}" class="badge badge-success" style="font-size: 1rem; padding: 8px 16px;">
+								<i class="fa fa-check-circle mr-2"></i>Đang mở bán
+							</span>
+							<span th:if="${tour.trang_thai == 'da_het_cho'}" class="badge badge-danger" style="font-size: 1rem; padding: 8px 16px;">
+								<i class="fa fa-times-circle mr-2"></i>Đã hết chỗ
+							</span>
+						</div>
+						
+						<!-- Form đặt tour chỉ hiển thị khi tour đang mở bán -->
+						<div th:if="${tour.trang_thai == 'dang_mo_ban'}">
+							<h4 class="text-danger mb-3">Lịch khởi hành và giá</h4>
+							<form th:action="@{/tour/booking}" method="GET">
+								<select class="custom-select px-4" name="id" style="height: 47px;">
+									<option th:each="date : ${listDate}" th:value="${date.id}"
+										th:text="${#dates.format(date.ngay_khoi_hanh, 'dd-MM-yyyy')}">Chọn
+										ngày khởi hành</option>
+								</select>
+								<input type="hidden" name="tong_tien" id="input_tong_tien" value="">
+								<h5 class="text-danger mt-4" th:attr="data-price=${tour.gia_tour}" id="gia_tour"
+									th:inline="text">Giá : [[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ / người</h5>
+								<input type="number" value="1" class="form-control p-4" id="so_nguoi" name="so_nguoi"
+									placeholder="Nhập số người" />
+								<h5 class="text-danger mt-4 mb-2" id="tong_tien">Tông tiền : 15.000.000 đ</h5>
+								<button type="submit" class="btn btn-primary py-md-3 px-md-5 mt-2">Đặt tour ngay</button>
+							</form>
+						</div>
+						
+						<!-- Thông báo khi tour đã hết chỗ -->
+						<div th:if="${tour.trang_thai == 'da_het_cho'}" class="text-center">
+							<div class="alert alert-warning" role="alert">
+								<i class="fa fa-exclamation-triangle mr-2"></i>
+								<strong>Tour này đã hết chỗ!</strong><br>
+								<small>Vui lòng liên hệ với chúng tôi để được tư vấn về các tour khác.</small>
+							</div>
+							<a href="/" class="btn btn-outline-primary mt-3">
+								<i class="fa fa-arrow-left mr-2"></i>Xem tour khác
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

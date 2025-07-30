@@ -3,8 +3,10 @@ package com.hoangminh.controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.hoangminh.dto.*;
 import com.hoangminh.service.BookingService;
@@ -84,27 +86,27 @@ public class HomeController {
 		Page<TourDTO> tourPage = this.tourService.findAllTour(null, null, null, null, PageRequest.of(0, 6));
 		List<TourDTO> tours = tourPage.getContent();
 		
-		// Lấy tour trong nước theo mùa
-		List<TourDTO> domesticToursBySeason = this.tourService.findBySeason(1L); // Giả sử season 1 là mùa xuân
-		List<TourDTO> domesticToursByMonth = this.tourService.findByMonth(1); // Tháng 1
-		
-		// Lấy tour ngoài nước theo mùa
-		List<TourDTO> internationalToursBySeason = this.tourService.findBySeason(2L); // Giả sử season 2 là mùa hè
-		List<TourDTO> internationalToursByMonth = this.tourService.findByMonth(2); // Tháng 2
-		
-		// Lấy tour trong nước (type_id = 1)
-		Page<TourDTO> domesticToursPage = this.tourService.findAllTour(null, null, null, 1L, PageRequest.of(0, 6));
+		// Lấy tour trong nước (type_id = 1) - tất cả tour trong nước
+		Page<TourDTO> domesticToursPage = this.tourService.findAllTour(null, null, null, 1L, PageRequest.of(0, 12));
 		List<TourDTO> domesticTours = domesticToursPage.getContent();
 		
-		// Lấy tour ngoài nước (type_id = 2)
-		Page<TourDTO> internationalToursPage = this.tourService.findAllTour(null, null, null, 2L, PageRequest.of(0, 6));
+		// Lấy tour ngoài nước (type_id = 2) - tất cả tour ngoài nước
+		Page<TourDTO> internationalToursPage = this.tourService.findAllTour(null, null, null, 2L, PageRequest.of(0, 12));
 		List<TourDTO> internationalTours = internationalToursPage.getContent();
+		
+		// Lấy tour trong nước theo mùa (chia đôi danh sách)
+		List<TourDTO> domesticToursBySeason = domesticTours.size() > 6 ? domesticTours.subList(0, 6) : domesticTours;
+		List<TourDTO> domesticToursByMonth = domesticTours.size() > 6 ? domesticTours.subList(6, Math.min(12, domesticTours.size())) : new ArrayList<>();
+		
+		// Lấy tour ngoài nước theo mùa (chia đôi danh sách)
+		List<TourDTO> internationalToursBySeason = internationalTours.size() > 6 ? internationalTours.subList(0, 6) : internationalTours;
+		List<TourDTO> internationalToursByMonth = internationalTours.size() > 6 ? internationalTours.subList(6, Math.min(12, internationalTours.size())) : new ArrayList<>();
 
 		List<Destination> destinations = this.destinationService.findAllDestinations();
 		List<VoucherDTO> activeVouchers = this.voucherService.getActiveVouchers();
 		List<ReviewDTO> featuredReviews = this.reviewService.getAllApprovedReviews().stream()
 				.limit(3)
-				.collect(java.util.stream.Collectors.toList());
+				.collect(Collectors.toList());
 
 		// Lấy user từ session
 		try {
