@@ -80,9 +80,26 @@ public class HomeController {
 	ModelAndView index() {
 		ModelAndView mdv = new ModelAndView("user/index");
 
+		// Lấy tour nổi bật
 		Page<TourDTO> tourPage = this.tourService.findAllTour(null, null, null, null, PageRequest.of(0, 6));
-
 		List<TourDTO> tours = tourPage.getContent();
+		
+		// Lấy tour trong nước theo mùa
+		List<TourDTO> domesticToursBySeason = this.tourService.findBySeason(1L); // Giả sử season 1 là mùa xuân
+		List<TourDTO> domesticToursByMonth = this.tourService.findByMonth(1); // Tháng 1
+		
+		// Lấy tour ngoài nước theo mùa
+		List<TourDTO> internationalToursBySeason = this.tourService.findBySeason(2L); // Giả sử season 2 là mùa hè
+		List<TourDTO> internationalToursByMonth = this.tourService.findByMonth(2); // Tháng 2
+		
+		// Lấy tour trong nước (type_id = 1)
+		Page<TourDTO> domesticToursPage = this.tourService.findAllTour(null, null, null, 1L, PageRequest.of(0, 6));
+		List<TourDTO> domesticTours = domesticToursPage.getContent();
+		
+		// Lấy tour ngoài nước (type_id = 2)
+		Page<TourDTO> internationalToursPage = this.tourService.findAllTour(null, null, null, 2L, PageRequest.of(0, 6));
+		List<TourDTO> internationalTours = internationalToursPage.getContent();
+
 		List<Destination> destinations = this.destinationService.findAllDestinations();
 		List<VoucherDTO> activeVouchers = this.voucherService.getActiveVouchers();
 		List<ReviewDTO> featuredReviews = this.reviewService.getAllApprovedReviews().stream()
@@ -98,6 +115,12 @@ public class HomeController {
 		}
 
 		mdv.addObject("tours", tours);
+		mdv.addObject("domesticTours", domesticTours);
+		mdv.addObject("internationalTours", internationalTours);
+		mdv.addObject("domesticToursBySeason", domesticToursBySeason);
+		mdv.addObject("domesticToursByMonth", domesticToursByMonth);
+		mdv.addObject("internationalToursBySeason", internationalToursBySeason);
+		mdv.addObject("internationalToursByMonth", internationalToursByMonth);
 		mdv.addObject("destinations", destinations);
 		mdv.addObject("activeVouchers", activeVouchers);
 		mdv.addObject("featuredReviews", featuredReviews);
@@ -110,74 +133,16 @@ public class HomeController {
 	ModelAndView tourTrongNuoc(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
 			@RequestParam(value = "ten_tour", required = false) String ten_tour,
 			@RequestParam(value = "gia_tour", required = false) Long gia_tour) {
-		ModelAndView mdv = new ModelAndView("user/tour1");
-		BigDecimal gia_tour_from = null;
-		BigDecimal gia_tour_to = null;
-		if (gia_tour != null) {
-			gia_tour_from = gia_tour == 0 ? null
-					: (gia_tour == 1 ? BigDecimal.valueOf(0)
-							: (gia_tour == 2 ? BigDecimal.valueOf(10000000) : BigDecimal.valueOf(50000000)));
-
-			gia_tour_to = gia_tour == 0 ? null
-					: (gia_tour == 1 ? BigDecimal.valueOf(10000000)
-							: (gia_tour == 2 ? BigDecimal.valueOf(50000000) : BigDecimal.valueOf(500000000)));
-		}
-
-		Page<TourDTO> tourPage = this.tourService.findAllTour(ten_tour, gia_tour_from, gia_tour_to,
-				1L, PageRequest.of(pageIndex - 1, 12));
-
-		List<TourDTO> tours = tourPage.getContent();
-
-		mdv.addObject("tours", tours);
-		mdv.addObject("active", "domestic");
-		
-		// Add user info for dropdown
-		try {
-			UserDTO user = SessionUtilities.getUser();
-			mdv.addObject("user", user);
-		} catch (Exception e) {
-			mdv.addObject("user", null);
-		}
-		
-		return mdv;
+		// Redirect về trang chủ với anchor để scroll đến section tour trong nước
+		return new ModelAndView("redirect:/#domestic-tours");
 	}
 
 	@GetMapping("/tour/ngoai-nuoc")
 	ModelAndView tourNgoaiNuoc(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
 			@RequestParam(value = "ten_tour", required = false) String ten_tour,
 			@RequestParam(value = "gia_tour", required = false) Long gia_tour) {
-
-		BigDecimal gia_tour_from = null;
-		BigDecimal gia_tour_to = null;
-		if (gia_tour != null) {
-			gia_tour_from = gia_tour == 0 ? null
-					: (gia_tour == 1 ? BigDecimal.valueOf(0)
-							: (gia_tour == 2 ? BigDecimal.valueOf(10000000) : BigDecimal.valueOf(50000000)));
-
-			gia_tour_to = gia_tour == 0 ? null
-					: (gia_tour == 1 ? BigDecimal.valueOf(10000000)
-							: (gia_tour == 2 ? BigDecimal.valueOf(50000000) : BigDecimal.valueOf(500000000)));
-		}
-
-		ModelAndView mdv = new ModelAndView("user/tour2");
-
-		Page<TourDTO> tourPage = this.tourService.findAllTour(ten_tour, gia_tour_from, gia_tour_to, 2L,
-				PageRequest.of(pageIndex - 1, 12));
-
-		List<TourDTO> tours = tourPage.getContent();
-
-		mdv.addObject("tours", tours);
-		mdv.addObject("active", "international");
-		
-		// Add user info for dropdown
-		try {
-			UserDTO user = SessionUtilities.getUser();
-			mdv.addObject("user", user);
-		} catch (Exception e) {
-			mdv.addObject("user", null);
-		}
-		
-		return mdv;
+		// Redirect về trang chủ với anchor để scroll đến section tour ngoài nước
+		return new ModelAndView("redirect:/#international-tours");
 	}
 
 	@GetMapping("/tour/{id}")

@@ -184,6 +184,166 @@
 			flex: none;
 		}
 	}
+	
+	/* Tab styling */
+	.nav-tabs {
+		border-bottom: 2px solid #e9ecef;
+	}
+	
+	.nav-tabs .nav-link {
+		border: none;
+		border-radius: 0;
+		color: #6c757d;
+		font-weight: 500;
+		padding: 1rem 2rem;
+		margin-right: 0.5rem;
+		transition: all 0.3s ease;
+	}
+	
+	.nav-tabs .nav-link:hover {
+		border: none;
+		color: #007bff;
+		background-color: #f8f9fa;
+	}
+	
+	.nav-tabs .nav-link.active {
+		border: none;
+		border-bottom: 3px solid #007bff;
+		color: #007bff;
+		background-color: transparent;
+		font-weight: 600;
+	}
+	
+	.nav-tabs .nav-link i {
+		margin-right: 0.5rem;
+	}
+	
+	/* Tab content styling */
+	.tab-content {
+		padding-top: 2rem;
+	}
+	
+	.tab-pane {
+		animation: fadeIn 0.3s ease-in-out;
+	}
+	
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	
+	/* Package item improvements */
+	.package-item {
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+	
+	.package-item:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	}
+	
+	.package-item img {
+		transition: transform 0.3s ease;
+	}
+	
+	.package-item:hover img {
+		transform: scale(1.05);
+	}
+	
+	/* Button styling */
+	.btn-outline-primary {
+		border: 2px solid #007bff;
+		color: #007bff;
+		background-color: transparent;
+		transition: all 0.3s ease;
+		font-weight: 600;
+		padding: 12px 30px;
+		border-radius: 25px;
+	}
+	
+	.btn-outline-primary:hover {
+		background-color: #007bff;
+		color: white;
+		transform: translateY(-2px);
+		box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+	}
+	
+	.btn-outline-primary i {
+		transition: transform 0.3s ease;
+	}
+	
+	.btn-outline-primary:hover i {
+		transform: translateX(3px);
+	}
+	
+	/* Responsive improvements */
+	@media (max-width: 768px) {
+		.nav-tabs .nav-link {
+			padding: 0.75rem 1rem;
+			font-size: 0.9rem;
+		}
+		
+		.nav-tabs .nav-link i {
+			margin-right: 0.25rem;
+		}
+		
+		.btn-outline-primary {
+			padding: 10px 20px;
+			font-size: 0.9rem;
+		}
+		
+		.package-item {
+			margin-bottom: 1rem;
+		}
+	}
+	
+	/* Loading animation for tab content */
+	.tab-pane {
+		position: relative;
+	}
+	
+	.tab-pane.loading::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255, 255, 255, 0.8);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 10;
+	}
+	
+	/* Empty state styling */
+	.empty-state {
+		text-align: center;
+		padding: 3rem 1rem;
+		color: #6c757d;
+	}
+	
+	.empty-state i {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+		opacity: 0.5;
+	}
+	
+	.empty-state h5 {
+		margin-bottom: 0.5rem;
+	}
+	
+	.empty-state p {
+		margin-bottom: 0;
+	}
 </style>
 </head>
 
@@ -210,7 +370,7 @@
 					
 					<!-- Search Form -->
 					<div class="bg-white rounded-lg p-4 shadow-lg" style="max-width: 800px; margin: 0 auto;">
-						<form action="/tour/trong-nuoc" class="row g-3">
+						<form action="/" class="row g-3">
 							<div class="col-md-12 mb-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
@@ -368,37 +528,30 @@
 	</div>
 	<!-- Feature End -->
 
-
-
-
-	<!-- Packages Start -->
+	<!-- Featured Tours Start -->
 	<div class="container-fluid py-5">
 		<div class="container pt-5 pb-3">
 			<div class="text-center mb-3 pb-3">
-				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Nổi
-					bật</h6>
+				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Nổi bật</h6>
 				<h1>Những tour nổi bật</h1>
 			</div>
 			<div class="row">
 				<div th:each="tour : ${tours}" class="col-lg-4 col-md-6 mb-4">
 					<div class="package-item bg-white mb-2">
-						<img class="img-fluid" style="height: 200px; width: 100%; " th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+						<img class="img-fluid" style="height: 200px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
 						<div class="p-4">
 							<div class="d-flex justify-content-between mb-3" th:inline="text">
-								<small class="m-0"><i
-									class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
-								<small class="m-0">[[${tour.so_ngay}]] ngày </small>
+								<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
+								<small class="m-0">[[${tour.so_ngay}]] ngày</small>
 							</div>
-							<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}"
-								th:text="${tour.ten_tour}"></a>
+							<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
 							<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
 							<div class="border-top mt-4 pt-4">
 								<div class="d-flex justify-content-between">
 									<h6 class="m-0">
 										<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
 									</h6>
-									<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ
-									</h5>
+									<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ</h5>
 								</div>
 							</div>
 						</div>
@@ -407,66 +560,213 @@
 			</div>
 		</div>
 	</div>
-	<!-- Packages End -->
+	<!-- Featured Tours End -->
 
 	<!-- Packages Start -->
-	<div class="container-fluid py-5">
+	<div class="container-fluid py-5" id="domestic-tours">
 		<div class="container pt-5 pb-3">
 			<div class="text-center mb-3 pb-3">
-				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Nổi
-					bật</h6>
-				<h1>Những tour nổi bật</h1>
+				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Tour trong nước</h6>
+				<h1>Khám phá Việt Nam</h1>
 			</div>
-			<div class="row">
-				<div th:each="tour : ${tours}" class="col-lg-4 col-md-6 mb-4">
-					<div class="package-item bg-white mb-2">
-						<img class="img-fluid" style="height: 220px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
-						<div class="p-4">
-							<div class="d-flex justify-content-between mb-3" th:inline="text">
-								<small class="m-0"><i
-										class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
-								<small class="m-0">[[${tour.so_ngay}]] ngày </small>
+			
+			<!-- Tab Navigation -->
+			<ul class="nav nav-tabs justify-content-center mb-4" id="domesticTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="domestic-season-tab" data-toggle="tab" data-target="#domestic-season" type="button" role="tab" aria-controls="domestic-season" aria-selected="true" aria-label="Xem tour trong nước theo mùa">
+						<i class="fa fa-sun mr-2" aria-hidden="true"></i>Tour theo mùa
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="domestic-month-tab" data-toggle="tab" data-target="#domestic-month" type="button" role="tab" aria-controls="domestic-month" aria-selected="false" aria-label="Xem tour trong nước theo tháng">
+						<i class="fa fa-calendar mr-2" aria-hidden="true"></i>Tour theo tháng
+					</button>
+				</li>
+			</ul>
+			
+			<!-- Tab Content -->
+			<div class="tab-content" id="domesticTabContent">
+				<!-- Tour theo mùa -->
+				<div class="tab-pane fade show active" id="domestic-season" role="tabpanel" aria-labelledby="domestic-season-tab">
+					<div class="row">
+						<div th:if="${#lists.isEmpty(domesticToursBySeason)}" class="col-12">
+							<div class="empty-state">
+								<i class="fa fa-sun"></i>
+								<h5>Chưa có tour theo mùa</h5>
+								<p>Chúng tôi sẽ cập nhật sớm nhất!</p>
 							</div>
-							<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}"
-							   th:text="${tour.ten_tour}"></a>
-							<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
-							<div class="border-top mt-4 pt-4">
-								<div class="d-flex justify-content-between">
-									<h6 class="m-0">
-										<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-									</h6>
-									<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ
-									</h5>
+						</div>
+						<div th:each="tour : ${domesticToursBySeason}" class="col-lg-4 col-md-6 mb-4">
+							<div class="package-item bg-white mb-2">
+								<img class="img-fluid" style="height: 200px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+								<div class="p-4">
+									<div class="d-flex justify-content-between mb-3" th:inline="text">
+										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
+										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+									</div>
+									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
+									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
+									<div class="border-top mt-4 pt-4">
+										<div class="d-flex justify-content-between">
+											<h6 class="m-0">
+												<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
+											</h6>
+											<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ</h5>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-12">
-					<nav aria-label="Page navigation">
-						<ul class="pagination pagination-lg justify-content-center bg-white mb-0" style="padding: 30px;">
-							<li class="page-item disabled">
-								<a class="page-link" href="#" aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-									<span class="sr-only">Previous</span>
-								</a>
-							</li>
-							<li class="page-item active"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item">
-								<a class="page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-									<span class="sr-only">Next</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
+				
+				<!-- Tour theo tháng -->
+				<div class="tab-pane fade" id="domestic-month" role="tabpanel" aria-labelledby="domestic-month-tab">
+					<div class="row">
+						<div th:if="${#lists.isEmpty(domesticToursByMonth)}" class="col-12">
+							<div class="empty-state">
+								<i class="fa fa-calendar"></i>
+								<h5>Chưa có tour theo tháng</h5>
+								<p>Chúng tôi sẽ cập nhật sớm nhất!</p>
+							</div>
+						</div>
+						<div th:each="tour : ${domesticToursByMonth}" class="col-lg-4 col-md-6 mb-4">
+							<div class="package-item bg-white mb-2">
+								<img class="img-fluid" style="height: 200px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+								<div class="p-4">
+									<div class="d-flex justify-content-between mb-3" th:inline="text">
+										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
+										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+									</div>
+									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
+									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
+									<div class="border-top mt-4 pt-4">
+										<div class="d-flex justify-content-between">
+											<h6 class="m-0">
+												<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
+											</h6>
+											<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ</h5>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+			
+			<!-- Xem thêm button -->
+			<div class="text-center mt-4">
+				<a href="/tour/trong-nuoc" class="btn btn-outline-primary btn-lg">
+					<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour trong nước
+				</a>
 			</div>
 		</div>
 	</div>
 	<!-- Packages End -->
+
+	<!-- International Tours Start -->
+	<div class="container-fluid py-5 bg-light" id="international-tours">
+		<div class="container pt-5 pb-3">
+			<div class="text-center mb-3 pb-3">
+				<h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Tour ngoài nước</h6>
+				<h1>Khám phá thế giới</h1>
+			</div>
+			
+			<!-- Tab Navigation -->
+			<ul class="nav nav-tabs justify-content-center mb-4" id="internationalTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="international-season-tab" data-toggle="tab" data-target="#international-season" type="button" role="tab" aria-controls="international-season" aria-selected="true" aria-label="Xem tour ngoài nước theo mùa">
+						<i class="fa fa-globe mr-2" aria-hidden="true"></i>Tour theo mùa
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="international-month-tab" data-toggle="tab" data-target="#international-month" type="button" role="tab" aria-controls="international-month" aria-selected="false" aria-label="Xem tour ngoài nước theo tháng">
+						<i class="fa fa-calendar mr-2" aria-hidden="true"></i>Tour theo tháng
+					</button>
+				</li>
+			</ul>
+			
+			<!-- Tab Content -->
+			<div class="tab-content" id="internationalTabContent">
+				<!-- Tour theo mùa -->
+				<div class="tab-pane fade show active" id="international-season" role="tabpanel" aria-labelledby="international-season-tab">
+					<div class="row">
+						<div th:if="${#lists.isEmpty(internationalToursBySeason)}" class="col-12">
+							<div class="empty-state">
+								<i class="fa fa-globe"></i>
+								<h5>Chưa có tour theo mùa</h5>
+								<p>Chúng tôi sẽ cập nhật sớm nhất!</p>
+							</div>
+						</div>
+						<div th:each="tour : ${internationalToursBySeason}" class="col-lg-4 col-md-6 mb-4">
+							<div class="package-item bg-white mb-2">
+								<img class="img-fluid" style="height: 200px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+								<div class="p-4">
+									<div class="d-flex justify-content-between mb-3" th:inline="text">
+										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
+										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+									</div>
+									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
+									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
+									<div class="border-top mt-4 pt-4">
+										<div class="d-flex justify-content-between">
+											<h6 class="m-0">
+												<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
+											</h6>
+											<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ</h5>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Tour theo tháng -->
+				<div class="tab-pane fade" id="international-month" role="tabpanel" aria-labelledby="international-month-tab">
+					<div class="row">
+						<div th:if="${#lists.isEmpty(internationalToursByMonth)}" class="col-12">
+							<div class="empty-state">
+								<i class="fa fa-calendar"></i>
+								<h5>Chưa có tour theo tháng</h5>
+								<p>Chúng tôi sẽ cập nhật sớm nhất!</p>
+							</div>
+						</div>
+						<div th:each="tour : ${internationalToursByMonth}" class="col-lg-4 col-md-6 mb-4">
+							<div class="package-item bg-white mb-2">
+								<img class="img-fluid" style="height: 200px; width: 100%;" th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+								<div class="p-4">
+									<div class="d-flex justify-content-between mb-3" th:inline="text">
+										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
+										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+									</div>
+									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
+									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
+									<div class="border-top mt-4 pt-4">
+										<div class="d-flex justify-content-between">
+											<h6 class="m-0">
+												<i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
+											</h6>
+											<h5 class="m-0" th:inline="text">[[${#numbers.formatInteger(tour.gia_tour,3,'POINT')}]] VNĐ</h5>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Xem thêm button -->
+			<div class="text-center mt-4">
+				<a href="/tour/ngoai-nuoc" class="btn btn-outline-primary btn-lg">
+					<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour ngoài nước
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- International Tours End -->
 
 	<!-- Voucher Start -->
 	<div class="container-fluid py-5" th:if="${not #lists.isEmpty(activeVouchers)}">
@@ -775,9 +1075,63 @@
 			$('.dropdown-menu').on('click', function(e) {
 				e.stopPropagation();
 			});
+			
+			// Xử lý tab cho tour trong nước
+			$('#domesticTab button').on('click', function(e) {
+				e.preventDefault();
+				var target = $(this).data('target');
+				
+				// Ẩn tất cả tab content
+				$('#domesticTabContent .tab-pane').removeClass('show active');
+				
+				// Ẩn tất cả tab button
+				$('#domesticTab .nav-link').removeClass('active');
+				
+				// Hiển thị tab được chọn
+				$(target).addClass('show active');
+				$(this).addClass('active');
+			});
+			
+			// Xử lý tab cho tour ngoài nước
+			$('#internationalTab button').on('click', function(e) {
+				e.preventDefault();
+				var target = $(this).data('target');
+				
+				// Ẩn tất cả tab content
+				$('#internationalTabContent .tab-pane').removeClass('show active');
+				
+				// Ẩn tất cả tab button
+				$('#internationalTab .nav-link').removeClass('active');
+				
+				// Hiển thị tab được chọn
+				$(target).addClass('show active');
+				$(this).addClass('active');
+			});
+			
+			// Xử lý smooth scroll cho anchor links
+			$('a[href^="#"]').on('click', function(e) {
+				e.preventDefault();
+				var target = $(this.getAttribute('href'));
+				if (target.length) {
+					$('html, body').animate({
+						scrollTop: target.offset().top - 100
+					}, 800);
+				}
+			});
+			
+			// Xử lý smooth scroll khi load trang với hash
+			if (window.location.hash) {
+				var target = $(window.location.hash);
+				if (target.length) {
+					setTimeout(function() {
+						$('html, body').animate({
+							scrollTop: target.offset().top - 100
+						}, 800);
+					}, 500);
+				}
+			}
 		});
 	</script>
 </body>
 
-</html>
 </html>
