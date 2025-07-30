@@ -10,6 +10,7 @@ public interface ReviewService {
 
     List<ReviewDTO> getReviewsByUserId(Long userId);
     java.util.List<com.hoangminh.dto.ReviewAdminDTO> getAllAdmin();
+    ReviewDTO getReviewById(Long id);
     boolean approveReview(Long id);
     boolean deleteReview(Long id);
 }

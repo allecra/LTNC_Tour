@@ -117,17 +117,23 @@ public class TourController {
 
     @PostMapping("/add")
     public ResponseDTO createTour(@RequestBody TourDTO tourDTO) {
+        try {
+            log.info("Received tour data: {}", tourDTO);
+            
+            if (!this.userService.checkAdminLogin()) {
+                return new ResponseDTO("Không có quyền truy cập", null);
+            }
 
-        if (!this.userService.checkAdminLogin()) {
-            return new ResponseDTO("Không có quyền truy cập", null);
+            Tour tour = this.tourService.addTour(tourDTO);
+            if (tour != null) {
+                log.info("Tour created successfully with ID: {}", tour.getId());
+                return new ResponseDTO("Thêm tour thành công", tour);
+            }
+            return new ResponseDTO("Thêm tour thất bại", null);
+        } catch (Exception e) {
+            log.error("Error creating tour: {}", e.getMessage(), e);
+            return new ResponseDTO("Lỗi khi thêm tour: " + e.getMessage(), null);
         }
-
-        Tour tour = this.tourService.addTour(tourDTO);
-        if (tour != null) {
-            return new ResponseDTO("Thành công", tour);
-        }
-        return new ResponseDTO("Thêm thất bại", null);
-
     }
 
     @PutMapping("/update/image/{id}")
@@ -191,6 +197,32 @@ public class TourController {
 
         }
         return new ResponseDTO("Xóa thất bại", null);
+    }
+
+    @PutMapping("/updateStatus/{id}")
+    public ResponseDTO updateTourStatus(@PathVariable("id") Long id, @RequestBody TourDTO tourDTO) {
+        try {
+            log.info("Bắt đầu cập nhật trạng thái tour ID: {}, trạng thái mới: {}", id, tourDTO.getTrang_thai());
+            
+            if (!this.userService.checkAdminLogin()) {
+                log.warn("Không có quyền truy cập - admin chưa đăng nhập");
+                return new ResponseDTO("Không có quyền truy cập", null);
+            }
+            
+            log.info("Admin đã đăng nhập, tiến hành cập nhật trạng thái");
+            Tour tour = this.tourService.updateTourStatus(id, tourDTO.getTrang_thai());
+            
+            if (tour != null) {
+                log.info("Cập nhật trạng thái thành công cho tour ID: {}", id);
+                return new ResponseDTO("Cập nhật trạng thái thành công", tour);
+            } else {
+                log.warn("Không tìm thấy tour với ID: {}", id);
+                return new ResponseDTO("Cập nhật trạng thái thất bại - không tìm thấy tour", null);
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi cập nhật trạng thái tour ID {}: {}", id, e.getMessage(), e);
+            return new ResponseDTO("Lỗi: " + e.getMessage(), null);
+        }
     }
 
     @GetMapping("/getAllImageOfTour/{id}")

@@ -16,20 +16,34 @@ public class ReviewController {
 
     @GetMapping("/getAll")
     public ResponseDTO getAll() {
-        if (!userService.checkAdminLogin()) return new ResponseDTO("Không có quyền truy cập", null);
+        if (!userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
         return new ResponseDTO("Thành công", reviewService.getAllAdmin());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseDTO getReviewById(@PathVariable("id") Long id) {
+        if (!userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
+        return new ResponseDTO("Thành công", reviewService.getReviewById(id));
     }
 
     @PutMapping("/approve/{id}")
     public ResponseDTO approve(@PathVariable("id") Long id) {
-        if (!userService.checkAdminLogin()) return new ResponseDTO("Không có quyền truy cập", null);
+        if (!userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
         boolean ok = reviewService.approveReview(id);
         return new ResponseDTO(ok ? "Duyệt thành công" : "Duyệt thất bại", null);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseDTO delete(@PathVariable("id") Long id) {
-        if (!userService.checkAdminLogin()) return new ResponseDTO("Không có quyền truy cập", null);
+        if (!userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
         boolean ok = reviewService.deleteReview(id);
         return new ResponseDTO(ok ? "Xóa thành công" : "Xóa thất bại", null);
     }

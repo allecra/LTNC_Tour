@@ -91,10 +91,11 @@ INSERT INTO `booking` (`id`, `tour_start_id`, `user_id`, `so_luong_nguoi`, `tong
 (3, 4, 2, 2, 57000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', NULL, NOW());
 
 -- Dữ liệu mẫu cho bảng 'review'
-INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
-(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', NOW()),
-(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', NOW()),
-(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', NOW());
+INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `created_at`, `trang_thai`) VALUES
+(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', NOW(), 'Chờ duyệt'),
+(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', NOW(), 'Chờ duyệt'),
+(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', NOW(), 'Chờ duyệt'),
+
 
 -- Dữ liệu mẫu cho bảng 'favorite'
 INSERT INTO `favorite` (`id`, `user_id`, `tour_id`) VALUES

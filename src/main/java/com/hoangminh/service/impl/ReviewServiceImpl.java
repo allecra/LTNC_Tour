@@ -66,6 +66,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewDTO getReviewById(Long id) {
+        Review review = reviewRepository.findById(id).orElse(null);
+        if (review != null) {
+            return convertToDTO(review);
+        }
+        return null;
+    }
+
+    @Override
     public boolean deleteReview(Long id) {
         if (reviewRepository.existsById(id)) {
             reviewRepository.deleteById(id);

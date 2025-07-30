@@ -38,4 +38,6 @@ public interface TourService {
 	boolean deleteTour(Long id);
 
 	List<TourDTO> findAllTourWithStartDate();
+	
+	Tour updateTourStatus(Long id, String trangThai);
 }
