@@ -126,6 +126,7 @@ public class HomeController {
 		mdv.addObject("destinations", destinations);
 		mdv.addObject("activeVouchers", activeVouchers);
 		mdv.addObject("featuredReviews", featuredReviews);
+		mdv.addObject("origins", this.tourService.findAllUniqueOrigins());
 		mdv.addObject("active", "home");
 
 		return mdv;

@@ -30,6 +30,19 @@
 <!-- Customized Bootstrap Stylesheet -->
     <link href="/public/css/style.css" rel="stylesheet">
     <link href="/public/css/blue-white-override.css" rel="stylesheet">
+    
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Moment.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/vi.js"></script>
+
+<!-- Tempusdominus Bootstrap 4 CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
 	.dropdown-menu.show {
 		display: block !important;
@@ -42,6 +55,159 @@
 	}
 	.dropdown-menu a:hover {
 		background-color: #f8f9fa;
+	}
+	
+	/* Date picker specific styles */
+	.bootstrap-datetimepicker-widget {
+		z-index: 9999 !important;
+		position: absolute !important;
+		background: white !important;
+		border: 1px solid #ddd !important;
+		border-radius: 4px !important;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	
+	.bootstrap-datetimepicker-widget.show {
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table {
+		background: white !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td,
+	.bootstrap-datetimepicker-widget table th {
+		padding: 5px !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td.day:hover {
+		background-color: #007bff !important;
+		color: white !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td.active {
+		background-color: #007bff !important;
+		color: white !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table {
+		background: white !important;
+	}
+	
+	/* Force date picker to show */
+	.bootstrap-datetimepicker-widget[style*="display: none"] {
+		display: block !important;
+	}
+	
+	.bootstrap-datetimepicker-widget[style*="visibility: hidden"] {
+		visibility: visible !important;
+	}
+	
+	/* Ensure proper positioning */
+	.input-group {
+		position: relative;
+	}
+	
+	/* Make sure the date input is clickable */
+	#departureDate {
+		cursor: pointer !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td,
+	.bootstrap-datetimepicker-widget table th {
+		padding: 5px !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td.day:hover {
+		background-color: #007bff !important;
+		color: white !important;
+	}
+	
+	.bootstrap-datetimepicker-widget table td.active {
+		background-color: #007bff !important;
+		color: white !important;
+	}
+	
+	/* Custom date picker styles */
+	.custom-date-picker {
+		z-index: 9999 !important;
+		position: absolute !important;
+		background: white !important;
+		border: 1px solid #ddd !important;
+		border-radius: 4px !important;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+		padding: 10px !important;
+		min-width: 250px !important;
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	
+	/* Date input styles */
+	#departureDate {
+		cursor: pointer !important;
+		background-color: #fafbfc !important;
+	}
+	
+	#departureDate:focus {
+		background-color: white !important;
+		border-color: #007bff !important;
+		box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+	}
+	
+	/* Ensure tempusdominus picker is visible */
+	.bootstrap-datetimepicker-widget {
+		z-index: 9999 !important;
+		position: absolute !important;
+		background: white !important;
+		border: 1px solid #ddd !important;
+		border-radius: 4px !important;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	
+	/* Force show the picker */
+	.bootstrap-datetimepicker-widget.show {
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	
+	/* Ensure the input is clickable */
+	#departureDate {
+		cursor: pointer !important;
+		background-color: #fafbfc !important;
+	}
+	
+	/* Override any Bootstrap hiding */
+	.bootstrap-datetimepicker-widget[style*="display: none"] {
+		display: block !important;
+	}
+	
+	.custom-date-picker .calendar-grid {
+		display: grid !important;
+		grid-template-columns: repeat(7, 1fr) !important;
+		gap: 2px !important;
+	}
+	
+	.custom-date-picker .day-cell {
+		text-align: center !important;
+		padding: 5px !important;
+		cursor: pointer !important;
+		border-radius: 3px !important;
+		transition: background-color 0.2s ease !important;
+	}
+	
+	.custom-date-picker .day-cell:hover {
+		background-color: #007bff !important;
+		color: white !important;
 	}
 	
 	/* Navbar improvements */
@@ -369,16 +535,17 @@
 					</p>
 					
 					<!-- Search Form -->
-					<div class="bg-white rounded-lg p-4 shadow-lg" style="max-width: 800px; margin: 0 auto;">
-						<form action="/" class="row g-3">
-							<div class="col-md-12 mb-3">
-								<div class="input-group">
+					<div class="bg-white rounded-lg p-3 shadow-lg" style="max-width: 850px; margin: 0 auto; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+						<form action="/" class="row g-2">
+							<!-- Destination Input - Large field -->
+							<div class="col-12 mb-2">
+								<div class="input-group input-group-lg" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
 									<div class="input-group-prepend">
-										<span class="input-group-text bg-primary text-white">
-											<i class="fa fa-map-marker"></i>
+										<span class="input-group-text" style="background-color: #f8f9fa; border-color: #e9ecef; border-right: none; min-width: 50px; justify-content: center; padding: 0 18px;">
+											<i class="fa fa-map-marker" style="color: #6c757d; font-size: 1.2rem;"></i>
 										</span>
 									</div>
-									<select name="destination" class="form-control" style="height: 50px; font-size: 1.1rem;">
+									<select name="destination" class="form-control" style="height: 52px; font-size: 1.1rem; border-color: #e9ecef; border-left: none; padding-left: 18px; background-color: #fafbfc;">
 										<option value="" selected>Bạn muốn đi đâu?</option>
 										<th:block th:each="destination : ${destinations}">
 											<option th:value="${destination.name}" th:text="${destination.name + ' - ' + destination.country}"></option>
@@ -386,33 +553,41 @@
 									</select>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-6 mb-3">
-									<div class="input-group">
+							
+							<!-- Date and Origin Row -->
+							<div class="row w-100 mx-0 g-2">
+								<div class="col-md-6 mb-2">
+									<div class="input-group input-group-lg" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
 										<div class="input-group-prepend">
-											<span class="input-group-text bg-primary text-white">
-												<i class="fa fa-calendar"></i>
+											<span class="input-group-text" style="background-color: #f8f9fa; border-color: #e9ecef; border-right: none; min-width: 50px; justify-content: center; padding: 0 18px;">
+												<i class="fa fa-calendar" style="color: #6c757d; font-size: 1.2rem;"></i>
 											</span>
 										</div>
-										<input type="text" class="form-control" placeholder="Ngày khởi hành" value="Linh hoạt" style="height: 50px; font-size: 1.1rem;">
+										                    <input type="text" class="form-control" id="departureDate" placeholder="Ngày khởi hành" style="height: 52px; font-size: 1.1rem; border-color: #e9ecef; border-left: none; background-color: #fafbfc; padding: 12px 18px; cursor: pointer;">
 									</div>
 								</div>
-								<div class="col-md-6 mb-3">
-									<div class="input-group">
+								<div class="col-md-6 mb-2">
+									<div class="input-group input-group-lg" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
 										<div class="input-group-prepend">
-											<span class="input-group-text bg-primary text-white">
-												<i class="fa fa-paper-plane"></i>
+											<span class="input-group-text" style="background-color: #f8f9fa; border-color: #e9ecef; border-right: none; min-width: 50px; justify-content: center; padding: 0 18px;">
+												<i class="fa fa-paper-plane" style="color: #6c757d; font-size: 1.2rem;"></i>
 											</span>
 										</div>
-										<input type="text" class="form-control" placeholder="Khởi hành từ Hồ Chí Minh" style="height: 50px; font-size: 1.1rem;">
+										<select name="origin" class="form-control" style="height: 52px; font-size: 1.1rem; border-color: #e9ecef; border-left: none; padding-left: 18px; background-color: #fafbfc;">
+											<option value="" selected>Chọn điểm khởi hành</option>
+											<th:block th:each="origin : ${origins}">
+												<option th:value="${origin}" th:text="${origin}"></option>
+											</th:block>
+										</select>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-12">
-									<!-- Thay đổi nút tìm kiếm về xanh-trắng -->
-									<button type="submit" class="btn btn-primary btn-lg btn-block" style="height: 50px; font-size: 1.2rem; font-weight: bold;"> <i class="fa fa-search mr-2"></i>Tìm </button>
-								</div>
+							
+							<!-- Search Button -->
+							<div class="col-12 mt-3">
+								<button type="submit" class="btn btn-lg btn-block" style="height: 52px; font-size: 1.3rem; font-weight: bold; background: linear-gradient(135deg, #fd7e14 0%, #ff8c42 100%); border: none; color: white; border-radius: 10px; transition: all 0.3s ease; box-shadow: 0 3px 12px rgba(253, 126, 20, 0.3);">
+									Tìm kiếm
+								</button>
 							</div>
 						</form>
 					</div>
@@ -420,7 +595,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- Hero Section End -->
+		<!-- Hero Section End -->
 
 
 	<!-- Features Section Start -->
@@ -475,58 +650,6 @@
 	<!-- Features Section End -->
 
 
-
-
-	<!-- Feature Start -->
-	<div class="container-fluid pb-5" style="margin-top: 5rem">
-		<div class="container pb-5">
-			<div class="row">
-				<div class="col-md-4">
-					<div class="d-flex mb-4 mb-lg-0">
-						<div
-							class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-							style="height: 100px; width: 100px;">
-							<i class="fa fa-2x fa-money-check-alt text-white"></i>
-						</div>
-						<div class="d-flex flex-column">
-							<h5 class="">Giá cả hợp lý</h5>
-							<p class="m-0">Chúng tôi luôn đưa ra mức chi phí tốt nhất và
-								tối ưu nhất cho khách hàng.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="d-flex mb-4 mb-lg-0">
-						<div
-							class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-							style="height: 100px; width: 100px;">
-							<i class="fa fa-2x fa-award text-white"></i>
-						</div>
-						<div class="d-flex flex-column">
-							<h5 class="">Dịch vụ tuyệt vời</h5>
-							<p class="m-0">Với châm ngôn khách hàng là thượng đế chúng
-								tôi luôn muốn đem lại những gì tuyệt vời nhất cho khách hàng.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="d-flex mb-4 mb-lg-0">
-						<div
-							class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-							style="height: 100px; width: 100px;">
-							<i class="fa fa-2x fa-globe text-white"></i>
-						</div>
-						<div class="d-flex flex-column">
-							<h5 class="">Địa điểm đa dạng</h5>
-							<p class="m-0">Công ty chúng tôi có nhiều sự lựa chọn điểm
-								đến cho khách hàng thoải mái lựa chọn.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Feature End -->
 
 	<!-- Featured Tours Start -->
 	<div class="container-fluid py-5">
@@ -1034,8 +1157,69 @@
 	<script src="/public/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="/public/lib/tempusdominus/js/moment.min.js"></script>
 	<script src="/public/lib/tempusdominus/js/moment-timezone.min.js"></script>
-	<script
-		src="/public/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+	
+	<!-- Backup CDN versions in case local files fail -->
+	<script>
+		if (typeof moment === 'undefined') {
+			document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"><\/script>');
+		}
+	</script>
+	
+	<!-- Moment.js Vietnamese Locale -->
+	<script>
+		moment.locale('vi', {
+			months: 'tháng 1_tháng 2_tháng 3_tháng 4_tháng 5_tháng 6_tháng 7_tháng 8_tháng 9_tháng 10_tháng 11_tháng 12'.split('_'),
+			monthsShort: 'Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12'.split('_'),
+			monthsParseExact: true,
+			weekdays: 'chủ nhật_thứ hai_thứ ba_thứ tư_thứ năm_thứ sáu_thứ bảy'.split('_'),
+			weekdaysShort: 'CN_T2_T3_T4_T5_T6_T7'.split('_'),
+			weekdaysMin: 'CN_T2_T3_T4_T5_T6_T7'.split('_'),
+			weekdaysParseExact: true,
+			longDateFormat: {
+				LT: 'HH:mm',
+				LTS: 'HH:mm:ss',
+				L: 'DD/MM/YYYY',
+				LL: 'D MMMM [năm] YYYY',
+				LLL: 'D MMMM [năm] YYYY HH:mm',
+				LLLL: 'dddd, D MMMM [năm] YYYY HH:mm'
+			},
+			calendar: {
+				sameDay: '[hôm nay lúc] LT',
+				nextDay: '[ngày mai lúc] LT',
+				nextWeek: 'dddd [tuần tới lúc] LT',
+				lastDay: '[hôm qua lúc] LT',
+				lastWeek: 'dddd [tuần rồi lúc] LT',
+				sameElse: 'L'
+			},
+			relativeTime: {
+				future: '%s tới',
+				past: '%s trước',
+				s: 'vài giây',
+				ss: '%d giây',
+				m: 'một phút',
+				mm: '%d phút',
+				h: 'một giờ',
+				hh: '%d giờ',
+				d: 'một ngày',
+				dd: '%d ngày',
+				M: 'một tháng',
+				MM: '%d tháng',
+				y: 'một năm',
+				yy: '%d năm'
+			},
+			dayOfMonthOrdinalParse: /\d{1,2}/,
+			ordinal: function (number) {
+				return number;
+			},
+			week: {
+				dow: 1, // Monday is the first day of the week.
+				doy: 4  // The week that contains Jan 4th is the first week of the year.
+			}
+		});
+	</script>
+	
+	<!-- Tempusdominus Bootstrap 4 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
 
 	<!-- Contact Javascript File -->
 	<script src="/public/mail/jqBootstrapValidation.min.js"></script>
@@ -1043,9 +1227,119 @@
 
 	<!-- Template Javascript -->
 	<script src="/public/js/main.js"></script>
+	
+	<!-- Bootstrap JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+	
 	<script type="text/javascript">
-		// Đảm bảo dropdown hoạt động
 		$(document).ready(function() {
+			console.log('Document ready, initializing date picker...');
+			
+			// Kiểm tra các thư viện cần thiết
+			if (typeof $ === 'undefined') {
+				console.error('jQuery is not loaded');
+				return;
+			}
+			
+			if (typeof moment === 'undefined') {
+				console.error('Moment.js is not loaded');
+				return;
+			}
+			
+			if (typeof $.fn.datetimepicker === 'undefined') {
+				console.error('Tempusdominus is not loaded');
+				return;
+			}
+			
+			// Thiết lập locale cho moment
+			moment.locale('vi');
+			
+			// Kiểm tra input có tồn tại không
+			if ($('#departureDate').length === 0) {
+				console.error('Date input not found');
+				return;
+			}
+			
+			console.log('All libraries loaded, initializing date picker...');
+			
+			// Khởi tạo date picker
+			function initDatePicker() {
+				try {
+					// Xóa picker cũ nếu có
+					if ($('#departureDate').data('DateTimePicker')) {
+						$('#departureDate').data('DateTimePicker').destroy();
+					}
+					
+					// Khởi tạo tempusdominus date picker
+					$('#departureDate').datetimepicker({
+						format: 'DD/MM/YYYY',
+						locale: 'vi',
+						useCurrent: false,
+						minDate: moment(),
+						icons: {
+							time: 'fa fa-clock',
+							date: 'fa fa-calendar',
+							up: 'fa fa-chevron-up',
+							down: 'fa fa-chevron-down',
+							previous: 'fa fa-chevron-left',
+							next: 'fa fa-chevron-right',
+							today: 'fa fa-calendar-check',
+							clear: 'fa fa-trash',
+							close: 'fa fa-times'
+						},
+						buttons: {
+							showToday: true,
+							showClear: true,
+							showClose: true
+						}
+					});
+					
+					console.log('Date picker initialized successfully');
+					return true;
+				} catch (error) {
+					console.error('Error initializing date picker:', error);
+					return false;
+				}
+			}
+			
+			// Khởi tạo ngay lập tức
+			var success = initDatePicker();
+			console.log('Initial initialization result:', success);
+			
+			// Event listener cho click vào input
+			$('#departureDate').off('click').on('click', function(e) {
+				console.log('Date input clicked');
+				e.preventDefault();
+				e.stopPropagation();
+				
+				var picker = $(this).data('DateTimePicker');
+				if (picker) {
+					picker.show();
+					console.log('Showing date picker');
+				} else {
+					console.log('No picker found, reinitializing...');
+					initDatePicker();
+					
+					setTimeout(function() {
+						var retryPicker = $('#departureDate').data('DateTimePicker');
+						if (retryPicker) {
+							retryPicker.show();
+							console.log('Showing picker after reinitialization');
+						}
+					}, 100);
+				}
+			});
+			
+			
+			
+			// Nếu khởi tạo ban đầu thất bại, thử lại sau 500ms
+			if (!success) {
+				setTimeout(function() {
+					console.log('Retrying date picker initialization...');
+					initDatePicker();
+				}, 500);
+			}
+			
 			// Kiểm tra dropdown
 			$('.dropdown-toggle').on('click', function(e) {
 				e.preventDefault();
@@ -1111,16 +1405,19 @@
 			// Xử lý smooth scroll cho anchor links
 			$('a[href^="#"]').on('click', function(e) {
 				e.preventDefault();
-				var target = $(this.getAttribute('href'));
-				if (target.length) {
-					$('html, body').animate({
-						scrollTop: target.offset().top - 100
-					}, 800);
+				var href = $(this).attr('href');
+				if (href && href !== '#') {
+					var target = $(href);
+					if (target.length) {
+						$('html, body').animate({
+							scrollTop: target.offset().top - 100
+						}, 800);
+					}
 				}
 			});
 			
 			// Xử lý smooth scroll khi load trang với hash
-			if (window.location.hash) {
+			if (window.location.hash && window.location.hash !== '#') {
 				var target = $(window.location.hash);
 				if (target.length) {
 					setTimeout(function() {
@@ -1134,4 +1431,5 @@
 	</script>
 </body>
 
+</html>
 </html>

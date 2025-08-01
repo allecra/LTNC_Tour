@@ -168,4 +168,9 @@ public class TourServiceImpl implements TourService {
         }
         return result;
     }
+    
+    @Override
+    public List<String> findAllUniqueOrigins() {
+        return tourRepository.findAllUniqueOrigins();
+    }
 }

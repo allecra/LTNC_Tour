@@ -38,4 +38,6 @@ public interface TourService {
 	boolean deleteTour(Long id);
 
 	List<TourDTO> findAllTourWithStartDate();
+	
+	List<String> findAllUniqueOrigins();
 }

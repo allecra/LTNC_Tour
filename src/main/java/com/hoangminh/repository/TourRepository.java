@@ -91,4 +91,7 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
             "GROUP BY t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price " +
             "ORDER BY t.id", nativeQuery = true)
     List<Object[]> findAllTourWithStartDate();
+    
+    @Query("SELECT DISTINCT t.diem_khoi_hanh FROM Tour t WHERE t.diem_khoi_hanh IS NOT NULL AND t.diem_khoi_hanh != '' ORDER BY t.diem_khoi_hanh")
+    List<String> findAllUniqueOrigins();
 }
