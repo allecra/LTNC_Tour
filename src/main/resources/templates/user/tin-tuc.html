@@ -31,114 +31,205 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="public/css/style.css" rel="stylesheet">
+    <style>
+        .header-bar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 0;
+        }
+        .hot-button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            margin-right: 15px;
+        }
+        .nav-arrows {
+            color: #3498db;
+            background: none;
+            border: none;
+            font-size: 18px;
+        }
+        .main-banner {
+            background: linear-gradient(135deg, #e67e22 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        .sidebar-article {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .promotion-section {
+            background: #f8f9fa;
+            padding: 30px 0;
+        }
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .article-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .article-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .article-card-content {
+            padding: 15px;
+        }
+    </style>
 </head>
 
 <body>
 
+<!-- Include Header Fragment -->
+<div th:replace="user/fragments/header :: header"></div>
 
-	<!-- Include Header Fragment -->
-	<div th:replace="user/fragments/header :: header"></div>
-	
-
+<!-- Header Bar -->
+<div class="header-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <button class="hot-button">ĐANG HOT</button>
+                <span class="text-white">Khám phá du lịch Campuchia và các điểm đến hấp dẫn</span>
             </div>
-        </nav>
-    </div>
-</div>
-<!-- Navbar End -->
-
-
-<!-- Feature Start -->
-<div class="container-fluid pb-5" style="margin-top: 5rem">
-    <div class="container pb-5">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="d-flex mb-4 mb-lg-0">
-                    <div
-                            class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-                            style="height: 100px; width: 100px;">
-                        <i class="fa fa-2x fa-money-check-alt text-white"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h5 class="">Giá cả hợp lý</h5>
-                        <p class="m-0">Chúng tôi luôn đưa ra mức chi phí tốt nhất và
-                            tối ưu nhất cho khách hàng.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="d-flex mb-4 mb-lg-0">
-                    <div
-                            class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-                            style="height: 100px; width: 100px;">
-                        <i class="fa fa-2x fa-award text-white"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h5 class="">Dịch vụ tuyệt vời</h5>
-                        <p class="m-0">Với châm ngôn khách hàng là thượng đế chúng
-                            tôi luôn muốn đem lại những gì tuyệt vời nhất cho khách hàng.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="d-flex mb-4 mb-lg-0">
-                    <div
-                            class="d-flex flex-shrink-0 align-items-center justify-content-center bg-primary mr-3"
-                            style="height: 100px; width: 100px;">
-                        <i class="fa fa-2x fa-globe text-white"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h5 class="">Địa điểm đa dạng</h5>
-                        <p class="m-0">Công ty chúng tôi có nhiều sự lựa chọn điểm
-                            đến cho khách hàng thoải mái lựa chọn.</p>
-                    </div>
-                </div>
+            <div class="col-md-4 text-right">
+                <button class="nav-arrows"><i class="fa fa-chevron-left"></i></button>
+                <button class="nav-arrows"><i class="fa fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
 </div>
-<!-- Feature End -->
 
-
-
-<!-- Blog Start -->
-<div class="container-fluid py-5">
-    <div class="container py-5">
-        <div class="text-center mb-3 pb-3">
-            <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Tin tức</h6>
-            <h1>Tin tức du lịch mới nhất</h1>
-        </div>
+<!-- Main Content Area -->
+<div class="container-fluid" style="margin-top: 2rem;">
+    <div class="container">
         <div class="row">
-            <div th:each="tinTuc : ${tinTucList}" class="col-lg-12 mb-4">
-                <!-- Blog Detail Start -->
-                <div class="pb-3">
-                    <div class="blog-item">
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" src="public/img/blog-1.jpg" alt="">
-                            <div class="blog-date">
-                                <h6 class="font-weight-bold mb-n1" th:text="${#dates.format(tinTuc.ngay_dang, 'dd')}">01</h6>
-                                <small class="text-white text-uppercase" th:text="${#dates.format(tinTuc.ngay_dang, 'MMM')}">Jan</small>
+            <!-- Main Content (Left) -->
+            <div class="col-lg-8">
+                <!-- Main Banner -->
+                <div class="main-banner">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="text-center mb-3">
+                                <img src="public/img/cambodia.jpg" alt="Angkor Wat" style="width: 200px; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
+                                <h4 class="mb-2">TIN TỨC</h4>
+                                <h6>DU LỊCH CAMPUCHIA</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="mb-3">Tin tức du lịch mới nhất</h2>
+                            <p class="mb-3">Cập nhật những tin tức mới nhất về du lịch Campuchia và các điểm đến hấp dẫn.</p>
+                            <button class="btn btn-danger">XEM THÊM</button>
+                            <div class="mt-3">
+                                <span class="badge badge-light mr-2">●</span>
+                                <span class="badge badge-secondary mr-2">○</span>
+                                <span class="badge badge-secondary mr-2">○</span>
+                                <span class="badge badge-secondary">○</span>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white mb-3" style="padding: 30px;">
-                        <div class="d-flex mb-3">
-                            <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
-                            <span class="text-primary px-2">|</span>
-                            <a class="text-primary text-uppercase text-decoration-none" href="">Tin tức du lịch</a>
-                        </div>
-                        <h2 class="mb-3" th:text="${tinTuc.tieuDe}">Tiêu đề tin tức</h2>
-                        <p th:text="${tinTuc.tom_tat}">Tóm tắt tin tức</p>
-                        <div th:utext="${tinTuc.noi_dung}">
-                            Nội dung tin tức
+                </div>
+
+                <!-- News Content -->
+                <div class="row">
+                    <div th:each="tinTuc : ${tinTucList}" class="col-12 mb-4">
+                        <div class="article-card">
+                            <div class="position-relative">
+                                <img class="img-fluid w-100" src="public/img/blog-1.jpg" alt="">
+                                <div class="blog-date position-absolute" style="top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px;">
+                                    <h6 class="font-weight-bold mb-n1" th:text="${#dates.format(tinTuc.ngay_dang, 'dd')}">01</h6>
+                                    <small class="text-white text-uppercase" th:text="${#dates.format(tinTuc.ngay_dang, 'MMM')}">Jan</small>
+                                </div>
+                            </div>
+                            <div class="article-card-content">
+                                <div class="d-flex mb-3">
+                                    <a class="text-primary text-uppercase text-decoration-none" href="">Admin</a>
+                                    <span class="text-primary px-2">|</span>
+                                    <a class="text-primary text-uppercase text-decoration-none" href="">Tin tức du lịch</a>
+                                </div>
+                                <h3 class="mb-3" th:text="${tinTuc.tieuDe}">Tiêu đề tin tức</h3>
+                                <p th:text="${tinTuc.tom_tat}">Tóm tắt tin tức</p>
+                                <div th:utext="${tinTuc.noi_dung}">
+                                    Nội dung tin tức
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Blog Detail End -->
+            </div>
+
+            <!-- Sidebar (Right) -->
+            <div class="col-lg-4">
+                <!-- Search Section -->
+                <div class="search-section" style="margin-bottom: 20px;">
+                    <h4 class="mb-3">TÌM BÀI VIẾT</h4>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Nhập từ khóa...">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn btn-primary mr-2">Đọc nhiều</button>
+                        <button class="btn btn-outline-primary">Bài mới</button>
+                    </div>
+                </div>
+
+                <!-- Top Article in Sidebar -->
+                <div class="sidebar-article">
+                    <h6 class="text-primary mb-2">DU LỊCH CAMPUCHIA</h6>
+                    <h5>Khám phá văn hóa và ẩm thực Campuchia</h5>
+                </div>
+
+                <!-- Bottom Article in Sidebar -->
+                <div class="sidebar-article">
+                    <h6 class="text-primary mb-2">DU LỊCH ĐÔNG NAM Á</h6>
+                    <h5>Những điểm đến hấp dẫn trong khu vực</h5>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Blog End -->
+
+<!-- Bottom Content Area -->
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <!-- Promotion Section -->
+            <div class="col-lg-8">
+                <div class="promotion-section">
+                    <h4 class="mb-3">KHUYẾN MÃI</h4>
+                    <p class="mb-3">Những khuyến mại hấp dẫn từ iVIVU.com</p>
+                    <hr class="mb-4">
+                    <div class="article-grid">
+                        <!-- Có thể thêm nội dung khuyến mãi ở đây -->
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 
 <!-- Footer Start -->
 <div class="container-fluid bg-dark text-white-50 py-5 px-sm-3 px-lg-5"
@@ -178,18 +269,6 @@
                     class="fa fa-angle-right mr-2"></i>Tin tức</a>
             </div>
         </div>
-        <!-- <div class="col-lg-3 col-md-6 mb-5">
-            <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Usefull Links</h5>
-            <div class="d-flex flex-column justify-content-start">
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Destination</a>
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Packages</a>
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Guides</a>
-                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Testimonial</a>
-                <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Blog</a>
-            </div>
-        </div> -->
         <div class="col-lg-4 col-md-6 mb-5">
             <h5 class="text-white text-uppercase mb-4"
                 style="letter-spacing: 5px;">Liên hệ với chúng tôi</h5>
@@ -234,16 +313,12 @@
 </div>
 <!-- Footer End -->
 
-
-
-
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
         class="fa fa-angle-double-up"></i></a>
 
-
 <!-- JavaScript Libraries -->
-	<script src="/public/js/jquery.js"></script>
+<script src="/public/js/jquery.js"></script>
 <script src="/public/js/boostrap-bundle.min.js"></script>
 <script src="public/lib/easing/easing.min.js"></script>
 <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
@@ -259,34 +334,34 @@
 <!-- Template Javascript -->
 <script src="public/js/main.js"></script>
 <script type="text/javascript">
-	// Dropdown functionality cho trang tin tức
-	$(document).ready(function() {
-		console.log('Tin tuc page loaded');
-		
-		// Thêm event listener cho dropdown toggle
-		$(document).on('click', '.dropdown-toggle', function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			console.log('Tin tuc: Dropdown clicked');
-			
-			var dropdownMenu = $(this).next('.dropdown-menu');
-			dropdownMenu.toggleClass('show');
-			
-			return false;
-		});
-		
-		// Đóng dropdown khi click ra ngoài
-		$(document).on('click', function(e) {
-			if (!$(e.target).closest('.dropdown').length) {
-				$('.dropdown-menu').removeClass('show');
-			}
-		});
-		
-		// Đóng dropdown khi click vào link trong dropdown
-		$(document).on('click', '.dropdown-menu a', function() {
-			$('.dropdown-menu').removeClass('show');
-		});
-	});
+    // Dropdown functionality cho trang tin tức
+    $(document).ready(function() {
+        console.log('Tin tuc page loaded');
+        
+        // Thêm event listener cho dropdown toggle
+        $(document).on('click', '.dropdown-toggle', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Tin tuc: Dropdown clicked');
+            
+            var dropdownMenu = $(this).next('.dropdown-menu');
+            dropdownMenu.toggleClass('show');
+            
+            return false;
+        });
+        
+        // Đóng dropdown khi click ra ngoài
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown-menu').removeClass('show');
+            }
+        });
+        
+        // Đóng dropdown khi click vào link trong dropdown
+        $(document).on('click', '.dropdown-menu a', function() {
+            $('.dropdown-menu').removeClass('show');
+        });
+    });
 </script>
 </body>
 
