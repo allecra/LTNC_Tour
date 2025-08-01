@@ -19,10 +19,10 @@
                         <!-- Menu ở giữa -->
                         <ul class="navbar-nav mx-auto">
                             <li class="nav-item">
-                                <a href="/" class="nav-link" th:classappend="${active == 'home'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500; color: #ffffff;">Trang chủ</a>
+                                <a href="/" class="nav-link" th:classappend="${active == 'home'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500; color: #ffffff; background: transparent !important;">Trang chủ</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" style="font-size: 1.1rem; font-weight: 500;">
+                                <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" style="font-size: 1.1rem; font-weight: 500; background: transparent !important;">
                                     <i class="fa fa-map-marked-alt mr-1"></i>Danh mục tour
                                     <i class="fa fa-chevron-down ml-1" style="font-size: 12px;"></i>
                                 </a>
@@ -36,20 +36,20 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a href="/tin-tuc" class="nav-link text-white" th:classappend="${active == 'news'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500;">Tin tức</a>
+                                <a href="/tin-tuc" class="nav-link text-white" th:classappend="${active == 'news'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500; background: transparent !important;">Tin tức</a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="/voucher" class="nav-link text-white" th:classappend="${active == 'voucher'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500;">Voucher</a>
+                                <a href="/voucher" class="nav-link text-white" th:classappend="${active == 'voucher'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500; background: transparent !important;">Voucher</a>
                             </li>
                             <li class="nav-item">
-                                <a href="/about" class="nav-link text-white" th:classappend="${active == 'about'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500;">Về chúng tôi</a>
+                                <a href="/about" class="nav-link text-white" th:classappend="${active == 'about'} ? 'active' : ''" style="font-size: 1.1rem; font-weight: 500; background: transparent !important;">Về chúng tôi</a>
                             </li>
                         </ul>
                         <!-- Tài khoản dropdown động bên phải -->
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" style="font-size: 1.1rem; font-weight: 500;">
+                                <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" style="font-size: 1.1rem; font-weight: 500; background: transparent !important;">
                                     <i class="fa fa-user mr-1"></i>Tài khoản
                                     <i class="fa fa-chevron-down ml-1" style="font-size: 12px;"></i>
                                 </a>
@@ -103,15 +103,18 @@
             font-weight: 500;
             transition: color 0.3s ease;
             white-space: nowrap;
+            background: transparent !important;
         }
         
         .navbar-nav .nav-link:hover {
             color: #2563eb !important;
+            background: transparent !important;
         }
         
         .navbar-nav .nav-link.active {
             color: #2563eb !important;
             font-weight: 700;
+            background: transparent !important;
         }
         
         /* Layout improvements */
