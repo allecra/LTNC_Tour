@@ -230,6 +230,17 @@ public class TourServiceImpl implements TourService {
 		return tourRepository.findAll(spec, pageable).map(this::convertToDTO);
 	}
 
+	@Override
+	public Tour updateTourStatus(Long id, String status) {
+		Optional<Tour> tourOpt = this.tourRepository.findById(id);
+		if (tourOpt.isPresent()) {
+			Tour tour = tourOpt.get();
+			tour.setTrang_thai(status);
+			return this.tourRepository.save(tour);
+		}
+		return null;
+	}
+
 	private TourDTO convertToDTO(Tour tour) {
 		TourDTO dto = new TourDTO();
 		dto.setId(tour.getId());

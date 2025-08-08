@@ -119,7 +119,7 @@ public class TourController {
     public ResponseDTO createTour(@RequestBody TourDTO tourDTO) {
         try {
             log.info("Received tour data: {}", tourDTO);
-            
+
             if (!this.userService.checkAdminLogin()) {
                 return new ResponseDTO("Không có quyền truy cập", null);
             }
@@ -203,15 +203,15 @@ public class TourController {
     public ResponseDTO updateTourStatus(@PathVariable("id") Long id, @RequestBody TourDTO tourDTO) {
         try {
             log.info("Bắt đầu cập nhật trạng thái tour ID: {}, trạng thái mới: {}", id, tourDTO.getTrang_thai());
-            
+
             if (!this.userService.checkAdminLogin()) {
                 log.warn("Không có quyền truy cập - admin chưa đăng nhập");
                 return new ResponseDTO("Không có quyền truy cập", null);
             }
-            
+
             log.info("Admin đã đăng nhập, tiến hành cập nhật trạng thái");
             Tour tour = this.tourService.updateTourStatus(id, tourDTO.getTrang_thai());
-            
+
             if (tour != null) {
                 log.info("Cập nhật trạng thái thành công cho tour ID: {}", id);
                 return new ResponseDTO("Cập nhật trạng thái thành công", tour);
@@ -246,7 +246,9 @@ public class TourController {
 
         try {
             // Lưu ảnh vào thư mục "upload"
-            String fileName = UUID.randomUUID() + image.getOriginalFilename();
+            String originalFilename = image.getOriginalFilename();
+            String fileName = UUID.randomUUID().toString() + "_"
+                    + (originalFilename != null ? originalFilename.replaceAll("\\s+", "_") : "uploaded_file");
             FileUploadUtil.saveFile(uploadDir, fileName, image);
 
             if (this.tourService.findTourById(id) != null) {

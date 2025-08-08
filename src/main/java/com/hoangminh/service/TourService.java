@@ -43,4 +43,6 @@ public interface TourService {
 
 	Page<TourDTO> findToursByFilters(String keyword, String destination, String origin, Date startDate,
 			BigDecimal price, Pageable pageable);
+
+	Tour updateTourStatus(Long id, String status);
 }
