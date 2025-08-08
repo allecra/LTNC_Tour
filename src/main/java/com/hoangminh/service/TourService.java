@@ -40,4 +40,10 @@ public interface TourService {
 	List<TourDTO> findAllTourWithStartDate();
 	
 	List<String> findAllUniqueOrigins();
+	
+	List<Integer> findAllAvailableMonths();
+	
+	Page<TourDTO> findByMonthWithPagination(int month, Pageable pageable);
+	
+	Page<TourDTO> findByMonthAndTourTypeWithPagination(int month, Long tourTypeId, Pageable pageable);
 }

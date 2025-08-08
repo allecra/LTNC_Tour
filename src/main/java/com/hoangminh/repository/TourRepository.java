@@ -66,15 +66,15 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 			"JOIN t.destination d " +
 			"JOIN t.tourType tt " +
 			"LEFT JOIN t.tour_starts ts " +
-			"WHERE FUNCTION('MONTH', ts.ngay_khoi_hanh) = :month")
+			"WHERE ts.month = :month")
 	List<TourDTO> findByMonth(@Param("month") int month);
 
     @Query("SELECT COUNT(t) FROM Tour t")
     Long countAllTours();
 
-    @Query("SELECT FUNCTION('MONTH', ts.ngay_khoi_hanh) as month, COUNT(t) as count " +
+    @Query("SELECT ts.month as month, COUNT(t) as count " +
            "FROM Tour t JOIN t.tour_starts ts " +
-           "GROUP BY FUNCTION('MONTH', ts.ngay_khoi_hanh) " +
+           "GROUP BY ts.month " +
            "ORDER BY month")
     List<Object[]> countToursByMonth();
 
@@ -94,4 +94,26 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
     
     @Query("SELECT DISTINCT t.diem_khoi_hanh FROM Tour t WHERE t.diem_khoi_hanh IS NOT NULL AND t.diem_khoi_hanh != '' ORDER BY t.diem_khoi_hanh")
     List<String> findAllUniqueOrigins();
+    
+    @Query("SELECT DISTINCT ts.month FROM TourStart ts WHERE ts.month IS NOT NULL ORDER BY ts.month")
+    List<Integer> findAllAvailableMonths();
+    
+    @Query("SELECT new com.hoangminh.dto.TourDTO(t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price) "
+            + "FROM Tour t "
+            + "JOIN t.destination d "
+            + "JOIN t.tourType tt "
+            + "LEFT JOIN t.tour_starts ts "
+            + "WHERE ts.month = :month "
+            + "AND (t.trang_thai='dang_mo_ban' OR t.trang_thai='da_het_cho')")
+    Page<TourDTO> findByMonthWithPagination(@Param("month") int month, Pageable pageable);
+    
+    @Query("SELECT new com.hoangminh.dto.TourDTO(t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price) "
+            + "FROM Tour t "
+            + "JOIN t.destination d "
+            + "JOIN t.tourType tt "
+            + "LEFT JOIN t.tour_starts ts "
+            + "WHERE ts.month = :month "
+            + "AND t.tourType.id = :tourTypeId "
+            + "AND (t.trang_thai='dang_mo_ban' OR t.trang_thai='da_het_cho')")
+    Page<TourDTO> findByMonthAndTourTypeWithPagination(@Param("month") int month, @Param("tourTypeId") Long tourTypeId, Pageable pageable);
 }

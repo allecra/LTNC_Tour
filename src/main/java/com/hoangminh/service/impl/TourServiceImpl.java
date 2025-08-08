@@ -173,4 +173,19 @@ public class TourServiceImpl implements TourService {
     public List<String> findAllUniqueOrigins() {
         return tourRepository.findAllUniqueOrigins();
     }
+    
+    @Override
+    public List<Integer> findAllAvailableMonths() {
+        return tourRepository.findAllAvailableMonths();
+    }
+    
+    @Override
+    public Page<TourDTO> findByMonthWithPagination(int month, Pageable pageable) {
+        return tourRepository.findByMonthWithPagination(month, pageable);
+    }
+    
+    @Override
+    public Page<TourDTO> findByMonthAndTourTypeWithPagination(int month, Long tourTypeId, Pageable pageable) {
+        return tourRepository.findByMonthAndTourTypeWithPagination(month, tourTypeId, pageable);
+    }
 }

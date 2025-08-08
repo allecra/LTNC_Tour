@@ -14,6 +14,7 @@ import com.hoangminh.service.DestinationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -96,11 +97,54 @@ public class HomeController {
 		
 		// Lấy tour trong nước theo mùa (chia đôi danh sách)
 		List<TourDTO> domesticToursBySeason = domesticTours.size() > 6 ? domesticTours.subList(0, 6) : domesticTours;
-		List<TourDTO> domesticToursByMonth = domesticTours.size() > 6 ? domesticTours.subList(6, Math.min(12, domesticTours.size())) : new ArrayList<>();
+		
+		// Lấy tháng đầu tiên có sẵn
+		List<Integer> availableMonths = this.tourService.findAllAvailableMonths();
+		int firstAvailableMonth = availableMonths.isEmpty() ? 1 : availableMonths.get(0);
+		log.info("Available months: {}, First available month: {}", availableMonths, firstAvailableMonth);
+		
+		// Tìm tháng đầu tiên có tour trong nước
+		int firstDomesticMonth = firstAvailableMonth;
+		for (Integer month : availableMonths) {
+			List<TourDTO> testDomesticTours = this.tourService.findByMonthAndTourTypeWithPagination(month, 1L, PageRequest.of(0, 1)).getContent();
+			if (!testDomesticTours.isEmpty()) {
+				firstDomesticMonth = month;
+				break;
+			}
+		}
+		log.info("First domestic month: {}", firstDomesticMonth);
+		
+		// Tìm tháng đầu tiên có tour ngoài nước
+		int firstInternationalMonth = firstAvailableMonth;
+		for (Integer month : availableMonths) {
+			List<TourDTO> testInternationalTours = this.tourService.findByMonthAndTourTypeWithPagination(month, 2L, PageRequest.of(0, 1)).getContent();
+			if (!testInternationalTours.isEmpty()) {
+				firstInternationalMonth = month;
+				break;
+			}
+		}
+		log.info("First international month: {}", firstInternationalMonth);
+		
+		// Lấy tour trong nước theo tháng (lấy tất cả tour có thông tin tháng)
+		List<TourDTO> domesticToursByMonth = this.tourService.findByMonthAndTourTypeWithPagination(firstDomesticMonth, 1L, Pageable.unpaged()).getContent();
+		log.info("Domestic tours by month {}: {}", firstDomesticMonth, domesticToursByMonth.size());
+		if (domesticToursByMonth.isEmpty()) {
+			// Nếu không có tour theo tháng, lấy tất cả tour trong nước
+			domesticToursByMonth = domesticTours;
+			log.info("Using fallback domestic tours: {}", domesticToursByMonth.size());
+		}
 		
 		// Lấy tour ngoài nước theo mùa (chia đôi danh sách)
 		List<TourDTO> internationalToursBySeason = internationalTours.size() > 6 ? internationalTours.subList(0, 6) : internationalTours;
-		List<TourDTO> internationalToursByMonth = internationalTours.size() > 6 ? internationalTours.subList(6, Math.min(12, internationalTours.size())) : new ArrayList<>();
+		
+		// Lấy tour ngoài nước theo tháng (lấy tất cả tour có thông tin tháng)
+		List<TourDTO> internationalToursByMonth = this.tourService.findByMonthAndTourTypeWithPagination(firstInternationalMonth, 2L, Pageable.unpaged()).getContent();
+		log.info("International tours by month {}: {}", firstInternationalMonth, internationalToursByMonth.size());
+		if (internationalToursByMonth.isEmpty()) {
+			// Nếu không có tour theo tháng, lấy tất cả tour ngoài nước
+			internationalToursByMonth = internationalTours;
+			log.info("Using fallback international tours: {}", internationalToursByMonth.size());
+		}
 
 		List<Destination> destinations = this.destinationService.findAllDestinations();
 		List<VoucherDTO> activeVouchers = this.voucherService.getActiveVouchers();
@@ -123,6 +167,9 @@ public class HomeController {
 		mdv.addObject("domesticToursByMonth", domesticToursByMonth);
 		mdv.addObject("internationalToursBySeason", internationalToursBySeason);
 		mdv.addObject("internationalToursByMonth", internationalToursByMonth);
+		mdv.addObject("firstAvailableMonth", firstAvailableMonth);
+		mdv.addObject("firstDomesticMonth", firstDomesticMonth);
+		mdv.addObject("firstInternationalMonth", firstInternationalMonth);
 		mdv.addObject("destinations", destinations);
 		mdv.addObject("activeVouchers", activeVouchers);
 		mdv.addObject("featuredReviews", featuredReviews);
@@ -135,17 +182,77 @@ public class HomeController {
 	@GetMapping("/tour/trong-nuoc")
 	ModelAndView tourTrongNuoc(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
 			@RequestParam(value = "ten_tour", required = false) String ten_tour,
-			@RequestParam(value = "gia_tour", required = false) Long gia_tour) {
-		// Redirect về trang chủ với anchor để scroll đến section tour trong nước
-		return new ModelAndView("redirect:/#domestic-tours");
+			@RequestParam(value = "gia_tour", required = false) Long gia_tour,
+			@RequestParam(value = "month", required = false) Integer month) {
+		
+		ModelAndView mdv = new ModelAndView("user/tour1");
+		
+		// Lấy danh sách các tháng có sẵn
+		List<Integer> availableMonths = this.tourService.findAllAvailableMonths();
+		mdv.addObject("availableMonths", availableMonths);
+		
+		// Nếu có tham số month, lấy tour theo tháng
+		if (month != null && month >= 1 && month <= 12) {
+			Page<TourDTO> tourPage = this.tourService.findByMonthWithPagination(month, PageRequest.of(pageIndex - 1, 12));
+			mdv.addObject("tours", tourPage.getContent());
+			mdv.addObject("totalPages", tourPage.getTotalPages());
+			mdv.addObject("currentPage", pageIndex);
+			mdv.addObject("selectedMonth", month);
+		} else {
+			// Lấy tất cả tour trong nước (type_id = 1)
+			Page<TourDTO> tourPage = this.tourService.findAllTour(ten_tour, null, null, 1L, PageRequest.of(pageIndex - 1, 12));
+			mdv.addObject("tours", tourPage.getContent());
+			mdv.addObject("totalPages", tourPage.getTotalPages());
+			mdv.addObject("currentPage", pageIndex);
+		}
+		
+		// Thêm thông tin user cho dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
 	}
 
 	@GetMapping("/tour/ngoai-nuoc")
 	ModelAndView tourNgoaiNuoc(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
 			@RequestParam(value = "ten_tour", required = false) String ten_tour,
-			@RequestParam(value = "gia_tour", required = false) Long gia_tour) {
-		// Redirect về trang chủ với anchor để scroll đến section tour ngoài nước
-		return new ModelAndView("redirect:/#international-tours");
+			@RequestParam(value = "gia_tour", required = false) Long gia_tour,
+			@RequestParam(value = "month", required = false) Integer month) {
+		
+		ModelAndView mdv = new ModelAndView("user/tour2");
+		
+		// Lấy danh sách các tháng có sẵn
+		List<Integer> availableMonths = this.tourService.findAllAvailableMonths();
+		mdv.addObject("availableMonths", availableMonths);
+		
+		// Nếu có tham số month, lấy tour theo tháng
+		if (month != null && month >= 1 && month <= 12) {
+			Page<TourDTO> tourPage = this.tourService.findByMonthAndTourTypeWithPagination(month, 2L, PageRequest.of(pageIndex - 1, 12));
+			mdv.addObject("tours", tourPage.getContent());
+			mdv.addObject("totalPages", tourPage.getTotalPages());
+			mdv.addObject("currentPage", pageIndex);
+			mdv.addObject("selectedMonth", month);
+		} else {
+			// Lấy tất cả tour ngoài nước (type_id = 2)
+			Page<TourDTO> tourPage = this.tourService.findAllTour(ten_tour, null, null, 2L, PageRequest.of(pageIndex - 1, 12));
+			mdv.addObject("tours", tourPage.getContent());
+			mdv.addObject("totalPages", tourPage.getTotalPages());
+			mdv.addObject("currentPage", pageIndex);
+		}
+		
+		// Thêm thông tin user cho dropdown
+		try {
+			UserDTO user = SessionUtilities.getUser();
+			mdv.addObject("user", user);
+		} catch (Exception e) {
+			mdv.addObject("user", null);
+		}
+		
+		return mdv;
 	}
 
 	@GetMapping("/tour/{id}")

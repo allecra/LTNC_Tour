@@ -759,7 +759,9 @@
 								<div class="p-4">
 									<div class="d-flex justify-content-between mb-3" th:inline="text">
 										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
-										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+										<small class="m-0">
+											<i class="fa fa-calendar text-info mr-1"></i>Tháng [[${firstDomesticMonth}]]
+										</small>
 									</div>
 									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
 									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
@@ -780,7 +782,7 @@
 			
 			<!-- Xem thêm button -->
 			<div class="text-center mt-4">
-				<a href="/tour/trong-nuoc" class="btn btn-outline-primary btn-lg">
+				<a href="/tour/trong-nuoc" id="domestic-view-all" class="btn btn-outline-primary btn-lg">
 					<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour trong nước
 				</a>
 			</div>
@@ -862,7 +864,9 @@
 								<div class="p-4">
 									<div class="d-flex justify-content-between mb-3" th:inline="text">
 										<small class="m-0"><i class="fa fa-map-marker-alt text-primary mr-2"></i>[[${tour.diem_den}]]</small>
-										<small class="m-0">[[${tour.so_ngay}]] ngày</small>
+										<small class="m-0">
+											<i class="fa fa-calendar text-info mr-1"></i>Tháng [[${firstInternationalMonth}]]
+										</small>
 									</div>
 									<a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" th:text="${tour.ten_tour}"></a>
 									<p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
@@ -883,7 +887,7 @@
 			
 			<!-- Xem thêm button -->
 			<div class="text-center mt-4">
-				<a href="/tour/ngoai-nuoc" class="btn btn-outline-primary btn-lg">
+				<a href="/tour/ngoai-nuoc" id="international-view-all" class="btn btn-outline-primary btn-lg">
 					<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour ngoài nước
 				</a>
 			</div>
@@ -1384,6 +1388,16 @@
 				// Hiển thị tab được chọn
 				$(target).addClass('show active');
 				$(this).addClass('active');
+				
+				// Thay đổi link của nút "Xem tất cả" dựa trên tab được chọn
+				var viewAllBtn = $('#domestic-view-all');
+				if (target === '#domestic-month') {
+					viewAllBtn.attr('href', '/tour/trong-nuoc?month=' + [[${firstDomesticMonth}]]);
+					viewAllBtn.html('<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour theo tháng');
+				} else {
+					viewAllBtn.attr('href', '/tour/trong-nuoc');
+					viewAllBtn.html('<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour trong nước');
+				}
 			});
 			
 			// Xử lý tab cho tour ngoài nước
@@ -1400,6 +1414,16 @@
 				// Hiển thị tab được chọn
 				$(target).addClass('show active');
 				$(this).addClass('active');
+				
+				// Thay đổi link của nút "Xem tất cả" dựa trên tab được chọn
+				var viewAllBtn = $('#international-view-all');
+				if (target === '#international-month') {
+					viewAllBtn.attr('href', '/tour/ngoai-nuoc?month=' + [[${firstInternationalMonth}]]);
+					viewAllBtn.html('<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour theo tháng');
+				} else {
+					viewAllBtn.attr('href', '/tour/ngoai-nuoc');
+					viewAllBtn.html('<i class="fa fa-arrow-right mr-2"></i>Xem tất cả tour ngoài nước');
+				}
 			});
 			
 			// Xử lý smooth scroll cho anchor links
