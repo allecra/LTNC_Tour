@@ -7,9 +7,6 @@ INSERT INTO `role` (`id`, `ten_role`, `mo_ta`) VALUES
 (2, 'CUSTOMER', 'Khách hàng, người dùng cuối sử dụng dịch vụ'),
 (3, 'STAFF', 'Nhân viên, có quyền truy cập hạn chế để quản lý tour và booking');
 
--- Sử dụng schema jsb_dulich cho bảng user
-USE `jsb_tour`;
-
 -- Dữ liệu mẫu cho bảng 'user'
 -- Lưu ý: Để id tự động tăng (AUTO_INCREMENT), không gán id thủ công
 -- Mật khẩu cho tất cả người dùng mẫu là: 123456
@@ -18,8 +15,6 @@ INSERT INTO `user` (`username`, `pass`, `ho_ten`, `email`, `sdt`, `gioi_tinh`, `
 ('customer1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Nguyễn Văn A', 'customer1@example.com', '0987654321', 'Nam', '456 Customer Avenue', 2),
 ('staff1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Trần Thị B', 'staff1@tour.com', '0123123123', 'Nữ', '789 Staff Road', 3);
 
--- Quay lại sử dụng schema jsb_tour cho các bảng còn lại
-USE `jsb_tour`;
 
 -- Dữ liệu mẫu cho bảng 'tour_type'
 INSERT INTO `tour_type` (`id`, `ten_loai`, `mo_ta`) VALUES

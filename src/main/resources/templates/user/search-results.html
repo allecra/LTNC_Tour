@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Kết quả tìm kiếm tour - CAMPUCHIA TOUR</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Các thư viện CSS giống trang chủ -->
+    <link href="/public/css/style.css" rel="stylesheet">
+    <link href="/public/css/blue-white-override.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="user/fragments/header :: header"></div>
+
+    <!-- Search Results Section -->
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <!-- Search Summary -->
+            <div class="text-center mb-4">
+                <h1>Kết quả tìm kiếm</h1>
+                <div class="mt-3">
+                    <span th:if="${keyword}" class="badge badge-primary mr-2" th:text="'Từ khóa: ' + ${keyword}"></span>
+                    <span th:if="${destination}" class="badge badge-info mr-2" th:text="'Điểm đến: ' + ${destination}"></span>
+                    <span th:if="${origin}" class="badge badge-secondary mr-2" th:text="'Điểm khởi hành: ' + ${origin}"></span>
+                    <span th:if="${departureDate}" class="badge badge-success mr-2" th:text="'Ngày khởi hành: ' + ${departureDate}"></span>
+                    <span th:if="${price}" class="badge badge-warning" th:text="'Giá tối đa: ' + ${#numbers.formatInteger(price,3,'POINT')} + ' VNĐ'"></span>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="/search" method="GET" class="row">
+                        <!-- Keyword Input -->
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <input type="text" class="form-control" name="keyword" th:value="${keyword}"
+                                   placeholder="Nhập từ khóa...">
+                        </div>
+                        
+                        <!-- Destination Input -->
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <select name="destination" class="form-control">
+                                <option value="">Chọn điểm đến</option>
+                                <option th:each="dest : ${destinations}" 
+                                        th:value="${dest.name}"
+                                        th:text="${dest.name + ' - ' + dest.country}"
+                                        th:selected="${dest.name == destination}">
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Origin Input -->
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <select name="origin" class="form-control">
+                                <option value="">Chọn điểm khởi hành</option>
+                                <option th:each="orig : ${origins}" 
+                                        th:value="${orig}"
+                                        th:text="${orig}"
+                                        th:selected="${orig == origin}">
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Date Input -->
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <select name="departureDate" class="form-control">
+                                <option value="">Chọn ngày khởi hành</option>
+                                <option th:each="date : ${availableDates}" 
+                                        th:value="${#dates.format(date, 'dd/MM/yyyy')}"
+                                        th:text="${#dates.format(date, 'dd/MM/yyyy')}"
+                                        th:selected="${#dates.format(date, 'dd/MM/yyyy') == departureDate}">
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="col-md-12 col-lg-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa fa-search mr-2"></i>Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="row">
+                <!-- Error Message -->
+                <div th:if="${error}" class="col-12 text-center py-5">
+                    <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h3>Có lỗi xảy ra</h3>
+                    <p class="text-muted" th:text="${error}">Vui lòng thử lại sau</p>
+                    <a href="/" class="btn btn-primary mt-3">
+                        <i class="fa fa-home mr-2"></i>Về trang chủ
+                    </a>
+                </div>
+
+                <!-- No Results Message -->
+                <div th:if="${#lists.isEmpty(searchResults) && error == null}" class="col-12 text-center py-5">
+                    <i class="fa fa-search fa-3x text-muted mb-3"></i>
+                    <h3>Không tìm thấy kết quả</h3>
+                    <p class="text-muted">Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
+                    <a href="/" class="btn btn-primary mt-3">
+                        <i class="fa fa-home mr-2"></i>Về trang chủ
+                    </a>
+                </div>
+
+                <!-- Tour Cards -->
+                <div th:each="tour : ${searchResults}" class="col-lg-4 col-md-6 mb-4">
+                    <div class="package-item bg-white mb-2">
+                        <img class="img-fluid" style="height: 200px; width: 100%;" 
+                             th:src="'/public/img/' + ${tour.anh_dai_dien}" alt="">
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <small class="m-0">
+                                    <i class="fa fa-map-marker-alt text-primary mr-2"></i>
+                                    <span th:text="${tour.diem_den}"></span>
+                                </small>
+                                <small class="m-0" th:text="${tour.so_ngay + ' ngày'}"></small>
+                            </div>
+                            <a class="h5 text-decoration-none" th:href="@{/tour/{id}(id=${tour.id})}" 
+                               th:text="${tour.ten_tour}"></a>
+                            <p class="card-text" style="height: 40px" th:text="${tour.gioi_thieu_tour}"></p>
+                            
+                            <!-- Tour Start Date -->
+                            <div th:if="${tour.ngay_khoi_hanh}" class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fa fa-calendar mr-2"></i>
+                                    Khởi hành: <span th:text="${tour.ngay_khoi_hanh}"></span>
+                                </small>
+                            </div>
+                            
+                            <div class="border-top mt-4 pt-4">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="m-0">
+                                        <i class="fa fa-star text-primary mr-2"></i>4.5 
+                                        <small>(250)</small>
+                                    </h6>
+                                    <h5 class="m-0" th:text="${#numbers.formatInteger(tour.gia_tour,3,'POINT') + ' VNĐ'}"></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="user/fragments/footer :: footer"></div>
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
+        <i class="fa fa-angle-double-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
+    <!-- Thêm các script giống trang chủ -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/vi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Back to top button
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+            });
+            
+            $('.back-to-top').click(function() {
+                $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>

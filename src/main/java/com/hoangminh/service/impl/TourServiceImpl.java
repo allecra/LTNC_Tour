@@ -1,6 +1,13 @@
 package com.hoangminh.service.impl;
 
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.math.BigDecimal;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +17,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.hoangminh.dto.TourDTO;
-import com.hoangminh.entity.Image;
 import com.hoangminh.entity.Tour;
 import com.hoangminh.entity.TourStart;
+import com.hoangminh.entity.Destination;
 import com.hoangminh.repository.DestinationRepository;
 import com.hoangminh.repository.TourRepository;
 import com.hoangminh.repository.TourTypeRepository;
 import com.hoangminh.service.TourService;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 
 import java.math.BigDecimal;
 
@@ -145,32 +148,113 @@ public class TourServiceImpl implements TourService {
 		return tourRepository.findByMonth(month);
 	}
 
-    public List<TourDTO> findAllTourWithStartDate() {
-        List<Object[]> rawList = tourRepository.findAllTourWithStartDate();
-        List<TourDTO> result = new ArrayList<>();
-        for (Object[] row : rawList) {
-            TourDTO dto = new TourDTO();
-            dto.setId(((Number) row[0]).longValue());
-            dto.setTen_tour((String) row[1]);
-            dto.setGioi_thieu_tour((String) row[2]);
-            dto.setSo_ngay(row[3] != null ? ((Number) row[3]).intValue() : null);
-            dto.setNoi_dung_tour((String) row[4]);
-            dto.setDiem_den((String) row[5]);
-            dto.setLoai_tour((String) row[6]);
-            dto.setAnh_dai_dien((String) row[7]);
-            dto.setDiem_khoi_hanh((String) row[8]);
-            dto.setTrang_thai((String) row[9]);
-            dto.setGia_tour(row[10] != null ? new java.math.BigDecimal(row[10].toString()) : null);
-            dto.setSale_price(row[11] != null ? new java.math.BigDecimal(row[11].toString()) : null);
-            dto.setNgay_khoi_hanh(row[12] != null ? row[12].toString() : "");
-            dto.setNgay_ket_thuc(row[13] != null ? row[13].toString() : "");
-            result.add(dto);
-        }
-        return result;
-    }
-    
-    @Override
-    public List<String> findAllUniqueOrigins() {
-        return tourRepository.findAllUniqueOrigins();
-    }
+	public List<TourDTO> findAllTourWithStartDate() {
+		List<Object[]> rawList = tourRepository.findAllTourWithStartDate();
+		List<TourDTO> result = new ArrayList<>();
+		for (Object[] row : rawList) {
+			TourDTO dto = new TourDTO();
+			dto.setId(((Number) row[0]).longValue());
+			dto.setTen_tour((String) row[1]);
+			dto.setGioi_thieu_tour((String) row[2]);
+			dto.setSo_ngay(row[3] != null ? ((Number) row[3]).intValue() : null);
+			dto.setNoi_dung_tour((String) row[4]);
+			dto.setDiem_den((String) row[5]);
+			dto.setLoai_tour((String) row[6]);
+			dto.setAnh_dai_dien((String) row[7]);
+			dto.setDiem_khoi_hanh((String) row[8]);
+			dto.setTrang_thai((String) row[9]);
+			dto.setGia_tour(row[10] != null ? new java.math.BigDecimal(row[10].toString()) : null);
+			dto.setSale_price(row[11] != null ? new java.math.BigDecimal(row[11].toString()) : null);
+			dto.setNgay_khoi_hanh(row[12] != null ? row[12].toString() : "");
+			dto.setNgay_ket_thuc(row[13] != null ? row[13].toString() : "");
+			result.add(dto);
+		}
+		return result;
+	}
+
+	@Override
+	public List<String> findAllUniqueOrigins() {
+		return tourRepository.findAllUniqueOrigins();
+	}
+
+	@Override
+	public Page<TourDTO> findToursByFilters(String keyword, String destination, String origin, Date startDate,
+			BigDecimal price, Pageable pageable) {
+		Specification<Tour> spec = (root, query, cb) -> {
+			List<Predicate> orPredicates = new ArrayList<>();
+			List<Predicate> andPredicates = new ArrayList<>();
+
+			// Nhóm các điều kiện tìm kiếm chính (chỉ cần match 1 trong 3)
+			if (keyword != null && !keyword.trim().isEmpty()) {
+				orPredicates.add(cb.like(cb.lower(root.get("ten_tour")), "%" + keyword.toLowerCase() + "%"));
+			}
+
+			if (destination != null && !destination.trim().isEmpty()) {
+				Join<Tour, Destination> destinationJoin = root.join("destination",
+						jakarta.persistence.criteria.JoinType.LEFT);
+				orPredicates.add(cb.or(
+						cb.like(cb.lower(destinationJoin.get("name")), "%" + destination.toLowerCase() + "%"),
+						cb.like(cb.lower(root.get("diem_khoi_hanh")), "%" + destination.toLowerCase() + "%")));
+			}
+
+			if (origin != null && !origin.trim().isEmpty()) {
+				orPredicates.add(cb.like(cb.lower(root.get("diem_khoi_hanh")), "%" + origin.toLowerCase() + "%"));
+			}
+
+			// Thêm điều kiện OR nếu có ít nhất một điều kiện tìm kiếm chính
+			if (!orPredicates.isEmpty()) {
+				andPredicates.add(cb.or(orPredicates.toArray(new Predicate[0])));
+			}
+
+			// Các điều kiện lọc phụ (luôn AND)
+			if (startDate != null) {
+				Join<Tour, TourStart> tourStartJoin = root.join("tourStarts",
+						jakarta.persistence.criteria.JoinType.LEFT);
+				andPredicates.add(cb.equal(tourStartJoin.get("ngay_khoi_hanh"), startDate));
+				query.distinct(true);
+			}
+
+			if (price != null) {
+				andPredicates.add(cb.lessThanOrEqualTo(root.get("gia_tour"), price));
+			}
+
+			// Kết hợp các điều kiện
+			if (!andPredicates.isEmpty()) {
+				return cb.and(andPredicates.toArray(new Predicate[0]));
+			}
+
+			// Nếu không có điều kiện nào, trả về tất cả tour
+			return cb.conjunction(); // Trả về true để lấy tất cả tour
+		};
+
+		return tourRepository.findAll(spec, pageable).map(this::convertToDTO);
+	}
+
+	private TourDTO convertToDTO(Tour tour) {
+		TourDTO dto = new TourDTO();
+		dto.setId(tour.getId());
+		dto.setTen_tour(tour.getTen_tour());
+		dto.setGioi_thieu_tour(tour.getGioi_thieu_tour());
+		dto.setSo_ngay(tour.getSo_ngay());
+		dto.setNoi_dung_tour(tour.getNoi_dung_tour());
+		dto.setDiem_den(tour.getDestination().getName());
+		dto.setLoai_tour(tour.getTourType().getTen_loai());
+		dto.setAnh_dai_dien(tour.getAnh_dai_dien());
+		dto.setDiem_khoi_hanh(tour.getDiem_khoi_hanh());
+		dto.setTrang_thai(tour.getTrang_thai());
+		dto.setGia_tour(tour.getGia_tour());
+		dto.setSale_price(tour.getSale_price());
+
+		// Lấy ngày khởi hành gần nhất
+		Optional<TourStart> nextStart = tour.getTour_starts().stream()
+				.filter(ts -> ts.getNgay_khoi_hanh().after(new Date()))
+				.min(Comparator.comparing(TourStart::getNgay_khoi_hanh));
+		if (nextStart.isPresent()) {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			dto.setNgay_khoi_hanh(sdf.format(nextStart.get().getNgay_khoi_hanh()));
+			dto.setNgay_ket_thuc(sdf.format(nextStart.get().getNgay_ket_thuc()));
+		}
+
+		return dto;
+	}
 }

@@ -39,7 +39,26 @@ public class UserVoucherServiceImpl implements UserVoucherService {
 
     @Override
     public List<VoucherDTO> getAvailableUserVouchers(Long userId) {
+        Date currentDate = new Date();
         return userVoucherRepository.findAvailableVouchersByUserId(userId).stream()
+                .filter(uv -> {
+                    Voucher v = uv.getVoucher();
+                    // Một voucher được coi là available khi:
+                    // 1. Chưa được sử dụng
+                    // 2. Có ngày hết hạn và chưa hết hạn
+                    boolean isValid = !uv.getIsUsed() &&
+                            v.getNgayHetHan() != null &&
+                            v.getNgayHetHan().after(currentDate);
+
+                    System.out.printf("UserVoucher (userId=%d, voucherId=%d): isUsed=%b, ngayHetHan=%s, isValid=%b%n",
+                            userId,
+                            v.getId(),
+                            uv.getIsUsed(),
+                            v.getNgayHetHan() != null ? sdf.format(v.getNgayHetHan()) : "null",
+                            isValid);
+
+                    return isValid;
+                })
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -49,13 +68,13 @@ public class UserVoucherServiceImpl implements UserVoucherService {
         try {
             User user = userRepository.findById(userId).orElse(null);
             Voucher voucher = voucherRepository.findById(voucherId).orElse(null);
-            
+
             if (user != null && voucher != null) {
                 // Kiểm tra xem user đã có voucher này chưa
                 List<UserVoucher> existingVouchers = userVoucherRepository.findByUserId(userId);
                 boolean alreadyHasVoucher = existingVouchers.stream()
                         .anyMatch(uv -> uv.getVoucher().getId().equals(voucherId));
-                
+
                 if (!alreadyHasVoucher) {
                     UserVoucher userVoucher = new UserVoucher();
                     userVoucher.setUser(user);
@@ -90,9 +109,28 @@ public class UserVoucherServiceImpl implements UserVoucherService {
 
     @Override
     public boolean isValidVoucher(Long userId, String voucherCode) {
+        Date currentDate = new Date();
         List<UserVoucher> userVouchers = userVoucherRepository.findAvailableVouchersByUserId(userId);
+
         return userVouchers.stream()
-                .anyMatch(uv -> uv.getVoucher().getMaGiamGia().equals(voucherCode));
+                .filter(uv -> {
+                    Voucher v = uv.getVoucher();
+                    boolean isValid = !uv.getIsUsed() &&
+                            v.getNgayHetHan() != null &&
+                            v.getNgayHetHan().after(currentDate) &&
+                            v.getMaGiamGia().equals(voucherCode);
+
+                    System.out.printf("Validating voucher (userId=%d, code=%s): isUsed=%b, ngayHetHan=%s, isValid=%b%n",
+                            userId,
+                            voucherCode,
+                            uv.getIsUsed(),
+                            v.getNgayHetHan() != null ? sdf.format(v.getNgayHetHan()) : "null",
+                            isValid);
+
+                    return isValid;
+                })
+                .findFirst()
+                .isPresent();
     }
 
     @Override
@@ -109,14 +147,15 @@ public class UserVoucherServiceImpl implements UserVoucherService {
         VoucherDTO dto = new VoucherDTO();
         dto.setId(userVoucher.getVoucher().getId());
         dto.setCode(userVoucher.getVoucher().getMaGiamGia());
-        dto.setDiscount(userVoucher.getVoucher().getGiaTri() != null ? 
-                userVoucher.getVoucher().getGiaTri().doubleValue() : null);
-        dto.setExpiry_date(userVoucher.getVoucher().getNgayHetHan() != null ? 
-                sdf.format(userVoucher.getVoucher().getNgayHetHan()) : null);
+        dto.setDiscount(
+                userVoucher.getVoucher().getGiaTri() != null ? userVoucher.getVoucher().getGiaTri().doubleValue()
+                        : null);
+        dto.setExpiry_date(
+                userVoucher.getVoucher().getNgayHetHan() != null ? sdf.format(userVoucher.getVoucher().getNgayHetHan())
+                        : null);
         dto.setDieuKien(userVoucher.getVoucher().getDieuKienApDung());
         dto.setIsUsed(userVoucher.getIsUsed());
-        dto.setReceivedAt(userVoucher.getReceivedAt() != null ? 
-                sdf.format(userVoucher.getReceivedAt()) : null);
+        dto.setReceivedAt(userVoucher.getReceivedAt() != null ? sdf.format(userVoucher.getReceivedAt()) : null);
         return dto;
     }
 
@@ -129,4 +168,4 @@ public class UserVoucherServiceImpl implements UserVoucherService {
         dto.setDieuKien(voucher.getDieuKienApDung());
         return dto;
     }
-} 
+}

@@ -14,4 +14,7 @@ import com.hoangminh.entity.TourStart;
 public interface TourStartRepository extends JpaRepository<TourStart, Long> {
 
 	List<TourStart> findByTourId(Long tourId);
+
+	@Query("SELECT DISTINCT t.ngay_khoi_hanh FROM TourStart t WHERE t.ngay_khoi_hanh >= CURRENT_DATE ORDER BY t.ngay_khoi_hanh")
+	List<java.util.Date> findAllAvailableDates();
 }

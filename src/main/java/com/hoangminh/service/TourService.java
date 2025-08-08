@@ -38,6 +38,9 @@ public interface TourService {
 	boolean deleteTour(Long id);
 
 	List<TourDTO> findAllTourWithStartDate();
-	
+
 	List<String> findAllUniqueOrigins();
+
+	Page<TourDTO> findToursByFilters(String keyword, String destination, String origin, Date startDate,
+			BigDecimal price, Pageable pageable);
 }

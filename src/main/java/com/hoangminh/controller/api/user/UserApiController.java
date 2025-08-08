@@ -117,23 +117,5 @@ public class UserApiController {
         return ResponseEntity.ok(new ResponseDTO("Lấy lịch sử đặt tour thành công", bookings));
     }
 
-    // == VOUCHER API ==
-    @PostMapping("/check-voucher")
-    public ResponseEntity<Map<String, Object>> checkVoucher(@RequestBody Map<String, String> request) {
-        String voucherCode = request.get("voucherCode");
-        
-        // Lấy userId từ session (trong thực tế nên dùng JWT)
-        Long userId = 2L; // Tạm thời hardcode, cần lấy từ session
-        
-        if (userVoucherService.isValidVoucher(userId, voucherCode)) {
-            com.hoangminh.dto.VoucherDTO voucher = userVoucherService.getVoucherByCode(voucherCode);
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "discount", voucher.getDiscount(),
-                "dieuKien", voucher.getDieuKien()
-            ));
-        } else {
-            return ResponseEntity.ok(Map.of("success", false));
-        }
-    }
+    // Voucher handling has been moved to PaymentController
 }

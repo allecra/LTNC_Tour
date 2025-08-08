@@ -279,4 +279,10 @@ public class UserServiceImpl implements UserService {
 		}
 		return null;
 	}
+
+	@Override
+	public Long getCurrentUserId() {
+		UserDTO currentUser = SessionUtilities.getUser();
+		return currentUser != null ? currentUser.getId() : null;
+	}
 }

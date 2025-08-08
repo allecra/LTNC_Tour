@@ -95,13 +95,41 @@
                         
                         <div class="form-group">
                             <label for="payment_method">Phương thức thanh toán</label>
-                            <select name="payment_method" id="payment_method" class="form-control">
+                            <select name="payment_method" id="payment_method" class="form-control" onchange="togglePaymentInfo()">
                                 <option value="Chuyển khoản">Chuyển khoản</option>
                                 <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
                             </select>
                         </div>
+                        
+                        <!-- Bank Transfer Information -->
+                        <div id="bankTransferInfo" class="form-group" style="display: none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Thông tin chuyển khoản</h5>
+                                    <div class="text-center mb-3">
+                                        <img src="https://img.vietqr.io/image/TCB-2708200123-print.png" 
+                                             alt="QR Code thanh toán" 
+                                             style="max-width: 300px;">
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <strong>Lưu ý:</strong> Vui lòng chuyển khoản với nội dung:
+                                        <br>
+                                        <code th:text="${'TOUR_' + tourStart.id + '_' + user.ho_ten}">TOUR_ID_NAME</code>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="paymentConfirmed" name="paymentConfirmed">
+                                        <label class="form-check-label" for="paymentConfirmed">
+                                            Tôi xác nhận đã chuyển khoản
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Thanh toán</button>
+                            <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                                Hoàn tất đặt tour
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -276,6 +304,31 @@
             alert('Có lỗi xảy ra khi kiểm tra voucher');
         });
     }
+
+    function togglePaymentInfo() {
+        const paymentMethod = document.getElementById('payment_method').value;
+        const bankTransferInfo = document.getElementById('bankTransferInfo');
+        const submitBtn = document.getElementById('submitBtn');
+        const paymentConfirmed = document.getElementById('paymentConfirmed');
+
+        if (paymentMethod === 'Chuyển khoản') {
+            bankTransferInfo.style.display = 'block';
+            submitBtn.disabled = !paymentConfirmed.checked;
+            
+            // Add event listener for payment confirmation
+            paymentConfirmed.addEventListener('change', function() {
+                submitBtn.disabled = !this.checked;
+            });
+        } else {
+            bankTransferInfo.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Initialize payment method display
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePaymentInfo();
+    });
 </script>
 </body>
 

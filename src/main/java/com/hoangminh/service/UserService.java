@@ -44,4 +44,6 @@ public interface UserService {
 	public UserDTO findUserDTOById(Long id);
 
 	public String getRegisterError(RegisterDTO user);
+
+	public Long getCurrentUserId();
 }
