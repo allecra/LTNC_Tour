@@ -1,28 +1,26 @@
 package com.hoangminh.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.hoangminh.dto.BookingDetailDTO;
-import com.hoangminh.entity.TourStart;
-import com.hoangminh.entity.User;
-import com.hoangminh.repository.TourStartRepository;
-import com.hoangminh.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hoangminh.dto.BookingDTO;
-import com.hoangminh.dto.TourDTO;
+import com.hoangminh.dto.BookingDetailDTO;
 import com.hoangminh.entity.Booking;
+import com.hoangminh.entity.TourStart;
+import com.hoangminh.entity.User;
 import com.hoangminh.repository.BookingRepository;
 import com.hoangminh.repository.TourRepository;
+import com.hoangminh.repository.TourStartRepository;
+import com.hoangminh.repository.UserRepository;
 import com.hoangminh.service.BookingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -53,9 +51,10 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public boolean addNewBooking(BookingDTO newBooking) {
-		List<BookingDTO> checkBooking = this.checkBookingByUserId(newBooking.getUser_id());
+		// Kiểm tra booking đang hoạt động (không bị hủy hoặc hoàn tất)
+		List<BookingDTO> checkBooking = this.checkActiveBookingByUserId(newBooking.getUser_id());
 		if (checkBooking.size() > 0) {
-			logger.warn("Booking trùng cho user_id: {}", newBooking.getUser_id());
+			logger.warn("User đã có booking đang hoạt động: {}", newBooking.getUser_id());
 			return false;
 		}
 
@@ -110,9 +109,16 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public boolean deleteBooking(Long id) {
 		BookingDTO booking = this.getBookingById(id);
-		if (booking != null && (booking.getTrang_thai().equals("huy") || booking.getTrang_thai().equals("hoan_tat"))) {
-			this.bookingRepository.deleteById(id);
-			return true;
+		if (booking != null) {
+			// Cho phép xóa booking ở trạng thái hủy, hoàn tất, hoặc cho xác nhận
+			if (booking.getTrang_thai().equals("huy") || 
+				booking.getTrang_thai().equals("hoan_tat") || 
+				booking.getTrang_thai().equals("cho_xac_nhan")) {
+				this.bookingRepository.deleteById(id);
+				return true;
+			} else {
+				logger.warn("Không thể xóa booking có trạng thái: {}", booking.getTrang_thai());
+			}
 		}
 		return false;
 	}
@@ -134,12 +140,12 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public List<BookingDTO> checkBookingByUserId(Long id) {
-		// This method is not fully implemented in the repository based on previous
-		// steps.
-		// Returning an empty list to avoid breaking logic that depends on it.
-		// A proper implementation would require adding a custom query to
-		// BookingRepository.
-		return List.of();
+		return this.bookingRepository.findBookingByUserId(id);
+	}
+	
+	@Override
+	public List<BookingDTO> checkActiveBookingByUserId(Long id) {
+		return this.bookingRepository.findActiveBookingByUserId(id);
 	}
 
 	@Override
@@ -147,14 +153,15 @@ public class BookingServiceImpl implements BookingService {
 		// This method is obsolete and should not be called.
 		return Page.empty();
 	}
-
+	
 	@Override
 	public boolean updateBooking(Long id, BookingDTO bookingDTO) {
 		Optional<Booking> bookingOpt = this.bookingRepository.findById(id);
 		if (bookingOpt.isPresent()) {
 			Booking booking = bookingOpt.get();
 			if (bookingDTO.getSo_luong_nguoi() != null) booking.setSo_luong_nguoi(bookingDTO.getSo_luong_nguoi());
-			if (bookingDTO.getPayment_method() != null) booking.setPayment_method(bookingDTO.getPayment_method());
+			if (bookingDTO.getTong_tien() != null) booking.setTong_tien(bookingDTO.getTong_tien());
+			booking.setPayment_method("Chuyển khoản"); // Luôn cố định là "Chuyển khoản"
 			if (bookingDTO.getGhi_chu() != null) booking.setGhi_chu(bookingDTO.getGhi_chu());
 			if (bookingDTO.getTrang_thai() != null) booking.setTrang_thai(bookingDTO.getTrang_thai());
 			if (bookingDTO.getPayment_status() != null) booking.setPayment_status(bookingDTO.getPayment_status());
@@ -163,5 +170,25 @@ public class BookingServiceImpl implements BookingService {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public List<Object[]> getTransactionTable() {
+		return this.bookingRepository.findTransactionTable();
+	}
+	
+	@Override
+	public List<Object[]> getTransactionTableWithFilter(String khachHang, String trangThai, String phuongThuc) {
+		return this.bookingRepository.findTransactionTableWithFilter(khachHang, trangThai, phuongThuc);
+	}
+	
+	@Override
+	public List<Object[]> getBookingDetailTable() {
+		return this.bookingRepository.findBookingDetailTable();
+	}
+	
+	@Override
+	public List<Object[]> getBookingDetailTableWithFilter(String nguoiDung, String tour, String trangThai, String phuongThuc) {
+		return this.bookingRepository.findBookingDetailTableWithFilter(nguoiDung, tour, trangThai, phuongThuc);
 	}
 }

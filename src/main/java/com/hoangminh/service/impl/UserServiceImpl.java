@@ -39,22 +39,53 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@Override
-	public Page<UserDTO> findAllUser(String sdt, String email, String ho_ten, Pageable pageable) {
 
-		Page<User> page = userRepository.findAll(sdt, email, ho_ten, pageable);
+	
+	@Override
+	public Page<UserDTO> findAllUserWithFilters(String hoTen, String email, String sdt, String vaiTro, Pageable pageable) {
+
+		log.info("findAllUserWithFilters called with - hoTen: {}, email: {}, sdt: {}, vaiTro: {}", hoTen, email, sdt, vaiTro);
+		
+		Page<User> page = userRepository.findAllWithFilters(hoTen, email, sdt, vaiTro, pageable);
+		
+		log.info("Repository returned {} users, total: {}", page.getContent().size(), page.getTotalElements());
 
 		Page<UserDTO> pageUserDTO = new PageImpl<>(
 				page.getContent().stream().map(user -> {
-
 					UserDTO userDTO = ConvertUserToDto.convertUsertoDto(user);
+					log.info("Converted user: {} -> {}", user.getUsername(), userDTO.getUsername());
 					return userDTO;
 				}).collect(Collectors.toList()),
 				page.getPageable(),
 				page.getTotalElements());
 
+		log.info("Returning {} DTOs", pageUserDTO.getContent().size());
 		return pageUserDTO;
 	}
+	
+	@Override
+	public Page<UserDTO> findAllGuidesWithFilters(String hoTen, String email, String sdt, String gioiTinh, Pageable pageable) {
+
+		log.info("findAllGuidesWithFilters called with - hoTen: {}, email: {}, sdt: {}, gioiTinh: {}", hoTen, email, sdt, gioiTinh);
+		
+		Page<User> page = userRepository.findAllGuidesWithFilters(hoTen, email, sdt, gioiTinh, pageable);
+		
+		log.info("Repository returned {} guides, total: {}", page.getContent().size(), page.getTotalElements());
+
+		Page<UserDTO> pageUserDTO = new PageImpl<>(
+				page.getContent().stream().map(user -> {
+					UserDTO userDTO = ConvertUserToDto.convertUsertoDto(user);
+					log.info("Converted guide: {} -> {}", user.getUsername(), userDTO.getUsername());
+					return userDTO;
+				}).collect(Collectors.toList()),
+				page.getPageable(),
+				page.getTotalElements());
+
+		log.info("Returning {} DTOs", pageUserDTO.getContent().size());
+		return pageUserDTO;
+	}
+	
+
 
 	@Override
 	public User findUserById(Long id) {
@@ -278,5 +309,21 @@ public class UserServiceImpl implements UserService {
 			return "Đăng ký thất bại do lỗi hệ thống";
 		}
 		return null;
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+	
+	@Override
+	public List<User> getAllGuides() {
+		// Sử dụng repository method để lấy trực tiếp guides (role_id = 3)
+		return userRepository.findAllGuidesWithFilters(null, null, null, null, Pageable.unpaged()).getContent();
+	}
+	
+	@Override
+	public String encodePassword(String rawPassword) {
+		return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
 	}
 }

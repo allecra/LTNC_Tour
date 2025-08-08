@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Voucher</title>
   <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
   <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
   <link href="/public/admin/css/styles.css" rel="stylesheet" />
-  <style>
-    label { padding: 10px 0; }
-    table.dataTable tbody td:last-child { text-align: center; }
-    table.dataTable tbody td:last-child button { margin: 4px; }
-    .dataTables_wrapper td, .dataTables_wrapper thead th { font-size: 13px; }
-  </style>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -40,29 +34,37 @@
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
                     <a class="nav-link" href="/admin/index">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Trang chủ
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
-                    </a>
-                    <a class="nav-link" href="/admin/guides">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                        Quản lý người dùng
                     </a>
                     <a class="nav-link" href="/admin/tour">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                        <div class="sb-nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        Quản lý tour
                     </a>
                     <a class="nav-link" href="/admin/booking">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                        Quản lý booking
+                    </a>
+                    <a class="nav-link" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
+                        Quản lý hướng dẫn viên
                     </a>
                     <a class="nav-link" href="/admin/review">
-                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
+                        Quản lý đánh giá
                     </a>
                     <a class="nav-link active" href="/admin/voucher">
-                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>
+                        Quản lý voucher
                     </a>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
-                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
+                        Quản lý giao dịch
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
@@ -80,15 +82,84 @@
         </nav>
     </div>
     <div id="layoutSidenav_content">
-        <main class="container-fluid px-4">
+        <main>
+            <div class="container-fluid px-4">
             <h1 class="mt-4">Quản lý Voucher</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Quản lý voucher</li>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="/admin/index">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Quản lý voucher</li>
                 </ol>
-            </nav>
+                
+                <!-- Thống kê -->
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng voucher</div>
+                                        <div class="h4" id="totalVouchers">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-ticket-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Còn hiệu lực</div>
+                                        <div class="h4" id="activeVouchers">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Sắp hết hạn</div>
+                                        <div class="h4" id="expiringVouchers">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-info text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng giá trị</div>
+                                        <div class="h4" id="totalValue">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-money-bill-wave fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bảng dữ liệu -->
             <div class="card mb-4 rounded">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Bảng Voucher
+                    </div>
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-auto">
@@ -97,7 +168,15 @@
                             </button>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchVoucherInput" />
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchVoucherInput" placeholder="Tìm kiếm theo mã giảm giá, giá trị, điều kiện...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchVouchers()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" type="button" onclick="clearSearch()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                         </div>
                     </div>
                     <table class="table table-bordered table-hover" id="voucherTable">
@@ -108,18 +187,42 @@
                                 <th>Giá trị</th>
                                 <th>Ngày hết hạn</th>
                                 <th>Điều kiện áp dụng</th>
+                                    <th>Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
-                        <tbody>
+                            <tbody id="voucherTableBody">
                         </tbody>
                     </table>
-                    <div id="voucherPagination"></div>
+                        <!-- Phân trang -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span>Hiển thị <span id="startRecord">0</span> - <span id="endRecord">0</span> của <span id="totalRecords">0</span> bản ghi</span>
+                            </div>
+                            <nav>
+                                <ul class="pagination mb-0" id="voucherPagination">
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Your Website 2024</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 </div>
+
 <!-- Modal Thêm Voucher -->
 <div class="modal fade" id="addVoucherModal" tabindex="-1" aria-labelledby="addVoucherModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -153,162 +256,67 @@
         </form>
     </div>
 </div>
+
 <script src="/public/admin/js/jquery.js"></script>
 <script src="/public/admin/js/boostrap-bundle.min.js"></script>
 <script src="/public/admin/js/scripts.js"></script>
 <script src="/public/admin/js/datatables.min.js"></script>
 <script src="/public/admin/js/all.min.js"></script>
 <script>
-    $(document).ready(function() {
-        window.vouchers = [];
-        window.filteredVouchers = [];
-        window.currentPage = 1;
+    // Global variables
+    let vouchers = [];
+    let filteredVouchers = [];
+    let currentPage = 1;
         const pageSize = 10;
-        function fetchVouchers() {
-            $.ajax({
-                url: '/api/voucher/getAll',
-                method: 'GET',
-                success: function(response) {
-                    window.vouchers = response.data || [];
-                    window.filteredVouchers = window.vouchers;
-                    renderTable();
-                },
-                error: function() {
-                    window.vouchers = [];
-                    window.filteredVouchers = [];
-                    renderTable();
-                }
-            });
-        }
-        fetchVouchers();
-        // Tìm kiếm realtime
-        $('#searchVoucherInput').on('input', function() {
-            const keyword = $(this).val().toLowerCase();
-            window.filteredVouchers = window.vouchers.filter(function(v) {
+    
+    // Global functions
+    window.searchVouchers = function() {
+        const keyword = $('#searchVoucherInput').val().toLowerCase();
+        filteredVouchers = vouchers.filter(function(v) {
                 return (
                     (v.code || '').toLowerCase().includes(keyword) ||
                     (v.discount + '').toLowerCase().includes(keyword) ||
-                    (v.expiry_date || '').toLowerCase().includes(keyword)
+                (v.expiry_date || '').toLowerCase().includes(keyword) ||
+                (v.dieuKien || '').toLowerCase().includes(keyword)
                 );
             });
-            window.currentPage = 1;
+        currentPage = 1;
             renderTable();
-        });
-        function renderTable() {
-            var tbody = $('#voucherTable tbody');
-            tbody.empty();
-            const data = window.filteredVouchers;
-            const startIdx = (window.currentPage - 1) * pageSize;
-            const endIdx = Math.min(startIdx + pageSize, data.length);
-            for (let i = startIdx; i < endIdx; i++) {
-                const voucher = data[i];
-                var row = `<tr>
-                    <td class="text-center">${i + 1}</td>
-                    <td>${voucher.code || ''}</td>
-                    <td>${voucher.discount || ''}</td>
-                    <td>${voucher.expiry_date || ''}</td>
-                    <td>${voucher.dieuKien || ''}</td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center align-items-center gap-1">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="editVoucher(${voucher.id})" title="Sửa">
-                                <i class="fas fa-wrench"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteVoucher(${voucher.id})" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>`;
-                tbody.append(row);
-            }
-            renderPagination();
-        }
-        function renderPagination() {
-            let totalPages = Math.ceil(window.filteredVouchers.length / pageSize);
-            let paginationHtml = '';
-            if (totalPages === 0) {
-                paginationHtml += '<nav><ul class="pagination justify-content-center">';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
-                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
-                paginationHtml += '</ul></nav>';
-            } else if (totalPages > 0) {
-                paginationHtml = '<nav><ul class="pagination justify-content-center">';
-                paginationHtml += `<li class="page-item${window.currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHtml += `<li class="page-item${i === window.currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-                }
-                paginationHtml += `<li class="page-item${window.currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
-                paginationHtml += '</ul></nav>';
-            }
-            if ($('#voucherPagination').length === 0) {
-                $('#voucherTable').after('<div id="voucherPagination"></div>');
-            }
-            $('#voucherPagination').html(paginationHtml);
-        }
-        // Pagination click events
-        $(document).on('click', '#voucherPagination .page-link', function(e) {
-            e.preventDefault();
-            const page = $(this).data('page');
-            if (page) {
-                window.currentPage = page;
+    };
+    
+    window.clearSearch = function() {
+        $('#searchVoucherInput').val('');
+        filteredVouchers = vouchers;
+        currentPage = 1;
                 renderTable();
-            } else if ($(this).attr('id') === 'prevPage' && window.currentPage > 1) {
-                window.currentPage--;
-                renderTable();
-            } else if ($(this).attr('id') === 'nextPage' && window.currentPage < Math.ceil(window.filteredVouchers.length / pageSize)) {
-                window.currentPage++;
-                renderTable();
-            }
-        });
-        // Thêm voucher
-        $('#formAddVoucher').submit(function(e) {
-            e.preventDefault();
-            var data = {
-                code: $(this).find('input[name="code"]').val(),
-                discount: $(this).find('input[name="discount"]').val(),
-                expiry_date: $(this).find('input[name="expiry_date"]').val(),
-                dieuKien: $(this).find('input[name="dieuKien"]').val()
-            };
+    };
+    
+    window.deleteVoucher = function(idx) {
+        if (confirm('Bạn có chắc chắn muốn xóa voucher này?')) {
+            const voucher = vouchers[idx];
             $.ajax({
-                url: '/api/voucher',
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    alert(response.message || "Thêm thành công!");
-                    $('#addVoucherModal').modal('hide');
-                    fetchVouchers();
-                },
-                error: function() {
-                    alert("Thêm không thành công!");
-                }
-            });
-        });
-    });
-    // Các hàm editVoucher, deleteVoucher sẽ được bổ sung ở backend và JS khi cần
-
-    // Xóa voucher
-    function deleteVoucher(id) {
-        if (confirm("Bạn có chắc chắn muốn xóa voucher này?")) {
-            $.ajax({
-                url: '/api/voucher/' + id,
+                url: '/api/voucher/' + voucher.id,
                 type: 'DELETE',
                 success: function(response) {
-                    alert(response.message || "Xóa thành công!");
-                    fetchVouchers();
+                    if (response.message === 'Xóa thành công') {
+                        alert('Xóa thành công!');
+                        vouchers.splice(idx, 1);
+                        renderTable();
+                        updateStatistics();
+                    } else {
+                        alert('Xóa thất bại: ' + response.message);
+                    }
                 },
-                error: function() {
-                    alert("Xóa không thành công!");
+                error: function(xhr, status, error) {
+                    console.error('Error deleting voucher:', error);
+                    alert('Xóa thất bại!');
                 }
             });
         }
-    }
-
-    // Sửa voucher
-    function editVoucher(id) {
-        const voucher = (window.vouchers || []).find(v => v.id === id) || (window.filteredVouchers || []).find(v => v.id === id);
-        if (!voucher) return alert("Không tìm thấy voucher!");
+    };
+    
+    window.editVoucher = function(idx) {
+        const voucher = vouchers[idx];
         let modalHtml = `
         <div class="modal fade" id="editVoucherModal" tabindex="-1" aria-labelledby="editVoucherModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -345,6 +353,7 @@
         $('#editVoucherModal').remove();
         $('body').append(modalHtml);
         $('#editVoucherModal').modal('show');
+        
         $('#formEditVoucher').submit(function(e) {
             e.preventDefault();
             var data = {
@@ -354,21 +363,209 @@
                 dieuKien: $(this).find('input[name="dieuKien"]').val()
             };
             $.ajax({
-                url: '/api/voucher/' + id,
+                url: '/api/voucher/' + voucher.id,
                 type: 'PUT',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
-                    alert(response.message || "Cập nhật thành công!");
+                    alert('Cập nhật thành công!');
                     $('#editVoucherModal').modal('hide');
                     fetchVouchers();
                 },
                 error: function() {
-                    alert("Cập nhật không thành công!");
+                    alert('Cập nhật thất bại!');
                 }
             });
         });
+    };
+    
+    function fetchVouchers() {
+        console.log('Fetching vouchers from API...');
+        $.ajax({
+            url: '/api/voucher/getAll',
+            method: 'GET',
+            success: function(response) {
+                console.log('Vouchers fetched successfully:', response);
+                vouchers = response.data || [];
+                filteredVouchers = vouchers;
+                console.log('Total vouchers loaded:', vouchers.length);
+                renderTable();
+                updateStatistics();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching vouchers:', error);
+                vouchers = [];
+                filteredVouchers = [];
+                renderTable();
+                updateStatistics();
+            }
+        });
     }
+    
+    function updateStatistics() {
+        console.log('Updating statistics...');
+        const totalVouchers = vouchers.length;
+        const now = new Date();
+        const activeVouchers = vouchers.filter(v => {
+            const expiryDate = new Date(v.expiry_date);
+            return expiryDate > now;
+        }).length;
+        const expiringVouchers = vouchers.filter(v => {
+            const expiryDate = new Date(v.expiry_date);
+            const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+            return daysUntilExpiry <= 7 && daysUntilExpiry > 0;
+        }).length;
+        const totalValue = vouchers.reduce((sum, v) => sum + (v.discount || 0), 0);
+        
+        console.log('Statistics calculated:', {
+            total: totalVouchers,
+            active: activeVouchers,
+            expiring: expiringVouchers,
+            totalValue: totalValue
+        });
+        
+        document.getElementById('totalVouchers').textContent = totalVouchers;
+        document.getElementById('activeVouchers').textContent = activeVouchers;
+        document.getElementById('expiringVouchers').textContent = expiringVouchers;
+        document.getElementById('totalValue').textContent = totalValue.toLocaleString('vi-VN') + ' VNĐ';
+        
+        console.log('Statistics updated in DOM');
+    }
+    
+    function renderTable() {
+        const tbody = document.getElementById('voucherTableBody');
+        tbody.innerHTML = '';
+        
+        if (filteredVouchers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có dữ liệu voucher</td></tr>';
+            renderPagination();
+            updatePaginationInfo();
+            return;
+        }
+        
+        const startIdx = (currentPage - 1) * pageSize;
+        const endIdx = Math.min(startIdx + pageSize, filteredVouchers.length);
+        
+        for (let i = startIdx; i < endIdx; i++) {
+            const v = filteredVouchers[i];
+            const stt = i + 1;
+            const now = new Date();
+            const expiryDate = new Date(v.expiry_date);
+            const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+            
+            let statusBadge = '';
+            if (expiryDate < now) {
+                statusBadge = '<span class="badge bg-danger">Hết hạn</span>';
+            } else if (daysUntilExpiry <= 7) {
+                statusBadge = '<span class="badge bg-warning text-dark">Sắp hết hạn</span>';
+            } else {
+                statusBadge = '<span class="badge bg-success">Còn hiệu lực</span>';
+            }
+            
+            tbody.innerHTML += `<tr>
+                <td>${stt}</td>
+                <td><strong>${v.code || ''}</strong></td>
+                <td>${(v.discount || 0).toLocaleString('vi-VN')} VNĐ</td>
+                <td>${v.expiry_date || ''}</td>
+                <td>${v.dieuKien || ''}</td>
+                <td class="text-center">${statusBadge}</td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-1">
+                        <button class="btn btn-primary btn-sm" onclick="editVoucher(${i})" title="Sửa"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteVoucher(${i})" title="Xóa"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>`;
+        }
+        renderPagination();
+        updatePaginationInfo();
+    }
+    
+    function updatePaginationInfo() {
+        const startRecord = filteredVouchers.length > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+        const endRecord = Math.min(currentPage * pageSize, filteredVouchers.length);
+        const totalRecords = filteredVouchers.length;
+        
+        document.getElementById('startRecord').textContent = startRecord;
+        document.getElementById('endRecord').textContent = endRecord;
+        document.getElementById('totalRecords').textContent = totalRecords;
+    }
+    
+    function renderPagination() {
+        let totalPages = Math.ceil(filteredVouchers.length / pageSize);
+        let paginationHtml = '';
+        
+        if (totalPages === 0) {
+            paginationHtml = '<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
+            paginationHtml += '<li class="page-item active"><a class="page-link" href="#">1</a></li>';
+            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>';
+        } else {
+            // Previous button
+            paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+            }
+            
+            // Next button
+            paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
+        }
+        
+        document.getElementById('voucherPagination').innerHTML = paginationHtml;
+    }
+    
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredVouchers.length / pageSize);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderTable();
+        }
+    }
+    
+    $(document).ready(function() {
+        console.log('Document ready, fetching vouchers...');
+        fetchVouchers();
+        
+        // Tìm kiếm khi nhấn Enter
+        $('#searchVoucherInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                searchVouchers();
+            }
+        });
+        
+        // Thêm voucher
+        $('#formAddVoucher').submit(function(e) {
+            e.preventDefault();
+            var data = {
+                code: $(this).find('input[name="code"]').val(),
+                discount: $(this).find('input[name="discount"]').val(),
+                expiry_date: $(this).find('input[name="expiry_date"]').val(),
+                dieuKien: $(this).find('input[name="dieuKien"]').val()
+            };
+            $.ajax({
+                url: '/api/voucher',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    alert('Thêm thành công!');
+                    $('#addVoucherModal').modal('hide');
+                    $('#formAddVoucher')[0].reset();
+                    fetchVouchers();
+                },
+                error: function() {
+                    alert('Thêm thất bại!');
+                }
+            });
+        });
+        
+        // Force update statistics after a short delay
+        setTimeout(function() {
+            console.log('Force updating statistics...');
+            updateStatistics();
+        }, 1000);
+    });
 </script>
 </body>
 </html>

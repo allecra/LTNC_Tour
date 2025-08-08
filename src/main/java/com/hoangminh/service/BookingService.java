@@ -30,6 +30,18 @@ public interface BookingService {
 	Boolean saveBooking(Booking booking);
 
 	List<BookingDTO> checkBookingByUserId(Long id);
+	
+	List<BookingDTO> checkActiveBookingByUserId(Long id);
 
 	boolean updateBooking(Long id, BookingDTO bookingDTO);
+	
+	// Bảng giao dịch
+	List<Object[]> getTransactionTable();
+	
+	List<Object[]> getTransactionTableWithFilter(String khachHang, String trangThai, String phuongThuc);
+	
+	// Bảng booking chi tiết
+	List<Object[]> getBookingDetailTable();
+	
+	List<Object[]> getBookingDetailTableWithFilter(String nguoiDung, String tour, String trangThai, String phuongThuc);
 }

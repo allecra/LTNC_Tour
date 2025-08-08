@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.hoangminh.dto.TourDTO;
+import com.hoangminh.entity.Destination;
 import com.hoangminh.entity.Image;
 import com.hoangminh.entity.Tour;
 import com.hoangminh.entity.TourStart;
@@ -117,9 +118,28 @@ public class TourServiceImpl implements TourService {
 			tour.setGia_tour(tourDTO.getGia_tour());
 			tour.setGioi_thieu_tour(tourDTO.getGioi_thieu_tour());
 			
-			// Kiểm tra và set Destination
+			// Lưu điểm đến vào gioi_thieu_tour hoặc tạo destination mới
 			if (tourDTO.getDiem_den() != null && !tourDTO.getDiem_den().isEmpty()) {
-				tour.setDestination(this.destinationRepository.findById(Long.parseLong(tourDTO.getDiem_den())).orElse(null));
+				// Tìm destination có sẵn hoặc tạo mới
+				Destination destination = this.destinationRepository.findByName(tourDTO.getDiem_den());
+				if (destination == null) {
+					// Tạo destination mới
+					destination = new Destination();
+					destination.setName(tourDTO.getDiem_den());
+					destination.setCountry("Việt Nam"); // Mặc định
+					destination.setDescription("Điểm đến mới");
+					// Set is_domestic dựa trên loại tour
+					boolean isDomestic = tourDTO.getLoai_tour().equals("1");
+					try {
+						java.lang.reflect.Field field = destination.getClass().getDeclaredField("is_domestic");
+						field.setAccessible(true);
+						field.set(destination, isDomestic);
+					} catch (Exception e) {
+						log.error("Lỗi khi set is_domestic: {}", e.getMessage());
+					}
+					destination = this.destinationRepository.save(destination);
+				}
+				tour.setDestination(destination);
 			}
 			
 			tour.setNoi_dung_tour(tourDTO.getNoi_dung_tour());
@@ -197,7 +217,26 @@ public class TourServiceImpl implements TourService {
 				
 				// Kiểm tra và set Destination
 				if (newTour.getDiem_den() != null && !newTour.getDiem_den().isEmpty()) {
-					updatedTour.setDestination(this.destinationRepository.findById(Long.parseLong(newTour.getDiem_den())).orElse(null));
+					// Tìm destination có sẵn hoặc tạo mới
+					Destination destination = this.destinationRepository.findByName(newTour.getDiem_den());
+					if (destination == null) {
+						// Tạo destination mới
+						destination = new Destination();
+						destination.setName(newTour.getDiem_den());
+						destination.setCountry("Việt Nam"); // Mặc định
+						destination.setDescription("Điểm đến mới");
+						// Set is_domestic dựa trên loại tour
+						boolean isDomestic = newTour.getLoai_tour().equals("1");
+						try {
+							java.lang.reflect.Field field = destination.getClass().getDeclaredField("is_domestic");
+							field.setAccessible(true);
+							field.set(destination, isDomestic);
+						} catch (Exception e) {
+							log.error("Lỗi khi set is_domestic: {}", e.getMessage());
+						}
+						destination = this.destinationRepository.save(destination);
+					}
+					updatedTour.setDestination(destination);
 				}
 				
 				updatedTour.setNoi_dung_tour(newTour.getNoi_dung_tour());
@@ -322,5 +361,15 @@ public class TourServiceImpl implements TourService {
             result.add(dto);
         }
         return result;
+    }
+
+    @Override
+    public List<Tour> getAllTours() {
+        return tourRepository.findAll();
+    }
+
+    @Override
+    public Tour findByTenTour(String tenTour) {
+        return tourRepository.findByTenTour(tenTour);
     }
 }

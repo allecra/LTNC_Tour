@@ -99,5 +99,8 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
             "LEFT JOIN tour_start ts ON t.id = ts.tour_id " +
             "GROUP BY t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price " +
             "ORDER BY t.id", nativeQuery = true)
-    List<Object[]> findAllTourWithStartDate();
+    	List<Object[]> findAllTourWithStartDate();
+	
+	@Query("SELECT t FROM Tour t WHERE t.ten_tour = :tenTour")
+	Tour findByTenTour(@Param("tenTour") String tenTour);
 }

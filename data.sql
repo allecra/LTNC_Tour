@@ -5,7 +5,8 @@ USE `jsb_tour`;
 INSERT INTO `role` (`id`, `ten_role`, `mo_ta`) VALUES
 (1, 'ADMIN', 'Quản trị viên hệ thống, có toàn quyền truy cập'),
 (2, 'CUSTOMER', 'Khách hàng, người dùng cuối sử dụng dịch vụ'),
-(3, 'STAFF', 'Nhân viên, có quyền truy cập hạn chế để quản lý tour và booking');
+(3, 'GUIDE', 'Hướng dẫn viên du lịch, chuyên dẫn tour và hỗ trợ khách hàng'),
+(4, 'STAFF', 'Nhân viên, có quyền truy cập hạn chế để quản lý tour và booking');
 
 -- Sử dụng schema jsb_dulich cho bảng user
 USE `jsb_tour`;
@@ -16,7 +17,10 @@ USE `jsb_tour`;
 INSERT INTO `user` (`username`, `pass`, `ho_ten`, `email`, `sdt`, `gioi_tinh`, `dia_chi`, `role_id`) VALUES
 ('admin', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Quản Trị Viên', 'admin@tour.com', '0123456789', 'Khác', '123 Admin Street', 1),
 ('customer1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Nguyễn Văn A', 'customer1@example.com', '0987654321', 'Nam', '456 Customer Avenue', 2),
-('staff1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Trần Thị B', 'staff1@tour.com', '0123123123', 'Nữ', '789 Staff Road', 3);
+('guide1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Lê Văn C', 'guide1@tour.com', '0123456780', 'Nam', '123 Guide Street, Hà Nội', 3),
+('guide2', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Phạm Thị D', 'guide2@tour.com', '0123456781', 'Nữ', '456 Guide Avenue, TP.HCM', 3),
+('guide3', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Hoàng Văn E', 'guide3@tour.com', '0123456782', 'Nam', '789 Guide Road, Đà Nẵng', 3),
+('staff1', '$2a$10$N9qo8uLOickgx2Z5P7a3.OjgIV/vC3T2vLgB1i.5lT.sMxCEsB2yO', 'Trần Thị B', 'staff1@tour.com', '0123123123', 'Nữ', '789 Staff Road', 4);
 
 -- Quay lại sử dụng schema jsb_tour cho các bảng còn lại
 USE `jsb_tour`;
@@ -87,14 +91,17 @@ INSERT INTO `tin_tuc` (`id`, `tieu_de`, `tom_tat`, `noi_dung`, `ngay_dang`, `tra
 -- Dữ liệu mẫu cho bảng 'booking'
 INSERT INTO `booking` (`id`, `tour_start_id`, `user_id`, `so_luong_nguoi`, `tong_tien`, `payment_method`, `payment_status`, `trang_thai`, `ghi_chu`, `booking_at`) VALUES
 (1, 1, 2, 2, 9000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', 'Yêu cầu phòng có view đẹp.', NOW()),
-(2, 3, 2, 4, 28000000.00, 'Thanh toán khi nhận tour', 'chua_thanh_toan', 'cho_xac_nhan', 'Gia đình có trẻ nhỏ', NOW()),
+(2, 3, 2, 4, 28000000.00, 'Chuyển khoản', 'chua_thanh_toan', 'cho_xac_nhan', 'Gia đình có trẻ nhỏ', NOW()),
 (3, 4, 2, 2, 57000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', NULL, NOW());
 
 -- Dữ liệu mẫu cho bảng 'review'
 INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `created_at`, `trang_thai`) VALUES
-(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', NOW(), 'Chờ duyệt'),
-(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', NOW(), 'Chờ duyệt'),
-(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', NOW(), 'Chờ duyệt'),
+(1, 1, 2, 5, 'Tour rất tuyệt vời, hướng dẫn viên nhiệt tình, cảnh đẹp. Sẽ quay lại!', NOW(), 'Đã duyệt'),
+(2, 2, 2, 4, 'Dịch vụ tốt, đồ ăn ngon, tuy nhiên lịch trình hơi gấp.', NOW(), 'Đã duyệt'),
+(3, 3, 2, 5, 'Chuyến đi châu Âu rất đáng nhớ. Cảm ơn công ty!', NOW(), 'Đã duyệt'),
+(4, 4, 2, 3, 'Tour Tokyo khá thú vị, nhưng thời tiết không thuận lợi.', NOW(), 'Chờ duyệt'),
+(5, 5, 2, 5, 'Phú Quốc đẹp quá! Nước biển trong xanh, cát trắng mịn.', NOW(), 'Chờ duyệt'),
+(6, 6, 2, 4, 'Sapa mùa thu rất đẹp, khí hậu mát mẻ dễ chịu.', NOW(), 'Chờ duyệt'),
 
 
 -- Dữ liệu mẫu cho bảng 'favorite'
@@ -105,8 +112,9 @@ INSERT INTO `favorite` (`id`, `user_id`, `tour_id`) VALUES
 
 -- Dữ liệu mẫu cho bảng 'payment_method'
 INSERT INTO `payment_method` (`id`, `ten_phuong_thuc`, `booking_id`) VALUES
-(1, 'Thanh toán khi nhận tour', 1),
-(2, 'Chuyển khoản ngân hàng', 1);
+(1, 'Chuyển khoản', 1),
+(2, 'Chuyển khoản', 2),
+(3, 'Chuyển khoản', 3);
 
 -- Dữ liệu mẫu cho bảng 'voucher'
 INSERT INTO `voucher` (`id`, `ma_giam_gia`, `gia_tri`, `ngay_het_han`, `dieu_kien_ap_dung`) VALUES
@@ -115,7 +123,9 @@ INSERT INTO `voucher` (`id`, `ma_giam_gia`, `gia_tri`, `ngay_het_han`, `dieu_kie
 
 -- Dữ liệu mẫu cho bảng 'payment'
 INSERT INTO `payment` (`id`, `ho_ten_nguoi_nhan`, `so_tai_khoan`, `ten_ngan_hang`, `chi_nhanh`, `email`, `sdt`, `payment_method_id`, `booking_id`) VALUES
-(1, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 2, 1); 
+(1, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 1, 1),
+(2, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 2, 2),
+(3, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 3, 3); 
 
 -- Dữ liệu mẫu cho bảng 'notification'
 INSERT INTO `notification` (`user_id`, `message`, `is_read`, `created_at`) VALUES

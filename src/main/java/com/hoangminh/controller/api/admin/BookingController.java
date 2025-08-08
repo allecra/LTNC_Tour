@@ -42,7 +42,7 @@ public class BookingController {
         if (!this.userService.checkAdminLogin()) {
             return new ResponseDTO("Không có quyền truy cập", null);
         }
-        return new ResponseDTO("Thành công", this.bookingService.getBookingById(id));
+        return new ResponseDTO("Thành công", this.bookingService.getBookingDetailById(id));
     }
 
     @GetMapping("/detail/{id}")

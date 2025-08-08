@@ -110,19 +110,25 @@
                 <table class="w-100">
                     <thead class="w-100 text-center py-4 bordered">
                         <tr >
-                            <th class="col-lg-6">Tên tour</th>
-                            <th class="col-lg-3">Ngày đặt</th>
-                            <th class="col-lg-3">Trạng thái</th>
+                            <th class="col-lg-2">Mã GD</th>
+                            <th class="col-lg-4">Tên tour</th>
+                            <th class="col-lg-2">Ngày đặt</th>
+                            <th class="col-lg-2">Số tiền</th>
+                            <th class="col-lg-2">Trạng thái</th>
                         </tr>
                     </thead>
 
                     <tbody th:if="${bookingList.size()>0}" class="w-100 text-center text-primary">
                         <tr th:each="booking : ${bookingList}">
-                            <th class="col-lg-6" title="Click để xem chi tiết">
+                            <th class="col-lg-2">
+                                <span th:text="${booking.ma_giao_dich}" class="badge badge-primary"></span>
+                            </th>
+                            <th class="col-lg-4" title="Click để xem chi tiết">
                                 <a th:href="@{/user/booking/{id}(id=${booking.id})}" th:text="${booking.ten_tour}">Du lịch biển nha trang thật tuyệt vời</a>
                             </th>
-                            <th class="col-lg-3" th:text="${#dates.format(booking.booking_at, 'dd-MM-yyyy')}"></th>
-                            <th class="col-lg-3" th:switch="${booking.trang_thai}">
+                            <th class="col-lg-2" th:text="${#dates.format(booking.booking_at, 'dd-MM-yyyy')}"></th>
+                            <th class="col-lg-2" th:text="${#numbers.formatDecimal(booking.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></th>
+                            <th class="col-lg-2" th:switch="${booking.trang_thai}">
                                 <p th:case="0">Đang xử lý</p>
                                 <p th:case="1">Đã thanh toán thành công</p>
                                 <p th:case="2">Tour đang diễn ra</p>

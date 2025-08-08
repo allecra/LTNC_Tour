@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.hoangminh.dto.*;
 import com.hoangminh.service.BookingService;
+import com.hoangminh.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,6 +51,9 @@ public class HomeController {
 
 	@Autowired
 	private BookingService bookingService;
+
+	@Autowired
+	private TransactionService transactionService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -162,16 +166,23 @@ public class HomeController {
 	@PostMapping("/login")
 	ModelAndView loginAction(LoginDTO login) {
 
-		ModelAndView mdv = new ModelAndView("redirect:/account");
-
 		if (!this.userService.login(login)) {
 			ModelAndView mdvErr = new ModelAndView("user/login");
 			mdvErr.addObject("err", "Sai thông tin đăng nhập");
 			return mdvErr;
 		}
 
-		mdv.addObject("user", SessionUtilities.getUser());
+		// Kiểm tra nếu là admin thì chuyển sang trang quản lý
+		com.hoangminh.dto.UserDTO user = com.hoangminh.utilities.SessionUtilities.getUser();
+		if (user != null && user.getRole_id() == 1) {
+			// Set session admin để các trang admin nhận diện
+			com.hoangminh.utilities.SessionUtilities.setAdmin(user);
+			return new ModelAndView("redirect:/admin/index");
+		}
 
+		// Nếu là user thường
+		ModelAndView mdv = new ModelAndView("redirect:/account");
+		mdv.addObject("user", user);
 		return mdv;
 	}
 
@@ -191,9 +202,10 @@ public class HomeController {
 
 	@GetMapping("/logout")
 	ModelAndView logout() {
-		SessionUtilities.setUser(null);
-		SessionUtilities.setUsername(null);
-		return this.index();
+		com.hoangminh.utilities.SessionUtilities.setUser(null);
+		com.hoangminh.utilities.SessionUtilities.setUsername(null);
+		com.hoangminh.utilities.SessionUtilities.setAdmin(null);
+		return new ModelAndView("redirect:/account"); // luôn về trang tài khoản user
 	}
 
 	@GetMapping("/account")
@@ -201,8 +213,10 @@ public class HomeController {
 		ModelAndView mdv = new ModelAndView();
 
 		if (SessionUtilities.getUsername() == null) {
-			ModelAndView loginView = new ModelAndView("redirect:/login");
-			return loginView;
+			// Thay vì redirect, hiển thị trang account với form đăng nhập
+			mdv.setViewName("user/account");
+			mdv.addObject("user", null); // Để hiển thị form đăng nhập
+			return mdv;
 		}
 
 		mdv.setViewName("user/account");
@@ -328,7 +342,7 @@ public class HomeController {
 
 		ModelAndView mdv = new ModelAndView("user/user-booking-list");
 
-		List<BookingDTO> bookingList = this.bookingService.findBookingByUserId(SessionUtilities.getUser().getId());
+		List<BookingDTOWithTransaction> bookingList = this.transactionService.findBookingWithTransactionByUserId(SessionUtilities.getUser().getId());
 
 		mdv.addObject("bookingList", bookingList);
 
@@ -345,7 +359,7 @@ public class HomeController {
 
 		ModelAndView mdv = new ModelAndView();
 
-		BookingDTO booking = this.bookingService.getBookingById(id);
+		BookingDTOWithTransaction booking = this.transactionService.findBookingWithTransactionById(id);
 
 		if (booking != null) {
 			mdv.setViewName("user/user-booking");
@@ -391,6 +405,11 @@ public class HomeController {
 	@GetMapping("/tin-tuc")
 	public String news() {
 		return "/user/tin-tuc";
+	}
+
+	@GetMapping("/guide")
+	public String guide() {
+		return "/user/guide";
 	}
 
 	@GetMapping("/contact")

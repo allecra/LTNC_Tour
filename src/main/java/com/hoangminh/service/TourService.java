@@ -40,4 +40,8 @@ public interface TourService {
 	List<TourDTO> findAllTourWithStartDate();
 	
 	Tour updateTourStatus(Long id, String trangThai);
+
+	List<Tour> getAllTours();
+	
+	Tour findByTenTour(String tenTour);
 }

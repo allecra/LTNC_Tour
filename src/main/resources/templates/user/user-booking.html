@@ -116,32 +116,42 @@
                         <h5 class="text-primary text-uppercase py-4" style="letter-spacing: 5px;">Thông tin chi tiết tour đã đặt</h5>
 
                         <div class="control-group">
+                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Mã giao dịch</h6>
+                            <input type="text" class="form-control p-4" name="ma_giao_dich" id="ma_giao_dich"
+                                   placeholder="Mã giao dịch" required="required" disabled="disabled"
+                                   data-validation-required-message="Mã giao dịch" th:value="${booking.ma_giao_dich}" />
+                            <p class="help-block text-danger"></p>
+                        </div>
+                        
+
+
+                        <div class="control-group">
                             <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Tên tour</h6>
-                            <input type="email" class="form-control p-4" name="email" id="subjsdsect"
+                            <input type="text" class="form-control p-4" name="ten_tour" id="ten_tour"
                                    placeholder="Tên tour" required="required" disabled="disabled"
-                                   data-validation-required-message="Vui lòng nhập email" th:value="${booking.ten_tour}" />
+                                   data-validation-required-message="Tên tour" th:value="${booking.ten_tour}" />
                             <p class="help-block text-danger"></p>
                         </div>
 
                         <div class="form-row">
                             <div class="control-group col-sm-6">
                                 <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Ngày khởi hành</h6>
-                                <input type="tel" class="form-control p-4" id="name" name="ngay_khoi_hanh"
+                                <input type="text" class="form-control p-4" id="ngay_khoi_hanh" name="ngay_khoi_hanh"
                                        placeholder="Ngày khởi hành" required="required" disabled="disabled"
-                                       data-validation-required-message="Vui lòng nhập số điện thoại" th:value="${#dates.format(booking.ngay_khoi_hanh, 'dd-MM-yyyy')}" />
+                                       data-validation-required-message="Ngày khởi hành" th:value="${#dates.format(booking.ngay_khoi_hanh, 'dd-MM-yyyy')}" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group col-sm-6">
                                 <div class="mb-3 mb-md-0">
                                     <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Số lượng người</h6>
-                                    <input type="number" value="1" class="form-control p-4" id="so_nguoi" th:value="${booking.so_luong_nguoi}" name="so_nguoi" disabled="disabled"
+                                    <input type="number" class="form-control p-4" id="so_nguoi" th:value="${booking.so_luong_nguoi}" name="so_nguoi" disabled="disabled"
                                            placeholder="Nhập số người" />
                                 </div>
                             </div>
                         </div>
                         <div class="control-group">
                             <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Tổng tiền thanh toán</h6>
-                            <input type="email" class="form-control p-4" name="tong_tien" id="subddject" th:value="${booking.tong_tien}"
+                            <input type="text" class="form-control p-4" name="tong_tien" id="subddject" th:value="${#numbers.formatDecimal(booking.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
                                    placeholder="Tổng tiền" required="required" disabled="disabled"
                                    data-validation-required-message="Vui lòng nhập email" />
                             <p class="help-block text-danger"></p>
@@ -149,36 +159,49 @@
 
                         <div class="control-group">
                             <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Ghi chú</h6>
-                            <textarea type="email" class="form-control p-4" name="ghi_chu" id="subjecdds" th:value="${booking.ghi_chu}" th:text="${booking.ghi_chu}"
-                                      placeholder="Ghi chú" required="required"  disabled="disabled"
-                                      data-validation-required-message="Vui lòng nhập email"></textarea>
+                            <textarea class="form-control p-4" name="ghi_chu" id="ghi_chu" th:text="${booking.ghi_chu}"
+                                      placeholder="Ghi chú" required="required" disabled="disabled"
+                                      data-validation-required-message="Ghi chú"></textarea>
                             <p class="help-block text-danger"></p>
                         </div>
-                        <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Phương thức thanh toán</h6>
-                        <div class="form-row pb-2">
-                            <div class="control-group">
-                                <input type="radio" th:checked="${booking.pt_thanh_toan==0}" value="0" class="p-2" id="tien_mat" name="pt_thanh_toan" disabled="disabled" placeholder="Ngày khởi hành" required="required"/>
-                                <label for="tien_mat">Thanh toán tiền mặt tại công ty</label>
+                        
+
+                        <div class="control-group">
+                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Phương thức thanh toán</h6>
+                            <div class="form-row pb-2">
+                                <div class="control-group">
+                                    <input type="text" class="form-control p-4" value="Chuyển khoản" disabled="disabled" />
+                                    <p class="mt-2"><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_giao_dich} + ' - ' + ${booking.ten_tour}" class="text-danger font-weight-bold"></span></p>
+                                    <p><strong>Tài khoản:</strong> 084354939 - MB Bank</p>
+                                </div>
                             </div>
-                            <div class="control-group">
-                                <input type="radio" value="1" th:checked="${booking.pt_thanh_toan==1}"  class="p-2" id="chuyen_khoan" disabled="disabled" name="pt_thanh_toan"  placeholder="Nhập số người" />
-                                <label for="chuyen_khoan">Chuyển khoản với nội dung: dattour sdt đến stk: 084354939-MB bank </label>
+                        </div>
+                        
+                        <div class="control-group">
+                            <div class="alert alert-info">
+                                <h6 class="text-primary text-uppercase">Thông tin chuyển khoản:</h6>
+                                <p><strong>Số tài khoản:</strong> 084354939</p>
+                                <p><strong>Ngân hàng:</strong> MB Bank</p>
+                                <p><strong>Chủ tài khoản:</strong> CAMPUCHIA TOUR</p>
+                                <p><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_giao_dich} + ' - ' + ${booking.ten_tour}" class="text-danger font-weight-bold"></span></p>
+                                <p><strong>Số tiền:</strong> <span th:text="${#numbers.formatDecimal(booking.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'" class="text-danger font-weight-bold"></span></p>
                             </div>
                         </div>
                         <div class="control-group">
-                            <h6 class="text-primary text-uppercase " disabled="disabled" style="letter-spacing: 5px;">Trạng thái booking</h6>
+                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Trạng thái booking</h6>
                             <div class="col-lg-3" th:switch="${booking.trang_thai}">
-                                <b th:case="0">Đang xử lý</b>
-                                <b th:case="1">Đã thanh toán thành công</b>
-                                <b th:case="2">Tour đang diễn ra</b>
-                                <b th:case="3">Tour đã hoàn hành</b>
-                                <b th:case="4">Tour đã bị hủy</b>
+                                <b th:case="cho_xac_nhan">Chờ xác nhận</b>
+                                <b th:case="da_xac_nhan">Đã xác nhận</b>
+                                <b th:case="dang_di">Tour đang diễn ra</b>
+                                <b th:case="hoan_tat">Tour đã hoàn thành</b>
+                                <b th:case="huy">Tour đã bị hủy</b>
+                                <b th:case="*">Đang xử lý</b>
                             </div>
                         </div>
-                        <div th:if="${booking.trang_thai!=3 && booking.trang_thai!=4 && booking.trang_thai!=2}" class="text-center">
+                        <div th:if="${booking.trang_thai != 'hoan_tat' && booking.trang_thai != 'huy' && booking.trang_thai != 'dang_di'}" class="text-center">
                             <a class="btn btn-primary py-3 px-4" onclick="return confirm('Bạn có chắc chắn hủy tour ?')" th:href="@{/user/booking/cancel/{id}(id=${booking.id})}"  id="sendMessageButton" >Hủy tour</a>
                         </div>
-                        <div th:if="${booking.trang_thai==3 || booking.trang_thai==4 || booking.trang_thai==2}" class="text-center">
+                        <div th:if="${booking.trang_thai == 'hoan_tat' || booking.trang_thai == 'huy' || booking.trang_thai == 'dang_di'}" class="text-center">
                             <a class="btn btn-primary py-3 px-4 disabled" disabled="disabled" id="sendMessagfdfdeButton"  >Hủy tour</a>
                             <p class="text-danger">Không thể hủy tour này</p>
                         </div>

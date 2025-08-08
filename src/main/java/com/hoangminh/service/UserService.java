@@ -11,7 +11,8 @@ import com.hoangminh.entity.User;
 import org.springframework.data.repository.query.Param;
 
 public interface UserService {
-	public Page<UserDTO> findAllUser(String sdt, String email, String ho_ten, Pageable pageable);
+	public Page<UserDTO> findAllUserWithFilters(String hoTen, String email, String sdt, String vaiTro, Pageable pageable);
+	public Page<UserDTO> findAllGuidesWithFilters(String hoTen, String email, String sdt, String gioiTinh, Pageable pageable);
 
 	public User findUserById(Long id);
 
@@ -44,4 +45,10 @@ public interface UserService {
 	public UserDTO findUserDTOById(Long id);
 
 	public String getRegisterError(RegisterDTO user);
+
+	public List<User> getAllUsers();
+	
+	public List<User> getAllGuides();
+	
+	public String encodePassword(String rawPassword);
 }

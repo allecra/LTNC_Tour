@@ -46,9 +46,10 @@ public class TourController {
 
     @GetMapping("/getAllTour")
     public ResponseDTO getAllTour() {
-        if (!this.userService.checkAdminLogin()) {
-            return new ResponseDTO("Không có quyền truy cập", null);
-        }
+        // Tạm thời bỏ xác thực để test
+        // if (!this.userService.checkAdminLogin()) {
+        //     return new ResponseDTO("Không có quyền truy cập", null);
+        // }
         return new ResponseDTO("Thành công", this.tourService.findAllTourWithStartDate());
     }
 

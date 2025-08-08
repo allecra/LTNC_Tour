@@ -110,14 +110,94 @@
 					khoản</h6>
 				<h1>Thông tin tài khoản</h1>
 			</div>
-			<div class="row justify-content-center">
+			
+			<!-- Hiển thị form đăng nhập nếu chưa đăng nhập -->
+			<div th:if="${user == null}" class="row justify-content-center">
+				<div class="col-lg-6">
+					<div class="contact-form bg-white" style="padding: 30px;">
+						<div class="text-center mb-4">
+							<h4>Đăng nhập vào hệ thống</h4>
+							<p class="text-muted">Vui lòng đăng nhập để xem thông tin tài khoản</p>
+						</div>
+						
+						<!-- Tab Navigation -->
+						<ul class="nav nav-tabs" id="loginTabs" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button class="nav-link active" id="user-tab" data-toggle="tab" data-target="#user-login" type="button" role="tab">
+									<i class="fa fa-user mr-2"></i>Khách hàng
+								</button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link" id="admin-tab" data-toggle="tab" data-target="#admin-login" type="button" role="tab">
+									<i class="fa fa-user-shield mr-2"></i>Quản trị viên
+								</button>
+							</li>
+						</ul>
+						
+						<!-- Tab Content -->
+						<div class="tab-content mt-3" id="loginTabContent">
+							<!-- User Login Tab -->
+							<div class="tab-pane fade show active" id="user-login" role="tabpanel">
+								<form id="userLoginForm">
+									<div class="form-group">
+										<input type="text" class="form-control p-4" id="userUsername" placeholder="Tên đăng nhập" required>
+									</div>
+									<div class="form-group">
+										<input type="password" class="form-control p-4" id="userPassword" placeholder="Mật khẩu" required>
+									</div>
+									<div class="text-center">
+										<button type="button" class="btn btn-primary py-3 px-4" onclick="userLogin()">Đăng nhập</button>
+									</div>
+									<div class="text-center mt-3">
+										<a href="/register" class="text-primary">Chưa có tài khoản? Đăng ký ngay</a>
+									</div>
+								</form>
+							</div>
+							
+							<!-- Admin Login Tab -->
+							<div class="tab-pane fade" id="admin-login" role="tabpanel">
+								<form id="adminLoginForm">
+									<div class="form-group">
+										<input type="text" class="form-control p-4" id="adminUsername" placeholder="Tên đăng nhập admin" required>
+									</div>
+									<div class="form-group">
+										<input type="password" class="form-control p-4" id="adminPassword" placeholder="Mật khẩu admin" required>
+									</div>
+									<div class="text-center">
+										<button type="button" class="btn btn-danger py-3 px-4" onclick="adminLogin()">Đăng nhập Admin</button>
+									</div>
+								</form>
+							</div>
+						</div>
+						
+						<div id="loginMessage" class="mt-3"></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Hiển thị thông tin tài khoản nếu đã đăng nhập -->
+			<div th:if="${user != null}" class="row justify-content-center">
 				<div class="col-lg-8">
 					<div class="contact-form bg-white" style="padding: 30px;">
 						<div id="help-block text-succces" style="color:green;" th:if="${message != null}">[[${message}]]</div>
-						<div class="align-content-end py-4">
-							<a class="btn btn-primary py-3 px-4" href="/user/tour"
-									id="">Quản lý tour đã đặt</a>
+						
+						<!-- Hiển thị nút Admin Dashboard nếu là admin -->
+						<div th:if="${user.role_id == 1}" class="align-content-end py-4">
+							<a class="btn btn-danger py-3 px-4 mr-2" href="/admin/index">
+								<i class="fa fa-cog mr-2"></i>Quản lý hệ thống
+							</a>
+							<a class="btn btn-primary py-3 px-4" href="/user/tour">
+								<i class="fa fa-list mr-2"></i>Quản lý tour đã đặt
+							</a>
 						</div>
+						
+						<!-- Hiển thị nút User Dashboard nếu là user thường -->
+						<div th:if="${user.role_id != 1}" class="align-content-end py-4">
+							<a class="btn btn-primary py-3 px-4" href="/user/tour">
+								<i class="fa fa-list mr-2"></i>Quản lý tour đã đặt
+							</a>
+						</div>
+						
 						<form name="sentMessage"  method="post" action="/updateAccount"
 							id="contactForm" novalidate="novalidate">
 							<div class="form-row">
@@ -223,18 +303,6 @@
 						class="fa fa-angle-right mr-2"></i>Tin tức</a>
 				</div>
 			</div>
-			<!-- <div class="col-lg-3 col-md-6 mb-5">
-                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Usefull Links</h5>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Destination</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Packages</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Guides</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Testimonial</a>
-                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Blog</a>
-                </div>
-            </div> -->
 			<div class="col-lg-4 col-md-6 mb-5">
 				<h5 class="text-white text-uppercase mb-4"
 					style="letter-spacing: 5px;">Liên hệ với chúng tôi</h5>
@@ -304,6 +372,7 @@
 	<!-- Template Javascript -->
 	<script src="public/js/main.js"></script>
 	<script type="text/javascript">
+		// Xử lý cập nhật thông tin tài khoản
 		document.getElementById("sendMessageButton").onclick = function (e) {
 			e.preventDefault();
 			if(document.getElementById("username").disabled) {
@@ -316,6 +385,90 @@
 				document.getElementById("contactForm").submit();
 			}
 		};
+		
+		// Hàm đăng nhập user
+		function userLogin() {
+			var username = document.getElementById('userUsername').value;
+			var password = document.getElementById('userPassword').value;
+			
+			if(username == '' || password == '') {
+				showMessage('Vui lòng nhập đầy đủ thông tin!', 'danger');
+				return;
+			}
+			
+			var info = {
+				username: username,
+				password: password
+			};
+			
+			$.ajax({
+				url: "/api/auth/login",
+				type: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(info),
+				success: function(data) {
+					if(data.data != null) {
+						if(data.data.role === 'ADMIN') {
+							window.location.href = '/admin/index';
+						} else {
+							window.location.href = '/account';
+						}
+					} else {
+						showMessage(data.message, 'danger');
+					}
+				},
+				error: function() {
+					showMessage('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
+				}
+			});
+		}
+		
+		// Hàm đăng nhập admin
+		function adminLogin() {
+			var username = document.getElementById('adminUsername').value;
+			var password = document.getElementById('adminPassword').value;
+			
+			if(username == '' || password == '') {
+				showMessage('Vui lòng nhập đầy đủ thông tin!', 'danger');
+				return;
+			}
+			
+			var info = {
+				username: username,
+				password: password
+			};
+			
+			$.ajax({
+				url: "/api/auth/login",
+				type: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(info),
+				success: function(data) {
+					if(data.data != null) {
+						if(data.data.role === 'ADMIN') {
+							window.location.href = '/admin/index';
+						} else {
+							showMessage('Tài khoản này không có quyền admin!', 'danger');
+						}
+					} else {
+						showMessage(data.message, 'danger');
+					}
+				},
+				error: function() {
+					showMessage('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
+				}
+			});
+		}
+		
+		// Hàm hiển thị thông báo
+		function showMessage(message, type) {
+			var alertClass = type === 'danger' ? 'alert-danger' : 'alert-success';
+			var html = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+						message +
+						'<button type="button" class="close" data-dismiss="alert">' +
+						'<span>&times;</span></button></div>';
+			document.getElementById('loginMessage').innerHTML = html;
+		}
 	</script>
 </body>
 

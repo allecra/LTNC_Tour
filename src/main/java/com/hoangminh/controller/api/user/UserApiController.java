@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import com.hoangminh.entity.User;
 
 @RestController
 @RequestMapping("/api/user")
@@ -110,5 +112,31 @@ public class UserApiController {
     public ResponseEntity<ResponseDTO> getBookingHistory(@PathVariable Long userId) {
         List<BookingDTO> bookings = bookingService.findBookingByUserId(userId);
         return ResponseEntity.ok(new ResponseDTO("Lấy lịch sử đặt tour thành công", bookings));
+    }
+
+    @GetMapping("/guides")
+    public ResponseEntity<ResponseDTO> getAllGuides() {
+        try {
+            // Sử dụng repository method để lấy trực tiếp guides (role_id = 3)
+            List<User> guides = userService.getAllGuides();
+            
+            // Convert sang DTO
+            List<UserDTO> guideDTOs = guides.stream()
+                .map(guide -> {
+                    UserDTO dto = new UserDTO();
+                    dto.setId(guide.getId());
+                    dto.setHo_ten(guide.getHo_ten());
+                    dto.setEmail(guide.getEmail());
+                    dto.setSdt(guide.getSdt());
+                    dto.setGioi_tinh(guide.getGioi_tinh());
+                    dto.setDia_chi(guide.getDia_chi());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+            
+            return ResponseEntity.ok(new ResponseDTO("Lấy danh sách hướng dẫn viên thành công", guideDTOs));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseDTO("Lỗi khi lấy danh sách hướng dẫn viên: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

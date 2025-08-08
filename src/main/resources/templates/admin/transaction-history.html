@@ -89,13 +89,119 @@
                     <li class="breadcrumb-item active" aria-current="page">Lịch sử giao dịch</li>
                 </ol>
             </nav>
-            <div class="card mb-4 rounded">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchTransactionInput" />
+            
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="small">Tổng giao dịch</div>
+                                    <div class="h4" id="totalTransactions">0</div>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exchange-alt fa-2x"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-success text-white mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="small">Đã thanh toán</div>
+                                    <div class="h4" id="completedTransactions">0</div>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-warning text-white mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="small">Chờ thanh toán</div>
+                                    <div class="h4" id="pendingTransactions">0</div>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-info text-white mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="small">Tổng doanh thu</div>
+                                    <div class="h4" id="totalRevenue">0 VNĐ</div>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-money-bill-wave fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-filter me-1"></i>
+                    Bộ lọc
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="khachHangFilter" class="form-label">Khách hàng</label>
+                            <input type="text" class="form-control" id="khachHangFilter" placeholder="Tên khách hàng">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="trangThaiFilter" class="form-label">Trạng thái</label>
+                            <select class="form-select" id="trangThaiFilter">
+                                <option value="">Tất cả</option>
+                                <option value="da_thanh_toan">Đã thanh toán</option>
+                                <option value="chua_thanh_toan">Chưa thanh toán</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="phuongThucFilter" class="form-label">Phương thức</label>
+                            <select class="form-select" id="phuongThucFilter">
+                                <option value="">Tất cả</option>
+                                <option value="Chuyển khoản">Chuyển khoản</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <div>
+                                <button type="button" class="btn btn-primary" onclick="filterTransactions()">
+                                    <i class="fas fa-search"></i> Lọc
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i> Xóa lọc
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4 rounded">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    Bảng Giao Dịch
+                </div>
+                <div class="card-body">
                     <table class="table table-bordered table-hover" id="transactionHistoryTable">
                         <thead class="table-dark">
                             <tr>
@@ -108,7 +214,7 @@
                                 <th>Trạng thái</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="transactionTableBody">
                         </tbody>
                     </table>
                     <div id="transactionHistoryPagination"></div>
@@ -133,78 +239,123 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
-        let transactions = [];
-        let currentPage = 1;
-        const pageSize = 10;
-        // Lấy dữ liệu thật từ backend
+        loadTransactionTable();
+        loadStatistics();
+    });
+    
+    function loadTransactionTable(filters = {}) {
+        let url = '/api/transaction/table';
+        let params = new URLSearchParams();
+        
+        if (filters.khachHang) params.append('khachHang', filters.khachHang);
+        if (filters.trangThai) params.append('trangThai', filters.trangThai);
+        if (filters.phuongThuc) params.append('phuongThuc', filters.phuongThuc);
+        
+        if (params.toString()) {
+            url += '?' + params.toString();
+        }
+        
         $.ajax({
-            url: '/api/payment/getAll',
+            url: url,
             method: 'GET',
             success: function(response) {
-                transactions = response.data || [];
-                renderTable();
+                if (response.data) {
+                    renderTransactionTable(response.data);
+                }
             },
             error: function() {
-                transactions = [];
-                renderTable();
+                console.error('Lỗi khi tải dữ liệu giao dịch');
+                renderTransactionTable([]);
             }
         });
-        function renderTable() {
-            var tbody = $('#transactionHistoryTable tbody');
-            tbody.empty();
-            const startIdx = (currentPage - 1) * pageSize;
-            const endIdx = Math.min(startIdx + pageSize, transactions.length);
-            for (let i = startIdx; i < endIdx; i++) {
-                const t = transactions[i];
-                var row = `<tr>
-                    <td class="text-center">${i + 1}</td>
-                    <td>${t.id || ''}</td>
-                    <td>${t.hoTenNguoiNhan || ''}</td>
-                    <td>${t.soTaiKhoan || ''}</td>
-                    <td>${t.paymentMethod || ''}</td>
-                    <td>${t.tenNganHang || ''}</td>
-                    <td>${t.chiNhanh || ''}</td>
-                </tr>`;
-                tbody.append(row);
-            }
-            renderPagination();
+    }
+    
+    function renderTransactionTable(transactions) {
+        const tbody = $('#transactionTableBody');
+        tbody.empty();
+        
+        if (transactions.length === 0) {
+            tbody.append('<tr><td colspan="7" class="text-center">Không có dữ liệu giao dịch</td></tr>');
+            return;
         }
-        function renderPagination() {
-            let totalPages = Math.ceil(transactions.length / pageSize);
-            let paginationHtml = '<nav><ul class="pagination justify-content-center">';
-            if (totalPages === 0) {
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
-                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
-                paginationHtml += '</ul></nav>';
-                document.getElementById('transactionHistoryPagination').innerHTML = paginationHtml;
-                return;
-            }
-            paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-            }
-            paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
-            paginationHtml += '</ul></nav>';
-            document.getElementById('transactionHistoryPagination').innerHTML = paginationHtml;
-        }
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('page-link')) {
-                e.preventDefault();
-                const page = e.target.getAttribute('data-page');
-                if (page) {
-                    currentPage = parseInt(page);
-                    renderTable();
-                } else if (e.target.id === 'prevPage' && currentPage > 1) {
-                    currentPage--;
-                    renderTable();
-                } else if (e.target.id === 'nextPage' && currentPage < Math.ceil(transactions.length / pageSize)) {
-                    currentPage++;
-                    renderTable();
+        
+        transactions.forEach(function(transaction, index) {
+            // transaction[0] = stt, transaction[1] = ma_giao_dich, transaction[2] = khach_hang
+            // transaction[3] = so_tien, transaction[4] = phuong_thuc, transaction[5] = thoi_gian
+            // transaction[6] = trang_thai
+            
+            const row = `
+                <tr>
+                    <td class="text-center">${transaction[0]}</td>
+                    <td><span class="badge bg-primary">${transaction[1]}</span></td>
+                    <td>${transaction[2]}</td>
+                    <td>${formatCurrency(transaction[3])}</td>
+                    <td>${transaction[4]}</td>
+                    <td>${formatDateTime(transaction[5])}</td>
+                    <td class="text-center">${getStatusBadge(transaction[6])}</td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+    
+    function loadStatistics() {
+        $.ajax({
+            url: '/api/transaction/statistics',
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    $('#totalTransactions').text(response.data.totalTransactions);
+                    $('#completedTransactions').text(response.data.completedTransactions);
+                    $('#pendingTransactions').text(response.data.pendingTransactions);
+                    $('#totalRevenue').text(formatCurrency(response.data.totalRevenue));
                 }
+            },
+            error: function() {
+                console.error('Lỗi khi tải thống kê');
             }
         });
-    });
+    }
+    
+    function filterTransactions() {
+        const filters = {
+            khachHang: $('#khachHangFilter').val(),
+            trangThai: $('#trangThaiFilter').val(),
+            phuongThuc: $('#phuongThucFilter').val()
+        };
+        
+        loadTransactionTable(filters);
+    }
+    
+    function clearFilters() {
+        $('#khachHangFilter').val('');
+        $('#trangThaiFilter').val('');
+        $('#phuongThucFilter').val('');
+        loadTransactionTable();
+    }
+    
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+    
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('vi-VN');
+    }
+    
+    function getStatusBadge(status) {
+        switch(status) {
+            case 'da_thanh_toan':
+                return '<span class="badge bg-success">Đã thanh toán</span>';
+            case 'chua_thanh_toan':
+                return '<span class="badge bg-warning">Chưa thanh toán</span>';
+            default:
+                return '<span class="badge bg-secondary">' + status + '</span>';
+        }
+    }
 </script>
 </body>
 </html>

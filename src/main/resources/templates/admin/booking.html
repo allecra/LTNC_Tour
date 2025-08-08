@@ -147,22 +147,148 @@
                         <li class="breadcrumb-item active" aria-current="page">Quản lý booking</li>
                     </ol>
                 </nav>
-                <div class="card mb-4 rounded">
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-auto">
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                                    <i class="fas fa-plus"></i> Thêm mới booking
-                                </button>
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchBookingInput" />
+                
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng booking</div>
+                                        <div class="h4" id="totalBookings">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-calendar-check fa-2x"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-hover" id="datatablesSimple">
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đã xác nhận</div>
+                                        <div class="h4" id="confirmedBookings">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Chờ xác nhận</div>
+                                        <div class="h4" id="pendingBookings">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đã hủy</div>
+                                        <div class="h4" id="cancelledBookings">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-times-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card bg-info text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng doanh thu</div>
+                                        <div class="h4" id="totalRevenue">0 VNĐ</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-money-bill-wave fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Section -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-filter me-1"></i>
+                        Bộ lọc
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="nguoiDungFilter" class="form-label">Người dùng</label>
+                                <input type="text" class="form-control" id="nguoiDungFilter" placeholder="Tên người dùng">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="tourFilter" class="form-label">Tour</label>
+                                <input type="text" class="form-control" id="tourFilter" placeholder="Tên tour">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="trangThaiFilter" class="form-label">Trạng thái</label>
+                                <select class="form-select" id="trangThaiFilter">
+                                    <option value="">Tất cả</option>
+                                    <option value="cho_xac_nhan">Chờ xác nhận</option>
+                                    <option value="da_xac_nhan">Đã xác nhận</option>
+                                    <option value="huy">Hủy</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="phuongThucFilter" class="form-label">Phương thức</label>
+                                <select class="form-select" id="phuongThucFilter">
+                                    <option value="">Tất cả</option>
+                                    <option value="Chuyển khoản">Chuyển khoản</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div>
+                                    <button type="button" class="btn btn-primary" onclick="filterBookings()">
+                                        <i class="fas fa-search"></i> Lọc
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                                        <i class="fas fa-times"></i> Xóa lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4 rounded">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Bảng Booking Chi Tiết</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                                <i class="fas fa-plus"></i> Thêm mới booking
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover" id="bookingDetailTable">
                             <thead class="table-dark">
                                 <tr>
                                     <th>STT</th>
+                                    <th>Mã giao dịch</th>
                                     <th>Người dùng</th>
                                     <th>Tour</th>
                                     <th>Số lượng người</th>
@@ -175,7 +301,7 @@
                                     <th class="text-center">Hành động</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="bookingTableBody">
                             </tbody>
                         </table>
                     </div>
@@ -267,7 +393,7 @@
 
                         <!-- Modal Sửa Booking -->
 <div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <form class="modal-content" id="editBookingForm">
       <div class="modal-header">
         <h5 class="modal-title" id="editBookingModalLabel">Sửa thông tin booking</h5>
@@ -275,19 +401,44 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="editBookingId" />
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Người dùng</label>
+              <input type="text" id="editNguoiDung" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tour</label>
+              <input type="text" id="editTour" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày khởi hành</label>
+              <input type="text" id="editNgayKhoiHanh" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày đặt</label>
+              <input type="text" id="editNgayDat" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Giá tour</label>
+              <input type="text" id="editGiaTour" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tổng tiền</label>
+              <input type="text" id="editTongTien" class="form-control" readonly />
+            </div>
+          </div>
+          <div class="col-md-6">
         <div class="mb-3">
-          <label>Số lượng người</label>
-          <input type="number" id="editSoLuongNguoi" class="form-control" required />
+              <label class="form-label">Số lượng người <span class="text-danger">*</span></label>
+              <input type="number" id="editSoLuongNguoi" class="form-control" min="1" required />
         </div>
         <div class="mb-3">
-          <label>Phương thức thanh toán</label>
-          <select id="editPaymentMethod" class="form-control" required>
-            <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
-            <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
-          </select>
+              <label class="form-label">Phương thức thanh toán</label>
+              <input type="text" id="editPaymentMethod" class="form-control" value="Chuyển khoản" readonly />
         </div>
         <div class="mb-3">
-          <label>Trạng thái</label>
+              <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
           <select id="editTrangThai" class="form-control" required>
             <option value="cho_xac_nhan">Chờ xác nhận</option>
             <option value="da_xac_nhan">Đã xác nhận</option>
@@ -297,27 +448,21 @@
           </select>
         </div>
         <div class="mb-3">
-          <label>Trạng thái thanh toán</label>
+              <label class="form-label">Trạng thái thanh toán</label>
           <select id="editPaymentStatus" class="form-control">
             <option value="chua_thanh_toan">Chưa thanh toán</option>
             <option value="da_thanh_toan">Đã thanh toán</option>
           </select>
         </div>
         <div class="mb-3">
-          <label>Ngày khởi hành</label>
-          <input type="datetime-local" id="editNgayKhoiHanh" class="form-control" />
+              <label class="form-label">Ghi chú</label>
+              <textarea id="editGhiChu" class="form-control" rows="3"></textarea>
         </div>
-        <div class="mb-3">
-          <label>Ngày đặt</label>
-          <input type="datetime-local" id="editBookingAt" class="form-control" />
         </div>
-        <div class="mb-3">
-          <label>Ghi chú</label>
-          <textarea id="editGhiChu" class="form-control"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
       </div>
     </form>
@@ -337,18 +482,371 @@
 <script src="/public/admin/js/all.min.js"></script>
 <script src="/public/admin/js/ckeditor.js"></script>
 <script>
-
-    function hideModal() {
-        $("#editModal").modal('hide');
+        $(document).ready(function() {
+        loadBookingDetailTable();
+        loadBookingStatistics();
+        
+        // Load danh sách tour khi mở modal thêm booking
+        $('#addBookingModal').on('show.bs.modal', function() {
+            loadToursForAddBooking();
+        });
+        
+        // Tính tổng tiền khi nhập giá tour và số lượng người
+        $('#addGiaTour, #addSoLuongNguoi').on('input', function() {
+            calculateTotal();
+        });
+        
+        // Tự động điền giá tour khi chọn tour
+        $('#addTenTour').on('change', function() {
+            const selectedTour = $(this).val();
+            if (selectedTour) {
+                // Tìm tour trong danh sách để lấy giá
+                $.ajax({
+                    url: '/api/transaction/tours',
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.data) {
+                            const tour = response.data.find(t => t.ten_tour === selectedTour);
+                            if (tour && tour.gia_tour) {
+                                $('#addGiaTour').val(formatCurrency(tour.gia_tour));
+                                calculateTotal();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        function calculateTotal() {
+            const giaTour = parseFloat($('#addGiaTour').val().replace(/[^\d]/g, '')) || 0;
+            const soLuongNguoi = parseInt($('#addSoLuongNguoi').val()) || 0;
+            
+            if (giaTour > 0 && soLuongNguoi > 0) {
+                const tongTien = giaTour * soLuongNguoi;
+                $('#addTongTien').val(formatCurrency(tongTien));
+            }
+        }
+        
+        // Form submit thêm booking
+        $('#addBookingForm').submit(function(e) {
+            e.preventDefault();
+            
+            // Validation phía frontend
+            const nguoiDung = $('#addNguoiDung').val().trim();
+            const tenTour = $('#addTenTour').val().trim();
+            const ngayKhoiHanh = $('#addNgayKhoiHanh').val();
+            const soLuongNguoi = parseInt($('#addSoLuongNguoi').val());
+            const giaTour = parseFloat($('#addGiaTour').val().replace(/[^\d]/g, ''));
+            
+            if (!nguoiDung) {
+                alert('Tên người dùng không được để trống!');
+                $('#addNguoiDung').focus();
+                return;
+            }
+            if (!tenTour) {
+                alert('Tên tour không được để trống!');
+                $('#addTenTour').focus();
+                return;
+            }
+            if (!ngayKhoiHanh) {
+                alert('Ngày khởi hành không được để trống!');
+                $('#addNgayKhoiHanh').focus();
+                return;
+            }
+            if (!soLuongNguoi || soLuongNguoi <= 0) {
+                alert('Số lượng người phải lớn hơn 0!');
+                $('#addSoLuongNguoi').focus();
+                return;
+            }
+            if (!giaTour || giaTour <= 0) {
+                alert('Giá tour phải lớn hơn 0!');
+                $('#addGiaTour').focus();
+                return;
+            }
+            
+            const data = {
+                nguoiDung: nguoiDung,
+                tenTour: tenTour,
+                ngayKhoiHanh: ngayKhoiHanh,
+                soLuongNguoi: soLuongNguoi,
+                giaTour: giaTour,
+                tongTien: parseFloat($('#addTongTien').val().replace(/[^\d]/g, '')),
+                paymentMethod: 'Chuyển khoản', // Luôn cố định là "Chuyển khoản"
+                paymentStatus: $('#addPaymentStatus').val(),
+                trangThai: $('#addTrangThai').val(),
+                ghiChu: $('#addGhiChu').val()
+            };
+            
+            $.ajax({
+                url: '/api/transaction/add-booking',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                dataType: 'json',
+                timeout: 30000, // 30 giây timeout
+                success: function(response) {
+                    if (response.message) {
+                        alert(response.message);
+                        if (response.message.includes('thành công')) {
+                            $('#addBookingModal').modal('hide');
+                            loadBookingDetailTable(); // Reload bảng
+                            loadBookingStatistics(); // Reload thống kê
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    alert('Thêm không thành công! Lỗi: ' + error);
+                }
+            });
+        });
+        
+        // Tính tổng tiền khi thay đổi số người trong modal sửa
+        $('#editSoLuongNguoi').on('input', function() {
+            calculateEditTotal();
+        });
+        
+        function calculateEditTotal() {
+            const giaTour = parseFloat($('#editGiaTour').val().replace(/[^\d]/g, '')) || 0;
+            const soLuongNguoi = parseInt($('#editSoLuongNguoi').val()) || 0;
+            
+            if (giaTour > 0 && soLuongNguoi > 0) {
+                const tongTien = giaTour * soLuongNguoi;
+                $('#editTongTien').val(formatCurrency(tongTien));
+            }
+        }
+        
+        // Form submit sửa booking
+    $('#editBookingForm').submit(function(e) {
+        e.preventDefault();
+            const id = $('#editBookingId').val();
+            const data = {
+                so_luong_nguoi: parseInt($('#editSoLuongNguoi').val()),
+                tong_tien: parseFloat($('#editTongTien').val().replace(/[^\d]/g, '')),
+            payment_method: 'Chuyển khoản', // Luôn cố định là "Chuyển khoản"
+            trang_thai: $('#editTrangThai').val(),
+            payment_status: $('#editPaymentStatus').val(),
+            ghi_chu: $('#editGhiChu').val()
+        };
+            
+        $.ajax({
+            url: '/api/booking/update/' + id,
+            type: 'PUT',
+            data: JSON.stringify(data),
+                contentType: 'application/json',
+            success: function(response) {
+                alert(response.message || 'Cập nhật thành công!');
+                $('#editBookingModal').modal('hide');
+                    loadBookingDetailTable(); // Reload bảng
+                    loadBookingStatistics(); // Reload thống kê
+            },
+            error: function() {
+                alert('Cập nhật không thành công!');
+            }
+        });
+    });
+    });
+    
+    function loadBookingDetailTable(filters = {}) {
+        let url = '/api/transaction/booking-table';
+        let params = new URLSearchParams();
+        
+        if (filters.nguoiDung) params.append('nguoiDung', filters.nguoiDung);
+        if (filters.tour) params.append('tour', filters.tour);
+        if (filters.trangThai) params.append('trangThai', filters.trangThai);
+        if (filters.phuongThuc) params.append('phuongThuc', filters.phuongThuc);
+        
+        if (params.toString()) {
+            url += '?' + params.toString();
+        }
+        
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    renderBookingDetailTable(response.data);
+                }
+            },
+            error: function() {
+                console.error('Lỗi khi tải dữ liệu booking');
+                renderBookingDetailTable([]);
+            }
+        });
     }
 
-    function hideViewModal() {
-        $('#detailBookingModal').modal('hide');
+    function renderBookingDetailTable(bookings) {
+        const tbody = $('#bookingTableBody');
+        tbody.empty();
+        
+        if (bookings.length === 0) {
+            tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu booking</td></tr>');
+            return;
+        }
+        
+        bookings.forEach(function(booking, index) {
+            // booking[0] = stt, booking[1] = ma_giao_dich, booking[2] = nguoi_dung, booking[3] = tour
+            // booking[4] = so_luong_nguoi, booking[5] = tong_tien, booking[6] = phuong_thuc_thanh_toan
+            // booking[7] = ngay_khoi_hanh, booking[8] = ghi_chu, booking[9] = ngay_dat, booking[10] = trang_thai
+            
+            const row = `
+                <tr>
+                    <td class="text-center">${booking[0]}</td>
+                    <td class="text-center"><span class="badge badge-success" style="background-color: #28a745; color: white; font-weight: bold; font-size: 12px; padding: 5px 8px;">${booking[1]}</span></td>
+                    <td>${booking[2]}</td>
+                    <td>${booking[3]}</td>
+                    <td class="text-center">${booking[4]}</td>
+                    <td>${formatCurrency(booking[5])}</td>
+                    <td>${booking[6]}</td>
+                    <td>${formatDateTime(booking[7])}</td>
+                    <td>${booking[8] || '-'}</td>
+                    <td>${formatDateTime(booking[9])}</td>
+                    <td class="text-center">${getStatusBadge(booking[10])}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center align-items-center gap-1">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="editBooking(${booking[0]})" title="Sửa">
+                                <i class="fas fa-wrench"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteBooking(${booking[0]})" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+                tbody.append(row);
+        });
     }
-
-    function hideDeleteModal() {
-        $("#deleteModal").modal('hide');
+    
+    function loadBookingStatistics() {
+        $.ajax({
+            url: '/api/transaction/booking-statistics',
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    $('#totalBookings').text(response.data.totalBookings);
+                    $('#confirmedBookings').text(response.data.confirmedBookings);
+                    $('#pendingBookings').text(response.data.pendingBookings);
+                    $('#cancelledBookings').text(response.data.cancelledBookings);
+                    $('#totalRevenue').text(formatCurrency(response.data.totalRevenue));
+                }
+            },
+            error: function() {
+                console.error('Lỗi khi tải thống kê booking');
+            }
+        });
     }
+    
+    function loadToursForAddBooking() {
+        $.ajax({
+            url: '/api/transaction/tours',
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    const tours = response.data;
+                    const select = $('#addTenTour');
+                    select.empty();
+                    select.append('<option value="">-- Chọn tour --</option>');
+                    
+                    tours.forEach(function(tour) {
+                        select.append('<option value="' + tour.ten_tour + '">' + tour.ten_tour + '</option>');
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Lỗi khi tải danh sách tour:', error);
+            }
+        });
+    }
+    
+    function filterBookings() {
+        const filters = {
+            nguoiDung: $('#nguoiDungFilter').val(),
+            tour: $('#tourFilter').val(),
+            trangThai: $('#trangThaiFilter').val(),
+            phuongThuc: $('#phuongThucFilter').val()
+        };
+        
+        loadBookingDetailTable(filters);
+    }
+    
+    function clearFilters() {
+        $('#nguoiDungFilter').val('');
+        $('#tourFilter').val('');
+        $('#trangThaiFilter').val('');
+        $('#phuongThucFilter').val('');
+        loadBookingDetailTable();
+    }
+    
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+    
+    function formatDateTime(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleString('vi-VN');
+    }
+    
+    function getStatusBadge(status) {
+        switch(status) {
+            case 'cho_xac_nhan':
+                return '<span class="badge bg-warning">Chờ xác nhận</span>';
+            case 'da_xac_nhan':
+                return '<span class="badge bg-success">Đã xác nhận</span>';
+            case 'dang_tien_hanh':
+                return '<span class="badge bg-info">Đang tiến hành</span>';
+            case 'hoan_tat':
+                return '<span class="badge bg-primary">Hoàn tất</span>';
+            case 'huy':
+                return '<span class="badge bg-danger">Đã hủy</span>';
+            default:
+                return '<span class="badge bg-secondary">' + status + '</span>';
+        }
+    }
+    
+        // Function sửa booking
+    function editBooking(id) {
+            $.ajax({
+            url: '/api/booking/' + id,
+            type: 'GET',
+                success: function(response) {
+                if (response.data) {
+                    const booking = response.data;
+                    $('#editBookingId').val(booking.id);
+                    $('#editNguoiDung').val(booking.ho_ten || 'N/A');
+                    $('#editTour').val(booking.ten_tour || 'N/A');
+                    $('#editNgayKhoiHanh').val(booking.ngay_khoi_hanh ? new Date(booking.ngay_khoi_hanh).toLocaleDateString('vi-VN') : 'N/A');
+                    $('#editNgayDat').val(booking.booking_at ? new Date(booking.booking_at).toLocaleDateString('vi-VN') : 'N/A');
+                    $('#editSoLuongNguoi').val(booking.so_luong_nguoi);
+                    // Tính giá tour từ tổng tiền và số lượng người
+                    const giaTour = booking.tong_tien && booking.so_luong_nguoi ? 
+                        booking.tong_tien / booking.so_luong_nguoi : 0;
+                    $('#editGiaTour').val(formatCurrency(giaTour));
+                    $('#editTongTien').val(formatCurrency(booking.tong_tien || 0));
+                    $('#editPaymentMethod').val(booking.payment_method || 'Chuyển khoản');
+                    $('#editTrangThai').val(booking.trang_thai || 'cho_xac_nhan');
+                    $('#editPaymentStatus').val(booking.payment_status || 'chua_thanh_toan');
+                    $('#editGhiChu').val(booking.ghi_chu || '');
+                    $('#editBookingModal').modal('show');
+                } else {
+                    alert('Không có dữ liệu booking!');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching booking:', error);
+                console.error('Response:', xhr.responseText);
+                alert('Không lấy được thông tin booking!');
+            }
+        });
+    }
+    
+    // Function xóa booking
     function deleteBooking(id) {
         if (confirm("Bạn có chắc chắn muốn xóa booking này?")) {
             $.ajax({
@@ -356,7 +854,7 @@
                 type: 'DELETE',
                 success: function(response) {
                     alert(response.message || "Xóa thành công!");
-                    location.reload();
+                    loadBookingDetailTable(); // Reload bảng
                 },
                 error: function() {
                     alert("Xóa không thành công!");
@@ -364,309 +862,161 @@
             });
         }
     }
-
-    function editBooking(id) {
-        $.ajax({
-            url: '/api/booking/' + id,
-            type: 'GET',
-            success: function(data) {
-                $('#editBookingId').val(data.data.id);
-                $('#editSoLuongNguoi').val(data.data.so_luong_nguoi);
-                let paymentMethod = data.data.payment_method;
-                if (paymentMethod === 'Chuyển khoản') paymentMethod = 'Chuyển khoản ngân hàng';
-                $('#editPaymentMethod').val(paymentMethod);
-                $('#editTrangThai').val(data.data.trang_thai);
-                // Map trạng thái thanh toán về value chuẩn
-                let paymentStatus = data.data.payment_status;
-                if (paymentStatus === 'Đã thanh toán') paymentStatus = 'da_thanh_toan';
-                if (paymentStatus === 'Chưa thanh toán') paymentStatus = 'chua_thanh_toan';
-                $('#editPaymentStatus').val(paymentStatus || '');
-                // Format ngày khởi hành và ngày đặt về dạng yyyy-MM-ddTHH:mm
-                if (data.data.ngay_khoi_hanh) {
-                    $('#editNgayKhoiHanh').val(new Date(data.data.ngay_khoi_hanh).toISOString().slice(0,16));
-                } else {
-                    $('#editNgayKhoiHanh').val('');
-                }
-                if (data.data.booking_at) {
-                    $('#editBookingAt').val(new Date(data.data.booking_at).toISOString().slice(0,16));
-                } else {
-                    $('#editBookingAt').val('');
-                }
-                $('#editGhiChu').val(data.data.ghi_chu);
-                $('#editBookingModal').modal('show');
-            },
-            error: function() {
-                alert('Không lấy được thông tin booking!');
-            }
-        });
-    }
-    $('#editBookingForm').submit(function(e) {
-        e.preventDefault();
-        var id = $('#editBookingId').val();
-        // Chuyển đổi ngày về dạng có giây
-        let ngayKhoiHanh = $('#editNgayKhoiHanh').val();
-        if (ngayKhoiHanh && ngayKhoiHanh.length === 16) ngayKhoiHanh += ':00';
-        let bookingAt = $('#editBookingAt').val();
-        if (bookingAt && bookingAt.length === 16) bookingAt += ':00';
-        var data = {
-            so_luong_nguoi: parseInt($('#editSoLuongNguoi').val(), 10),
-            payment_method: $('#editPaymentMethod').val(),
-            trang_thai: $('#editTrangThai').val(),
-            payment_status: $('#editPaymentStatus').val(),
-            ngay_khoi_hanh: ngayKhoiHanh,
-            booking_at: bookingAt,
-            ghi_chu: $('#editGhiChu').val()
-        };
-        $.ajax({
-            url: '/api/booking/update/' + id,
-            type: 'PUT',
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            success: function(response) {
-                alert(response.message || 'Cập nhật thành công!');
-                $('#editBookingModal').modal('hide');
-                fetchBookings();
-            },
-            error: function() {
-                alert('Cập nhật không thành công!');
-            }
-        });
-    });
-
-
-    function viewDetailBooking(id) {
-        $.ajax({
-            url: '/api/booking/detail/' + id,
-            type: 'GET',
-            success: function (data) {
-                $('#ho_ten').val(data.data.ho_ten);
-                $('#sdt').val(data.data.sdt);
-                $('#ten_tour').val(data.data.ten_tour);
-                $('#so_luong_nguoi').val(data.data.so_luong_nguoi);
-                $('#ngay_khoi_hanh').val(data.data.ngay_khoi_hanh);
-                $('#tong_tien').val(data.data.tong_tien.toLocaleString());
-                $('#trang_thai_view').val(data.data.trang_thai);
-                $('#pt_thanh_toan').val(data.data.pt_thanh_toan);
-                $('#ghi_chu').val(data.data.ghi_chu);
-                $('#booking_at').val(data.data.booking_at);
-                $('#detailBookingModal').modal('show');
-            }
-        });
-    }
-
-
-    $(document).ready(function() {
-        let bookings = [];
-        let filteredBookings = [];
-        let currentPage = 1;
-        const pageSize = 10;
-        function fetchBookings() {
-            $.ajax({
-                url: '/api/booking/getAllBooking',
-                method: 'GET',
-                success: function(response) {
-                    bookings = response.data || [];
-                    filteredBookings = bookings;
-                    renderTable();
-                },
-                error: function() {
-                    bookings = [];
-                    filteredBookings = [];
-                    renderTable();
-                }
-            });
-        }
-        fetchBookings();
-        // Tìm kiếm realtime
-        $('#searchBookingInput').on('input', function() {
-            const keyword = $(this).val().toLowerCase();
-            filteredBookings = bookings.filter(function(b) {
-                return (
-                    (b.ho_ten || '').toLowerCase().includes(keyword) ||
-                    (b.ten_tour || '').toLowerCase().includes(keyword) ||
-                    (b.payment_method || '').toLowerCase().includes(keyword) ||
-                    (b.trang_thai || '').toLowerCase().includes(keyword) ||
-                    (b.ghi_chu || '').toLowerCase().includes(keyword) ||
-                    (b.booking_at || '').toLowerCase().includes(keyword) ||
-                    (b.ngay_khoi_hanh || '').toLowerCase().includes(keyword)
-                );
-            });
-            currentPage = 1;
-            renderTable();
-        });
-        function renderTable() {
-            var tbody = $('#datatablesSimple tbody');
-            tbody.empty();
-            const data = filteredBookings;
-            const startIdx = (currentPage - 1) * pageSize;
-            const endIdx = Math.min(startIdx + pageSize, data.length);
-            for (let i = startIdx; i < endIdx; i++) {
-                const booking = data[i];
-                var row = `<tr>
-                    <td class="text-center">${i + 1}</td>
-                    <td>${booking.ho_ten || ''}</td>
-                    <td>${booking.ten_tour || ''}</td>
-                    <td>${booking.so_luong_nguoi || ''}</td>
-                    <td>${booking.tong_tien ? booking.tong_tien.toLocaleString() : ''}</td>
-                    <td>${booking.payment_method || ''}</td>
-                    <td>${booking.ngay_khoi_hanh || ''}</td>
-                    <td>${booking.ghi_chu || ''}</td>
-                    <td>${booking.booking_at || ''}</td>
-                    <td>
-                        <select class="form-select form-select-sm booking-status-select" data-id="${booking.id}">
-                            <option value="cho_xac_nhan" ${booking.trang_thai === 'cho_xac_nhan' ? 'selected' : ''}>Chờ xác nhận</option>
-                            <option value="da_xac_nhan" ${booking.trang_thai === 'da_xac_nhan' ? 'selected' : ''}>Đã xác nhận</option>
-                            <option value="dang_tien_hanh" ${booking.trang_thai === 'dang_tien_hanh' ? 'selected' : ''}>Đang tiến hành</option>
-                            <option value="hoan_tat" ${booking.trang_thai === 'hoan_tat' ? 'selected' : ''}>Hoàn tất</option>
-                            <option value="huy" ${booking.trang_thai === 'huy' ? 'selected' : ''}>Đã hủy</option>
-                        </select>
-                    </td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center align-items-center gap-1">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="editBooking(${booking.id})" title="Sửa">
-                                <i class="fas fa-wrench"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteBooking(${booking.id})" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>`;
-                tbody.append(row);
-            }
-            renderPagination();
-        }
-        function renderPagination() {
-            let totalPages = Math.ceil(filteredBookings.length / pageSize);
-            let paginationHtml = '';
-            if (totalPages === 0) {
-                paginationHtml += '<nav><ul class="pagination justify-content-center">';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
-                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
-                paginationHtml += '</ul></nav>';
-            } else if (totalPages > 0) {
-                paginationHtml = '<nav><ul class="pagination justify-content-center">';
-                paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-                }
-                paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
-                paginationHtml += '</ul></nav>';
-            }
-            if ($('#bookingPagination').length === 0) {
-                $('#datatablesSimple').after('<div id="bookingPagination"></div>');
-            }
-            $('#bookingPagination').html(paginationHtml);
-        }
-        // Pagination click events
-        $(document).on('click', '#bookingPagination .page-link', function(e) {
-            e.preventDefault();
-            const page = $(this).data('page');
-            if (page) {
-                currentPage = page;
-                renderTable();
-            } else if ($(this).attr('id') === 'prevPage' && currentPage > 1) {
-                currentPage--;
-                renderTable();
-            } else if ($(this).attr('id') === 'nextPage' && currentPage < Math.ceil(filteredBookings.length / pageSize)) {
-                currentPage++;
-                renderTable();
-            }
-        });
-        // Thêm booking
-        $('#addBookingForm').submit(function(e) {
-            e.preventDefault();
-            var data = {
-                user_id: parseInt($('#addUserId').val(), 10),
-                tour_id: parseInt($('#addTourStartId').val(), 10),
-                so_luong_nguoi: parseInt($('#addSoLuongNguoi').val(), 10),
-                payment_method: $('#addPaymentMethod').val(),
-                ghi_chu: $('#addGhiChu').val()
-            };
-            $.ajax({
-                url: '/api/booking',
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    alert(response.message || 'Thêm thành công!');
-                    $('#addBookingModal').modal('hide');
-                    fetchBookings();
-                },
-                error: function() {
-                    alert('Thêm không thành công!');
-                }
-            });
-        });
-
-
-
-
-        function deleteUser(id) {
-            // Hiển thị modal xác nhận xóa user
-            $('#deleteModal input[name="id"]').val(id);
-            $('#deleteModal').modal('show');
-        }
-
-
-        // Sự kiện đổi trạng thái booking trực tiếp trên bảng
-        $(document).on('change', '.booking-status-select', function() {
-            var id = $(this).data('id');
-            var newStatus = $(this).val();
-            $.ajax({
-                url: '/api/booking/update/' + id,
-                type: 'PUT',
-                data: JSON.stringify({ trang_thai: newStatus }),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    alert(response.message || 'Cập nhật trạng thái thành công!');
-                    fetchBookings();
-                },
-                error: function() {
-                    alert('Cập nhật trạng thái không thành công!');
-                }
-            });
-        });
-
-
-    } );
 </script>
 <!-- Modal Thêm Booking -->
 <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <form class="modal-content" id="addBookingForm">
       <div class="modal-header">
-        <h5 class="modal-title" id="addBookingModalLabel">Thêm booking</h5>
+        <h5 class="modal-title" id="addBookingModalLabel">Thêm booking mới</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Tên người dùng <span class="text-danger">*</span></label>
+              <input type="text" id="addNguoiDung" class="form-control" placeholder="Nhập tên người dùng" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tên tour <span class="text-danger">*</span></label>
+              <select id="addTenTour" class="form-control" required>
+                <option value="">-- Chọn tour --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày khởi hành <span class="text-danger">*</span></label>
+              <input type="date" id="addNgayKhoiHanh" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Số lượng người <span class="text-danger">*</span></label>
+              <input type="number" id="addSoLuongNguoi" class="form-control" min="1" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Giá tour (VNĐ) <span class="text-danger">*</span></label>
+              <input type="text" id="addGiaTour" class="form-control" placeholder="Nhập giá tour" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <input type="text" id="addTongTien" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phương thức thanh toán</label>
+              <input type="text" id="addPaymentMethod" class="form-control" value="Chuyển khoản" readonly />
+            </div>
         <div class="mb-3">
-          <label>User ID</label>
-          <input type="number" id="addUserId" class="form-control" required />
+              <label class="form-label">Trạng thái thanh toán</label>
+              <select id="addPaymentStatus" class="form-control">
+                <option value="chua_thanh_toan">Chưa thanh toán</option>
+                <option value="da_thanh_toan">Đã thanh toán</option>
+              </select>
         </div>
         <div class="mb-3">
-          <label>Tour Start ID</label>
-          <input type="number" id="addTourStartId" class="form-control" required />
+              <label class="form-label">Trạng thái booking</label>
+              <select id="addTrangThai" class="form-control">
+                <option value="cho_xac_nhan">Chờ xác nhận</option>
+                <option value="da_xac_nhan">Đã xác nhận</option>
+              </select>
+            </div>
+          </div>
         </div>
+        <div class="row">
+          <div class="col-12">
         <div class="mb-3">
-          <label>Số lượng người</label>
-          <input type="number" id="addSoLuongNguoi" class="form-control" required />
-        </div>
-        <div class="mb-3">
-          <label>Phương thức thanh toán</label>
-          <select id="addPaymentMethod" class="form-control" required>
-            <option value="Thanh toán khi nhận tour">Thanh toán khi nhận tour</option>
-            <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label>Ghi chú</label>
-          <textarea id="addGhiChu" class="form-control"></textarea>
+              <label class="form-label">Ghi chú</label>
+              <textarea id="addGhiChu" class="form-control" rows="3" placeholder="Nhập ghi chú nếu có..."></textarea>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="submit" class="btn btn-primary">Thêm booking</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Sửa Booking -->
+<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form class="modal-content" id="editBookingForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBookingModalLabel">Sửa thông tin booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBookingId" />
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Người dùng</label>
+              <input type="text" id="editNguoiDung" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tour</label>
+              <input type="text" id="editTour" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày khởi hành</label>
+              <input type="text" id="editNgayKhoiHanh" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày đặt</label>
+              <input type="text" id="editNgayDat" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Số lượng người <span class="text-danger">*</span></label>
+              <input type="number" id="editSoLuongNguoi" class="form-control" min="1" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Giá tour (VNĐ)</label>
+              <input type="text" id="editGiaTour" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <input type="text" id="editTongTien" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phương thức thanh toán <span class="text-danger">*</span></label>
+              <select id="editPaymentMethod" class="form-control" required>
+                <option value="Chuyển khoản">Chuyển khoản</option>
+              </select>
+        </div>
+        <div class="mb-3">
+              <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
+              <select id="editTrangThai" class="form-control" required>
+                <option value="cho_xac_nhan">Chờ xác nhận</option>
+                <option value="da_xac_nhan">Đã xác nhận</option>
+                <option value="dang_tien_hanh">Đang tiến hành</option>
+                <option value="hoan_tat">Hoàn tất</option>
+                <option value="huy">Đã hủy</option>
+          </select>
+        </div>
+        <div class="mb-3">
+              <label class="form-label">Trạng thái thanh toán</label>
+              <select id="editPaymentStatus" class="form-control">
+                <option value="chua_thanh_toan">Chưa thanh toán</option>
+                <option value="da_thanh_toan">Đã thanh toán</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">Ghi chú</label>
+              <textarea id="editGhiChu" class="form-control" rows="3" placeholder="Nhập ghi chú nếu có..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Cập nhật booking</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
       </div>
     </form>

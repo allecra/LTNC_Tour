@@ -1,19 +1,72 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quản lý đánh giá</title>
-  <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
-  <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
-  <link href="/public/admin/css/styles.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <style>
-    label { padding: 10px 0; }
-    table.dataTable tbody td:last-child { text-align: center; }
-    table.dataTable tbody td:last-child button { margin: 4px; }
-    .dataTables_wrapper td, .dataTables_wrapper thead th { font-size: 13px; }
-  </style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Quản lý đánh giá</title>
+    <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+    <link href="/public/admin/css/styles.css" rel="stylesheet" />
+    <style>
+        label {
+            padding: 10px 0;
+        }
+        table.dataTable tbody td:last-child {
+            text-align: center;
+        }
+        table.dataTable tbody td:last-child button{
+            margin: 4px;
+        }
+        .dataTables_wrapper td {
+            font-size: 13px;
+        }
+        .dataTables_wrapper thead th {
+            font-size: 13px;
+        }
+        .pagination .page-item .page-link {
+            color: #333;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+            min-width: 38px;
+            text-align: center;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        .pagination .page-item .page-link:hover {
+            background: #f0f0f0;
+            color: #0d6efd;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #aaa;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        .table td, .table th {
+            padding-top: 0.35rem;
+            padding-bottom: 0.35rem;
+        }
+        .btn-sm {
+            line-height: 1;
+        }
+        .table .btn-sm {
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .table .d-flex {
+          flex-direction: row !important;
+        }
+    </style>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -41,37 +94,42 @@
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
                     <a class="nav-link" href="/admin/index">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Trang chủ
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
-                    </a>
-                    <a class="nav-link" href="/admin/guides">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                        Quản lý người dùng
                     </a>
                     <a class="nav-link" href="/admin/tour">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                        <div class="sb-nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        Quản lý tour
                     </a>
                     <a class="nav-link" href="/admin/booking">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
+                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                        Quản lý booking
+                    </a>
+                    <a class="nav-link" href="/admin/guides">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
+                        Quản lý hướng dẫn viên
                     </a>
                     <a class="nav-link active" href="/admin/review">
-                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
+                        Quản lý đánh giá
+                    </a>
+                    <a class="nav-link" href="/admin/payment-method">
+                        <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                        Quản lý phương thức thanh toán
+                    </a>
+                    <a class="nav-link" href="/admin/transaction-history">
+                        <div class="sb-nav-link-icon"><i class="fas fa-history"></i></div>
+                        Lịch sử giao dịch
                     </a>
                     <a class="nav-link" href="/admin/voucher">
-                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>
+                        Quản lý voucher
                     </a>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
-                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
-                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
-                        </nav>
-                    </div>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -81,57 +139,150 @@
         </nav>
     </div>
     <div id="layoutSidenav_content">
-        <main class="container-fluid px-4">
-            <h1 class="mt-4">Quản lý đánh giá</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Quản lý đánh giá</li>
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Quản lý đánh giá</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="/admin/index">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Quản lý đánh giá</li>
                 </ol>
-            </nav>
-            <div class="card mb-4 rounded">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchReviewInput" />
+                
+                <!-- Thống kê -->
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng đánh giá</div>
+                                        <div class="h4" id="totalReviews">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-star fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <table class="table table-bordered table-hover">
-                                                 <thead class="table-dark">
-                             <tr>
-                                 <th>Người dùng</th>
-                                 <th>Tour</th>
-                                 <th>Số sao</th>
-                                 <th>Nội dung</th>
-                                 <th>Ngày gửi</th>
-                                 <th>Trạng thái</th>
-                                 <th>Hành động</th>
-                             </tr>
-                         </thead>
-                        <tbody id="reviewTableBody">
-                            <!-- Dữ liệu sẽ được render bằng JS -->
-                        </tbody>
-                    </table>
-                    <div id="reviewPagination"></div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đã duyệt</div>
+                                        <div class="h4" id="approvedReviews">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Chờ duyệt</div>
+                                        <div class="h4" id="pendingReviews">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-info text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đánh giá trung bình</div>
+                                        <div class="h4" id="averageRating">0.0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-star-half-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bảng dữ liệu -->
+                <div class="card mb-4 rounded">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Bảng Đánh Giá
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchReviewInput" placeholder="Tìm kiếm theo người dùng, tour, nội dung...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchReviews()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" type="button" onclick="clearSearch()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-hover" id="reviewTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Người dùng</th>
+                                    <th>Tour</th>
+                                    <th>Số sao</th>
+                                    <th>Nội dung</th>
+                                    <th>Ngày gửi</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-center">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewTableBody">
+                            </tbody>
+                        </table>
+                        <!-- Phân trang -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span>Hiển thị <span id="startRecord">0</span> - <span id="endRecord">0</span> của <span id="totalRecords">0</span> bản ghi</span>
+                            </div>
+                            <nav>
+                                <ul class="pagination mb-0" id="reviewPagination">
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">&copy; 2025 Travel Admin</div>
+                    <div class="text-muted">Copyright &copy; Your Website 2024</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
                 </div>
             </div>
         </footer>
     </div>
 </div>
+
 <script src="/public/admin/js/jquery.js"></script>
 <script src="/public/admin/js/boostrap-bundle.min.js"></script>
 <script src="/public/admin/js/scripts.js"></script>
 <script src="/public/admin/js/datatables.min.js"></script>
 <script src="/public/admin/js/all.min.js"></script>
 <script src="/public/admin/js/ckeditor.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Global variables
     let reviews = [];
@@ -158,6 +309,7 @@
                         filteredReviews[filteredIdx].status = 'Đã duyệt';
                     }
                     renderTable();
+                    updateStatistics();
                 } else {
                     alert('Duyệt thất bại: ' + response.message);
                 }
@@ -180,6 +332,7 @@
                         alert('Xóa thành công!');
                         reviews.splice(idx, 1);
                         renderTable();
+                        updateStatistics();
                     } else {
                         alert('Xóa thất bại: ' + response.message);
                     }
@@ -192,107 +345,238 @@
         }
     };
     
+
+    
+    window.approveAllPending = function() {
+        const pendingReviews = reviews.filter(r => 
+            !(r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt' || r.trangThai === 'Đã duyệt')
+        );
+        
+        if (pendingReviews.length === 0) {
+            alert('Không có đánh giá nào chờ duyệt!');
+            return;
+        }
+        
+        if (confirm(`Bạn có chắc chắn muốn duyệt tất cả ${pendingReviews.length} đánh giá chờ duyệt?`)) {
+            let successCount = 0;
+            let failCount = 0;
+            
+            pendingReviews.forEach((review, index) => {
+                $.ajax({
+                    url: '/api/review/approve/' + review.id,
+                    type: 'PUT',
+                    async: false,
+                    success: function(response) {
+                        if (response.message === 'Duyệt thành công') {
+                            successCount++;
+                            const idx = reviews.findIndex(r => r.id === review.id);
+                            if (idx !== -1) {
+                                reviews[idx].trangThai = 'Đã duyệt';
+                                reviews[idx].status = 'Đã duyệt';
+                            }
+                        } else {
+                            failCount++;
+                        }
+                    },
+                    error: function() {
+                        failCount++;
+                    }
+                });
+            });
+            
+            alert(`Duyệt hoàn tất!\nThành công: ${successCount}\nThất bại: ${failCount}`);
+            renderTable();
+            updateStatistics();
+        }
+    };
+    
+
+    
     function fetchReviews() {
+        console.log('Fetching reviews from API...');
         $.ajax({
             url: '/api/review/getAll',
             method: 'GET',
             success: function(response) {
+                console.log('Reviews fetched successfully:', response);
                 reviews = response.data || [];
                 filteredReviews = reviews;
+                console.log('Total reviews loaded:', reviews.length);
                 renderTable();
+                updateStatistics();
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Error fetching reviews:', error);
                 reviews = [];
                 filteredReviews = [];
                 renderTable();
+                updateStatistics();
             }
         });
+    }
+    
+    function updateStatistics() {
+        console.log('Updating statistics...');
+        const totalReviews = reviews.length;
+        const approvedReviews = reviews.filter(r => 
+            r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt' || r.trangThai === 'Đã duyệt'
+        ).length;
+        const pendingReviews = totalReviews - approvedReviews;
+        
+        // Tính điểm trung bình chỉ từ đánh giá đã duyệt
+        const approvedOnly = reviews.filter(r => 
+            r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt' || r.trangThai === 'Đã duyệt'
+        );
+        const totalRating = approvedOnly.reduce((sum, r) => sum + (r.rating || r.star || 0), 0);
+        const averageRating = approvedOnly.length > 0 ? (totalRating / approvedOnly.length).toFixed(1) : '0.0';
+        
+        console.log('Statistics calculated:', {
+            total: totalReviews,
+            approved: approvedReviews,
+            pending: pendingReviews,
+            average: averageRating
+        });
+        
+        const totalElement = document.getElementById('totalReviews');
+        const approvedElement = document.getElementById('approvedReviews');
+        const pendingElement = document.getElementById('pendingReviews');
+        const averageElement = document.getElementById('averageRating');
+        
+        if (totalElement) totalElement.textContent = totalReviews;
+        if (approvedElement) approvedElement.textContent = approvedReviews;
+        if (pendingElement) pendingElement.textContent = pendingReviews;
+        if (averageElement) averageElement.textContent = averageRating;
+        
+        console.log('Statistics updated in DOM');
     }
     
     function renderTable() {
         const tbody = document.getElementById('reviewTableBody');
         tbody.innerHTML = '';
+        
+        if (filteredReviews.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center">Không có dữ liệu đánh giá</td></tr>';
+            renderPagination();
+            updatePaginationInfo();
+            return;
+        }
+        
         const startIdx = (currentPage - 1) * pageSize;
         const endIdx = Math.min(startIdx + pageSize, filteredReviews.length);
+        
         for (let i = startIdx; i < endIdx; i++) {
             const r = filteredReviews[i];
+            const stt = i + 1;
             let stars = '<span style="color: #ffc107;">' + '★'.repeat(r.rating || r.star || 0) + '</span>';
             let statusBadge = '';
-            let actionBtns = `<button class="btn btn-danger btn-sm" onclick="deleteReview(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
+            let actionBtns = '';
+            
             if (r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt' || r.trangThai === 'Đã duyệt') {
-                statusBadge = '<span>Đã duyệt</span>';
+                statusBadge = '<span class="badge bg-success">Đã duyệt</span>';
+                actionBtns = `<button class="btn btn-danger btn-sm" onclick="deleteReview(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
             } else {
                 statusBadge = '<span class="badge bg-warning text-dark">Chờ duyệt</span>';
-                actionBtns = `<button class="btn btn-success btn-sm" onclick="approveReview(${i})">Duyệt</button> ` + actionBtns;
+                actionBtns = `<button class="btn btn-success btn-sm" onclick="approveReview(${i})" title="Duyệt"><i class="fas fa-check"></i></button> <button class="btn btn-danger btn-sm" onclick="deleteReview(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
             }
-                         tbody.innerHTML += `<tr>
-                 <td>${r.userName || r.user_name || r.user || ''}</td>
-                 <td>${r.tourName || r.tour_name || r.tour || ''}</td>
-                 <td>${stars}</td>
-                 <td>${r.comment || r.content || ''}</td>
-                 <td>${r.createdAt || r.created_at || r.date || ''}</td>
-                 <td>${statusBadge}</td>
-                 <td>${actionBtns}</td>
-             </tr>`;
+            
+            tbody.innerHTML += `<tr>
+                <td>${stt}</td>
+                <td>${r.userName || r.user_name || r.user || ''}</td>
+                <td>${r.tourName || r.tour_name || r.tour || ''}</td>
+                <td class="text-center">${stars}</td>
+                <td>${r.comment || r.content || ''}</td>
+                <td>${r.createdAt || r.created_at || r.date || ''}</td>
+                <td class="text-center">${statusBadge}</td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-1">
+                        ${actionBtns}
+                    </div>
+                </td>
+            </tr>`;
         }
         renderPagination();
+        updatePaginationInfo();
+    }
+    
+    function updatePaginationInfo() {
+        const startRecord = filteredReviews.length > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+        const endRecord = Math.min(currentPage * pageSize, filteredReviews.length);
+        const totalRecords = filteredReviews.length;
+        
+        document.getElementById('startRecord').textContent = startRecord;
+        document.getElementById('endRecord').textContent = endRecord;
+        document.getElementById('totalRecords').textContent = totalRecords;
     }
     
     function renderPagination() {
         let totalPages = Math.ceil(filteredReviews.length / pageSize);
-        let paginationHtml = '<nav><ul class="pagination justify-content-center">';
+        let paginationHtml = '';
+        
         if (totalPages === 0) {
-            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
-            paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
-            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
-            paginationHtml += '</ul></nav>';
-            document.getElementById('reviewPagination').innerHTML = paginationHtml;
-            return;
+            paginationHtml = '<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
+            paginationHtml += '<li class="page-item active"><a class="page-link" href="#">1</a></li>';
+            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>';
+        } else {
+            // Previous button
+            paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+            }
+            
+            // Next button
+            paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
         }
-        paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
-        for (let i = 1; i <= totalPages; i++) {
-            paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-        }
-        paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
-        paginationHtml += '</ul></nav>';
+        
         document.getElementById('reviewPagination').innerHTML = paginationHtml;
     }
     
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredReviews.length / pageSize);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderTable();
+        }
+    }
+    
+    function searchReviews() {
+        const keyword = $('#searchReviewInput').val().toLowerCase();
+        filteredReviews = reviews.filter(function(r) {
+            return (
+                (r.userName || r.user_name || '').toLowerCase().includes(keyword) ||
+                (r.tourName || r.tour_name || '').toLowerCase().includes(keyword) ||
+                (r.comment || '').toLowerCase().includes(keyword) ||
+                (r.createdAt || r.created_at || '').toLowerCase().includes(keyword)
+            );
+        });
+        currentPage = 1;
+        renderTable();
+    }
+    
+    function clearSearch() {
+        $('#searchReviewInput').val('');
+        filteredReviews = reviews;
+        currentPage = 1;
+        renderTable();
+    }
+    
     $(document).ready(function() {
+        console.log('Document ready, fetching reviews...');
         fetchReviews();
         
-        // Tìm kiếm realtime
-        $('#searchReviewInput').on('input', function() {
-            const keyword = $(this).val().toLowerCase();
-                         filteredReviews = reviews.filter(function(r) {
-                 return (
-                     (r.userName || r.user_name || '').toLowerCase().includes(keyword) ||
-                     (r.tourName || r.tour_name || '').toLowerCase().includes(keyword) ||
-                     (r.trangThai || r.trang_thai || '').toLowerCase().includes(keyword) ||
-                     (r.comment || '').toLowerCase().includes(keyword) ||
-                     (r.createdAt || r.created_at || '').toLowerCase().includes(keyword)
-                 );
-             });
-            currentPage = 1;
-            renderTable();
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('page-link')) {
-                e.preventDefault();
-                const page = e.target.getAttribute('data-page');
-                if (page) {
-                    currentPage = parseInt(page);
-                    renderTable();
-                } else if (e.target.id === 'prevPage' && currentPage > 1) {
-                    currentPage--;
-                    renderTable();
-                } else if (e.target.id === 'nextPage' && currentPage < Math.ceil(filteredReviews.length / pageSize)) {
-                    currentPage++;
-                    renderTable();
-                }
+        // Tìm kiếm khi nhấn Enter
+        $('#searchReviewInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                searchReviews();
             }
         });
+        
+        // Force update statistics after a short delay
+        setTimeout(function() {
+            console.log('Force updating statistics...');
+            updateStatistics();
+        }, 1000);
     });
 </script>
 </body>
