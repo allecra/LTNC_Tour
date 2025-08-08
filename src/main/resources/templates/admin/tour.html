@@ -166,6 +166,7 @@
         </main>
     </div>
 </div>
+
 <!-- Modal Sửa Tour -->
 <div class="modal fade" id="editModal" tabindex="-1">
   <div class="modal-dialog">
@@ -216,6 +217,14 @@
             <option value="tam_dung">Tạm dừng</option>
           </select>
         </div>
+        <div class="mb-3">
+          <label>Ngày khởi hành</label>
+          <input type="date" id="editNgayKhoiHanh" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label>Ngày kết thúc</label>
+          <input type="date" id="editNgayKetThuc" class="form-control" required />
+        </div>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Lưu</button>
@@ -224,6 +233,7 @@
     </form>
   </div>
 </div>
+
 <!-- Modal Thêm Tour -->
 <div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -243,7 +253,12 @@
         </div>
         <div class="mb-3">
           <label>Điểm đến</label>
-          <input type="text" id="addDiemDen" class="form-control" required />
+          <select id="addDiemDen" class="form-control" required>
+            <option value="1">Vịnh Hạ Long</option>
+            <option value="2">Phố cổ Hội An</option>
+            <option value="3">Paris</option>
+            <option value="4">Tokyo</option>
+          </select>
         </div>
         <div class="mb-3">
           <label>Loại tour</label>
@@ -284,6 +299,7 @@
     </form>
   </div>
 </div>
+
 <script src="/public/admin/js/jquery.js"></script>
 <script src="/public/admin/js/boostrap-bundle.min.js"></script>
 <script src="/public/admin/js/scripts.js"></script>
@@ -295,6 +311,7 @@
         let filteredTours = [];
         let currentPage = 1;
         const pageSize = 10;
+        
         function fetchTours(pageIndex = 0, pageSize = 10, search = '') {
             $.ajax({
                 url: '/api/tour/getAllTour?pageIndex=' + pageIndex + '&pageSize=' + pageSize + (search ? ('&ten_tour=' + encodeURIComponent(search)) : ''),
@@ -311,14 +328,17 @@
                 }
             });
         }
+        
         // Gọi fetchTours lần đầu
         fetchTours(0, 10, '');
+        
         function renderTable() {
             var tbody = $('#datatablesSimple tbody');
             tbody.empty();
             const data = filteredTours;
             const startIdx = (currentPage - 1) * pageSize;
             const endIdx = Math.min(startIdx + pageSize, data.length);
+            
             for (let i = startIdx; i < endIdx; i++) {
                 const tour = data[i];
                 var row = `<tr>
@@ -348,12 +368,10 @@
             renderPagination();
         }
 
-
-
-
         function renderPagination() {
             let totalPages = Math.ceil(filteredTours.length / pageSize);
             let paginationHtml = '<nav><ul class="pagination justify-content-center">';
+            
             if (totalPages === 0) {
                 paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
                 paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
@@ -361,6 +379,7 @@
                 $('#tourPagination').html(paginationHtml);
                 return;
             }
+            
             paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
             for (let i = 1; i <= totalPages; i++) {
                 paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
@@ -369,9 +388,6 @@
             paginationHtml += '</ul></nav>';
             $('#tourPagination').html(paginationHtml);
         }
-
-
-
 
         // Pagination click events
         $(document).on('click', '#tourPagination .page-link', function(e) {
@@ -388,9 +404,6 @@
                 renderTable();
             }
         });
-
-
-
 
         // Search filter
         $('#searchTourInput').on('input', function() {
@@ -411,6 +424,8 @@
             renderTable();
         });
     });
+
+
 
     // Map tên sang id cho Điểm đến và Loại tour
     const DIEM_DEN_MAP = {
@@ -433,17 +448,20 @@
                     alert(response.message || "Xóa thành công!");
                     location.reload();
                 },
-                error: function() {
-                    alert("Xóa không thành công!");
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert("Xóa không thành công! Vui lòng kiểm tra lại.");
                 }
             });
         }
     }
+
     function editTour(id) {
         $.ajax({
             url: '/api/tour/' + id,
             type: 'GET',
             success: function(result) {
+                console.log('Tour data received:', result.data);
                 $('#editId').val(result.data.id);
                 $('#editTenTour').val(result.data.ten_tour);
                 $('#editSoNgay').val(result.data.so_ngay);
@@ -453,24 +471,70 @@
                 $('#editDiemKhoiHanh').val(result.data.diem_khoi_hanh);
                 $('#editGiaTour').val(result.data.gia_tour);
                 $('#editTrangThai').val(result.data.trang_thai);
+                
+                // Set ngày khởi hành và ngày kết thúc
+                console.log('Ngay khoi hanh:', result.data.ngay_khoi_hanh);
+                console.log('Ngay ket thuc:', result.data.ngay_ket_thuc);
+                
+                // Xử lý ngày khởi hành
+                if (result.data.ngay_khoi_hanh) {
+                    var ngayKhoiHanh = result.data.ngay_khoi_hanh;
+                    console.log('Raw ngay khoi hanh:', ngayKhoiHanh);
+                    
+                    // Xử lý các format ngày khác nhau
+                    if (typeof ngayKhoiHanh === 'string') {
+                        if (ngayKhoiHanh.includes('T')) {
+                            // ISO date format: "2024-09-05T00:00:00.000+00:00"
+                            ngayKhoiHanh = ngayKhoiHanh.split('T')[0];
+                        } else if (ngayKhoiHanh.includes(' ')) {
+                            // Format: "2024-09-05 00:00:00.0"
+                            ngayKhoiHanh = ngayKhoiHanh.split(' ')[0];
+                        }
+                    }
+                    console.log('Processed ngay khoi hanh:', ngayKhoiHanh);
+                    $('#editNgayKhoiHanh').val(ngayKhoiHanh);
+                }
+                
+                // Xử lý ngày kết thúc
+                if (result.data.ngay_ket_thuc) {
+                    var ngayKetThuc = result.data.ngay_ket_thuc;
+                    console.log('Raw ngay ket thuc:', ngayKetThuc);
+                    
+                    // Xử lý các format ngày khác nhau
+                    if (typeof ngayKetThuc === 'string') {
+                        if (ngayKetThuc.includes('T')) {
+                            // ISO date format: "2024-09-07T00:00:00.000+00:00"
+                            ngayKetThuc = ngayKetThuc.split('T')[0];
+                        } else if (ngayKetThuc.includes(' ')) {
+                            // Format: "2024-09-07 00:00:00.0"
+                            ngayKetThuc = ngayKetThuc.split(' ')[0];
+                        }
+                    }
+                    console.log('Processed ngay ket thuc:', ngayKetThuc);
+                    $('#editNgayKetThuc').val(ngayKetThuc);
+                }
                 $('#editModal').modal('show');
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Error fetching tour data:', xhr.responseText);
                 alert('Không lấy được thông tin tour!');
             }
         });
     }
+
     $('#editTourForm').submit(function(e) {
         e.preventDefault();
         var id = $('#editId').val();
         var data = {
             ten_tour: $('#editTenTour').val(),
-            so_ngay: $('#editSoNgay').val(),
+            so_ngay: parseInt($('#editSoNgay').val()),
             diem_den: $('#editDiemDen').val(),
             loai_tour: $('#editLoaiTour').val(),
             diem_khoi_hanh: $('#editDiemKhoiHanh').val(),
-            gia_tour: $('#editGiaTour').val(),
-            trang_thai: $('#editTrangThai').val()
+            gia_tour: parseFloat($('#editGiaTour').val()),
+            trang_thai: $('#editTrangThai').val(),
+            ngay_khoi_hanh: $('#editNgayKhoiHanh').val(),
+            ngay_ket_thuc: $('#editNgayKetThuc').val()
         };
         $.ajax({
             url: '/api/tour/update/' + id,
@@ -482,49 +546,66 @@
                 $('#editModal').modal('hide');
                 location.reload();
             },
-            error: function() {
-                alert("Cập nhật không thành công!");
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+                alert("Cập nhật không thành công! Vui lòng kiểm tra lại thông tin.");
             }
         });
     });
+
     // Thêm mới tour
     $('#addTourForm').submit(function(e) {
         e.preventDefault();
+        
+        // Validate dữ liệu
+        var tenTour = $('#addTenTour').val();
+        var soNgay = $('#addSoNgay').val();
+        var diemDen = $('#addDiemDen').val();
+        var loaiTour = $('#addLoaiTour').val();
+        var diemKhoiHanh = $('#addDiemKhoiHanh').val();
+        var giaTour = $('#addGiaTour').val();
+        var trangThai = $('#addTrangThai').val();
+        var ngayKhoiHanh = $('#addNgayKhoiHanh').val();
+        var ngayKetThuc = $('#addNgayKetThuc').val();
+        
+        if (!tenTour || !soNgay || !diemDen || !loaiTour || !diemKhoiHanh || !giaTour || !trangThai) {
+            alert("Vui lòng điền đầy đủ thông tin bắt buộc!");
+            return;
+        }
+        
         var data = {
-            ten_tour: $('#addTenTour').val(),
-            so_ngay: $('#addSoNgay').val(),
-            diem_den: $('#addDiemDen').val(),
-            loai_tour: $('#addLoaiTour').val(),
-            diem_khoi_hanh: $('#addDiemKhoiHanh').val(),
-            gia_tour: $('#addGiaTour').val(),
-            trang_thai: $('#addTrangThai').val(),
-            ngay_khoi_hanh: $('#addNgayKhoiHanh').val(),
-            ngay_ket_thuc: $('#addNgayKetThuc').val()
+            ten_tour: tenTour,
+            so_ngay: parseInt(soNgay),
+            diem_den: diemDen,
+            loai_tour: loaiTour,
+            diem_khoi_hanh: diemKhoiHanh,
+            gia_tour: parseFloat(giaTour),
+            trang_thai: trangThai,
+            ngay_khoi_hanh: ngayKhoiHanh,
+            ngay_ket_thuc: ngayKetThuc
         };
+        
+        console.log('Data to send:', data);
+        
         $.ajax({
             url: '/api/tour/add',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             success: function(response) {
+                console.log('Success response:', response);
                 alert(response.message || "Thêm thành công!");
                 $('#addTourModal').modal('hide');
-                fetchTours(0, 10, '');
+                location.reload();
             },
-            error: function() {
-                alert("Thêm không thành công!");
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+                console.error('Status:', status);
+                console.error('Error:', error);
+                alert("Thêm không thành công! Vui lòng kiểm tra lại thông tin.");
             }
         });
     });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

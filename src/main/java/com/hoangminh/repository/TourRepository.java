@@ -47,6 +47,15 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 	@Query(value = "SELECT new com.hoangminh.dto.TourDTO(t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, t.destination.name, t.tourType.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price) FROM Tour t "
 			+ " WHERE t.id = :id")
 	TourDTO findTourById(Long id);
+	
+	@Query(value = "SELECT t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name as diem_den, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price, MIN(ts.ngay_khoi_hanh) as ngay_khoi_hanh, MIN(ts.ngay_ket_thuc) as ngay_ket_thuc " +
+            "FROM tour t " +
+            "LEFT JOIN destination d ON t.destination_id = d.id " +
+            "LEFT JOIN tour_type tt ON t.tour_type_id = tt.id " +
+            "LEFT JOIN tour_start ts ON t.id = ts.tour_id " +
+            "WHERE t.id = :id " +
+            "GROUP BY t.id, t.ten_tour, t.gioi_thieu_tour, t.so_ngay, t.noi_dung_tour, d.name, tt.ten_loai, t.anh_dai_dien, t.diem_khoi_hanh, t.trang_thai, t.gia_tour, t.sale_price", nativeQuery = true)
+    List<Object[]> findTourByIdWithStartDate(@Param("id") Long id);
 
 	Tour findFirstByOrderByIdDesc();
 

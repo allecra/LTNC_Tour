@@ -97,18 +97,17 @@
                         </div>
                     </div>
                     <table class="table table-bordered table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Người dùng</th>
-                                <th>Tour</th>
-                                <th>Hướng dẫn viên</th>
-                                <th>Số sao</th>
-                                <th>Nội dung</th>
-                                <th>Ngày gửi</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
+                                                 <thead class="table-dark">
+                             <tr>
+                                 <th>Người dùng</th>
+                                 <th>Tour</th>
+                                 <th>Số sao</th>
+                                 <th>Nội dung</th>
+                                 <th>Ngày gửi</th>
+                                 <th>Trạng thái</th>
+                                 <th>Hành động</th>
+                             </tr>
+                         </thead>
                         <tbody id="reviewTableBody">
                             <!-- Dữ liệu sẽ được render bằng JS -->
                         </tbody>
@@ -134,106 +133,150 @@
 <script src="/public/admin/js/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    $(document).ready(function() {
-        let reviews = [];
-        let filteredReviews = [];
-        let currentPage = 1;
-        const pageSize = 10;
-        function fetchReviews() {
+    // Global variables
+    let reviews = [];
+    let filteredReviews = [];
+    let currentPage = 1;
+    const pageSize = 10;
+    
+    // Global functions để có thể truy cập từ onclick
+    window.approveReview = function(idx) {
+        const review = reviews[idx];
+        $.ajax({
+            url: '/api/review/approve/' + review.id,
+            type: 'PUT',
+            success: function(response) {
+                if (response.message === 'Duyệt thành công') {
+                    alert('Duyệt thành công!');
+                    // Cập nhật cả trong mảng reviews và filteredReviews
+                    reviews[idx].trangThai = 'Đã duyệt';
+                    reviews[idx].status = 'Đã duyệt';
+                    // Tìm và cập nhật trong filteredReviews
+                    const filteredIdx = filteredReviews.findIndex(r => r.id === review.id);
+                    if (filteredIdx !== -1) {
+                        filteredReviews[filteredIdx].trangThai = 'Đã duyệt';
+                        filteredReviews[filteredIdx].status = 'Đã duyệt';
+                    }
+                    renderTable();
+                } else {
+                    alert('Duyệt thất bại: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error approving review:', error);
+                alert('Duyệt thất bại!');
+            }
+        });
+    };
+    
+    window.deleteReview = function(idx) {
+        if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+            const review = reviews[idx];
             $.ajax({
-                url: '/api/review/getAll',
-                method: 'GET',
+                url: '/api/review/delete/' + review.id,
+                type: 'DELETE',
                 success: function(response) {
-                    reviews = response.data || [];
-                    filteredReviews = reviews;
-                    renderTable();
+                    if (response.message === 'Xóa thành công') {
+                        alert('Xóa thành công!');
+                        reviews.splice(idx, 1);
+                        renderTable();
+                    } else {
+                        alert('Xóa thất bại: ' + response.message);
+                    }
                 },
-                error: function() {
-                    reviews = [];
-                    filteredReviews = [];
-                    renderTable();
+                error: function(xhr, status, error) {
+                    console.error('Error deleting review:', error);
+                    alert('Xóa thất bại!');
                 }
             });
         }
+    };
+    
+    function fetchReviews() {
+        $.ajax({
+            url: '/api/review/getAll',
+            method: 'GET',
+            success: function(response) {
+                reviews = response.data || [];
+                filteredReviews = reviews;
+                renderTable();
+            },
+            error: function() {
+                reviews = [];
+                filteredReviews = [];
+                renderTable();
+            }
+        });
+    }
+    
+    function renderTable() {
+        const tbody = document.getElementById('reviewTableBody');
+        tbody.innerHTML = '';
+        const startIdx = (currentPage - 1) * pageSize;
+        const endIdx = Math.min(startIdx + pageSize, filteredReviews.length);
+        for (let i = startIdx; i < endIdx; i++) {
+            const r = filteredReviews[i];
+            let stars = '<span style="color: #ffc107;">' + '★'.repeat(r.rating || r.star || 0) + '</span>';
+            let statusBadge = '';
+            let actionBtns = `<button class="btn btn-danger btn-sm" onclick="deleteReview(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
+            if (r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt' || r.trangThai === 'Đã duyệt') {
+                statusBadge = '<span>Đã duyệt</span>';
+            } else {
+                statusBadge = '<span class="badge bg-warning text-dark">Chờ duyệt</span>';
+                actionBtns = `<button class="btn btn-success btn-sm" onclick="approveReview(${i})">Duyệt</button> ` + actionBtns;
+            }
+                         tbody.innerHTML += `<tr>
+                 <td>${r.userName || r.user_name || r.user || ''}</td>
+                 <td>${r.tourName || r.tour_name || r.tour || ''}</td>
+                 <td>${stars}</td>
+                 <td>${r.comment || r.content || ''}</td>
+                 <td>${r.createdAt || r.created_at || r.date || ''}</td>
+                 <td>${statusBadge}</td>
+                 <td>${actionBtns}</td>
+             </tr>`;
+        }
+        renderPagination();
+    }
+    
+    function renderPagination() {
+        let totalPages = Math.ceil(filteredReviews.length / pageSize);
+        let paginationHtml = '<nav><ul class="pagination justify-content-center">';
+        if (totalPages === 0) {
+            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
+            paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
+            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
+            paginationHtml += '</ul></nav>';
+            document.getElementById('reviewPagination').innerHTML = paginationHtml;
+            return;
+        }
+        paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
+        paginationHtml += '</ul></nav>';
+        document.getElementById('reviewPagination').innerHTML = paginationHtml;
+    }
+    
+    $(document).ready(function() {
         fetchReviews();
+        
         // Tìm kiếm realtime
         $('#searchReviewInput').on('input', function() {
             const keyword = $(this).val().toLowerCase();
-            filteredReviews = reviews.filter(function(r) {
-                return (
-                    (r.user_name || '').toLowerCase().includes(keyword) ||
-                    (r.tour_name || '').toLowerCase().includes(keyword) ||
-                    (r.guide_name || '').toLowerCase().includes(keyword) ||
-                    (r.trang_thai || '').toLowerCase().includes(keyword) ||
-                    (r.comment || '').toLowerCase().includes(keyword) ||
-                    (r.created_at || '').toLowerCase().includes(keyword)
-                );
-            });
+                         filteredReviews = reviews.filter(function(r) {
+                 return (
+                     (r.userName || r.user_name || '').toLowerCase().includes(keyword) ||
+                     (r.tourName || r.tour_name || '').toLowerCase().includes(keyword) ||
+                     (r.trangThai || r.trang_thai || '').toLowerCase().includes(keyword) ||
+                     (r.comment || '').toLowerCase().includes(keyword) ||
+                     (r.createdAt || r.created_at || '').toLowerCase().includes(keyword)
+                 );
+             });
             currentPage = 1;
             renderTable();
         });
-        function renderTable() {
-            const tbody = document.getElementById('reviewTableBody');
-            tbody.innerHTML = '';
-            const startIdx = (currentPage - 1) * pageSize;
-            const endIdx = Math.min(startIdx + pageSize, filteredReviews.length);
-            for (let i = startIdx; i < endIdx; i++) {
-                const r = filteredReviews[i];
-                let stars = '<span style="color: #ffc107;">' + '★'.repeat(r.rating || r.star || 0) + '</span>';
-                let statusBadge = '';
-                let actionBtns = `<button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">Xóa</button>`;
-                if (r.status === 'Đã duyệt' || r.trang_thai === 'Đã duyệt') {
-                    statusBadge = '<span class="badge bg-success">Đã duyệt</span>';
-                } else {
-                    statusBadge = '<span class="badge bg-warning text-dark">Chờ duyệt</span>';
-                    actionBtns = `<button class="btn btn-success btn-sm" onclick="approveReview(${i})">Duyệt</button> ` + actionBtns;
-                }
-                tbody.innerHTML += `<tr>
-                    <td>${r.user_name || r.user || ''}</td>
-                    <td>${r.tour_name || r.tour || ''}</td>
-                    <td>${r.guide_name || r.guide || ''}</td>
-                    <td>${stars}</td>
-                    <td>${r.comment || r.content || ''}</td>
-                    <td>${r.created_at || r.date || ''}</td>
-                    <td>${statusBadge}</td>
-                    <td>${actionBtns}</td>
-                </tr>`;
-            }
-            renderPagination();
-        }
-        function approveReview(idx) {
-            // Gọi API duyệt review ở đây, ví dụ:
-            // $.ajax({ url: '/api/review/approve/' + reviews[idx].id, type: 'PUT', ... })
-            reviews[idx].status = 'Đã duyệt';
-            renderTable();
-        }
-        function deleteReview(idx) {
-            if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
-                // Gọi API xóa review ở đây, ví dụ:
-                // $.ajax({ url: '/api/review/delete/' + reviews[idx].id, type: 'DELETE', ... })
-                reviews.splice(idx, 1);
-                renderTable();
-            }
-        }
-        function renderPagination() {
-            let totalPages = Math.ceil(filteredReviews.length / pageSize);
-            let paginationHtml = '<nav><ul class="pagination justify-content-center">';
-            if (totalPages === 0) {
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>';
-                paginationHtml += '<li class="page-item active"><a class="page-link" href="#">0</a></li>';
-                paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#" id="nextPage">Next</a></li>';
-                paginationHtml += '</ul></nav>';
-                document.getElementById('reviewPagination').innerHTML = paginationHtml;
-                return;
-            }
-            paginationHtml += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}"><a class="page-link" href="#" id="prevPage">Previous</a></li>`;
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-            }
-            paginationHtml += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" id="nextPage">Next</a></li>`;
-            paginationHtml += '</ul></nav>';
-            document.getElementById('reviewPagination').innerHTML = paginationHtml;
-        }
+        
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('page-link')) {
                 e.preventDefault();

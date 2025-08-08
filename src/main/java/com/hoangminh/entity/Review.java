@@ -36,4 +36,9 @@ public class Review {
 
     @Column(name = "created_at")
     private Date createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 }
