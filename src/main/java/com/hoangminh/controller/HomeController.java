@@ -440,7 +440,8 @@ public class HomeController {
 		if (tong_tien == null)
 			tong_tien = 0L;
 
-		if (SessionUtilities.getUsername() == null) {
+		// Kiểm tra cả username và user object
+		if (SessionUtilities.getUsername() == null || SessionUtilities.getUser() == null) {
 			ModelAndView loginView = new ModelAndView("redirect:/login");
 			return loginView;
 		}
@@ -494,7 +495,7 @@ public class HomeController {
 	@GetMapping("/user/tour")
 	ModelAndView userTour() {
 
-		if (!this.userService.checkLogin()) {
+		if (!this.userService.checkLogin() || SessionUtilities.getUser() == null) {
 			return new ModelAndView("redirect:/login");
 		}
 
@@ -519,7 +520,7 @@ public class HomeController {
 	@GetMapping("/user/booking/{id}")
 	ModelAndView userBookingDetai(@PathVariable Long id) {
 
-		if (!this.userService.checkLogin()) {
+		if (!this.userService.checkLogin() || SessionUtilities.getUser() == null) {
 			return new ModelAndView("redirect:/login");
 		}
 
@@ -671,7 +672,7 @@ public class HomeController {
 	ModelAndView voucher() {
 		ModelAndView mdv = new ModelAndView("user/voucher");
 		
-		if (!this.userService.checkLogin()) {
+		if (!this.userService.checkLogin() || SessionUtilities.getUser() == null) {
 			ModelAndView loginView = new ModelAndView("redirect:/login");
 			return loginView;
 		}

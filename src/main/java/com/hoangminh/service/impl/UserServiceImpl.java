@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean checkLogin() {
-		return SessionUtilities.getUsername() != null;
+		return SessionUtilities.getUsername() != null && SessionUtilities.getUser() != null;
 	}
 
 	@Override

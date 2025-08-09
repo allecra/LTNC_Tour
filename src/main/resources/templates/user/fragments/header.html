@@ -67,7 +67,7 @@
                                     <!-- Đã đăng nhập -->
                                     <div th:if="${user != null}">
                                         <div class="dropdown-header" style="color: #1e3a8a; font-weight: 600; padding: 8px 0;">
-                                            <strong>Xin chào, <span th:text="${user.ho_ten}">User</span></strong>
+                                            <strong>Xin chào, <span th:text="${user != null ? user.ho_ten : 'User'}">User</span></strong>
                                         </div>
                                         <div class="dropdown-divider" style="border-color: #e3f2fd;"></div>
                                         <a class="dropdown-item" href="/account" style="padding: 10px 15px; color: #1e3a8a; text-decoration: none; display: block; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; margin-bottom: 3px; border: 1px solid transparent;">👤 Thông tin tài khoản</a>

@@ -286,15 +286,14 @@
             
             <!-- Voucher Grid với giao diện đẹp -->
             <div class="row">
-                <!-- Voucher 1: HE2024 -->
-                <div class="col-lg-4 col-md-6">
+                <div th:each="voucher : ${availableVouchers}" class="col-lg-4 col-md-6">
                     <div class="voucher-card">
                         <div class="voucher-header">
                             <div class="voucher-icon">
                                 <i class="fa fa-plane"></i>
                             </div>
-                            <div class="voucher-title">Tiết kiệm 100K VNĐ</div>
-                            <div class="voucher-badge">Tour trong nước</div>
+                            <div class="voucher-title" th:text="'Tiết kiệm ' + ${#numbers.formatInteger(voucher.discount,3,'POINT')} + ' VNĐ'">Tiết kiệm</div>
+                            <div class="voucher-badge" th:text="${voucher.dieuKien.contains('trong nước') ? 'Tour trong nước' : 'Tour nước ngoài'}">Tour</div>
                         </div>
                         <div class="voucher-body">
                             <div class="voucher-info">
@@ -303,57 +302,11 @@
                             </div>
                             <div class="voucher-info">
                                 <div class="voucher-info-label">Thời gian khuyến mại:</div>
-                                <div class="voucher-info-value">Hiện tại - 30 Tháng 9 2024</div>
+                                <div class="voucher-info-value" th:text="'Hiện tại - ' + ${voucher.expiry_date}">Thời hạn</div>
                             </div>
                             <div class="voucher-info">
-                                <div class="voucher-info-label">Giao dịch tối thiểu:</div>
-                                <div class="voucher-info-value">5.000.000 VND</div>
-                            </div>
-                            <div class="voucher-info">
-                                <div class="voucher-info-label">Phương thức thanh toán:</div>
-                                <div class="voucher-info-value">Tất cả phương thức</div>
-                            </div>
-                        </div>
-                        <div class="voucher-footer">
-                            <div class="voucher-code">
-                                <div class="voucher-code-text">HE2024</div>
-                                <div class="voucher-status">Còn hạn sử dụng</div>
-                            </div>
-                            <div class="voucher-actions">
-                                <button class="btn-details">
-                                    <i class="fa fa-info-circle mr-1"></i>
-                                    Chi tiết
-                                </button>
-                                <button class="btn-copy">
-                                    <i class="fa fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Voucher 2: SUMMER10 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="voucher-card">
-                        <div class="voucher-header">
-                            <div class="voucher-icon">
-                                <i class="fa fa-plane"></i>
-                            </div>
-                            <div class="voucher-title">Tiết kiệm 500K VNĐ</div>
-                            <div class="voucher-badge">Tour nước ngoài</div>
-                        </div>
-                        <div class="voucher-body">
-                            <div class="voucher-info">
-                                <div class="voucher-info-label">Kiểu người dùng:</div>
-                                <div class="voucher-info-value">Người dùng hiện tại</div>
-                            </div>
-                            <div class="voucher-info">
-                                <div class="voucher-info-label">Thời gian khuyến mại:</div>
-                                <div class="voucher-info-value">Hiện tại - 31 Tháng 8 2024</div>
-                            </div>
-                            <div class="voucher-info">
-                                <div class="voucher-info-label">Giao dịch tối thiểu:</div>
-                                <div class="voucher-info-value">Không có giới hạn</div>
+                                <div class="voucher-info-label">Điều kiện áp dụng:</div>
+                                <div class="voucher-info-value" th:text="${voucher.dieuKien}">Điều kiện</div>
                             </div>
                             <div class="voucher-info">
                                 <div class="voucher-info-label">Phương thức thanh toán:</div>
@@ -362,7 +315,7 @@
                         </div>
                         <div class="voucher-footer">
                             <div class="voucher-code">
-                                <div class="voucher-code-text">SUMMER10</div>
+                                <div class="voucher-code-text" th:text="${voucher.code}">Mã voucher</div>
                                 <div class="voucher-status">Còn hạn sử dụng</div>
                             </div>
                             <div class="voucher-actions">

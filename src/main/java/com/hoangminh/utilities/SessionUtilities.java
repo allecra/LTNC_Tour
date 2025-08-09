@@ -37,4 +37,12 @@ public class SessionUtilities {
 		return (UserDTO)getSession().getAttribute("admin");
 	}
 
+	public static boolean isUserLoggedIn() {
+		return getUsername() != null && getUser() != null;
+	}
+
+	public static boolean isAdminLoggedIn() {
+		return getAdmin() != null;
+	}
+
 }
