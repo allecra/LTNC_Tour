@@ -50,6 +50,42 @@
         .table .d-flex {
           flex-direction: row !important;
         }
+        
+        /* CSS cho preview ảnh */
+        .image-preview {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .image-preview img {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        /* Styling cho ảnh hiện tại */
+        #editImagePreview .border {
+            border-color: #dee2e6 !important;
+        }
+        
+        /* Styling cho ảnh mới */
+        #editNewImagePreview .border {
+            border-color: #28a745 !important;
+            border-style: solid !important;
+        }
+        
+        /* Styling cho nút xóa ảnh */
+        #editRemoveNewImage .btn {
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
@@ -328,12 +364,12 @@
                             <input type="number" id="addGiaTour" class="form-control" required />
         </div>
         <div class="mb-3">
-                            <label class="form-label">Giá khuyến mãi</label>
-                            <input type="number" id="addSalePrice" class="form-control" placeholder="Nhập giá khuyến mãi" step="0.01" />
-        </div>
-        <div class="mb-3">
                             <label class="form-label">Ảnh đại diện</label>
-                            <input type="text" id="addAnhDaiDien" class="form-control" placeholder="Nhập tên file ảnh" />
+                            <input type="file" id="addAnhDaiDien" class="form-control" accept="image/*" />
+                            <div class="form-text">Chọn file ảnh từ máy tính (JPG, PNG, GIF)</div>
+                            <div id="addImagePreview" class="mt-2 image-preview" style="display: none;">
+                                <img id="addPreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 150px;" />
+                            </div>
         </div>
                     </div>
                     <div class="col-md-6">
@@ -411,13 +447,13 @@
                             <label class="form-label">Giá tour *</label>
                             <input type="number" id="editGiaTour" class="form-control" required />
         </div>
-        <div class="mb-3">
-                            <label class="form-label">Giá khuyến mãi</label>
-                            <input type="number" id="editSalePrice" class="form-control" placeholder="Nhập giá khuyến mãi" step="0.01" />
-        </div>
-        <div class="mb-3">
+                <div class="mb-3">
                             <label class="form-label">Ảnh đại diện</label>
-                            <input type="text" id="editAnhDaiDien" class="form-control" placeholder="Nhập tên file ảnh" />
+                            <input type="file" id="editAnhDaiDien" class="form-control" accept="image/*" />
+                            <div class="form-text">Chọn file ảnh từ máy tính (JPG, PNG, GIF)</div>
+                            <div id="editImagePreview" class="mt-2 image-preview">
+                                <img id="editPreviewImg" src="" alt="Current Image" style="max-width: 200px; max-height: 150px;" />
+                            </div>
         </div>
                     </div>
                     <div class="col-md-6">
@@ -748,46 +784,69 @@
         });
     }
 
+    // Xử lý preview ảnh khi thêm tour
+    $('#addAnhDaiDien').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#addPreviewImg').attr('src', e.target.result);
+                $('#addImagePreview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#addImagePreview').hide();
+        }
+    });
+
+    // Xử lý preview ảnh khi sửa tour - ĐÃ ĐƯỢC THAY THẾ BẰNG EVENT LISTENER MỚI
+
     // Thêm tour mới
     $('#addTourForm').submit(function(e) {
         e.preventDefault();
         
-        const formData = {
-            ten_tour: $('#addTenTour').val(),
-            so_ngay: parseInt($('#addSoNgay').val()),
-            diem_den: $('#addDiemDen').val(),
-            loai_tour: $('#addLoaiTour').val(),
-            diem_khoi_hanh: $('#addDiemKhoiHanh').val(),
-            gia_tour: parseFloat($('#addGiaTour').val()),
-            trang_thai: $('#addTrangThai').val(),
-            ngay_khoi_hanh: $('#addNgayKhoiHanh').val(),
-            ngay_ket_thuc: $('#addNgayKetThuc').val(),
-            gioi_thieu_tour: $('#addGioiThieuTour').val(),
-            noi_dung_tour: $('#addNoiDungTour').val(),
-            sale_price: $('#addSalePrice').val() ? parseFloat($('#addSalePrice').val()) : null,
-            anh_dai_dien: $('#addAnhDaiDien').val()
-        };
+        const imageFile = $('#addAnhDaiDien')[0].files[0];
+        if (!imageFile) {
+            alert('Vui lòng chọn ảnh đại diện cho tour!');
+            return;
+        }
         
-        console.log('Adding tour:', formData);
+        const formData = new FormData();
+        formData.append('ten_tour', $('#addTenTour').val());
+        formData.append('so_ngay', $('#addSoNgay').val());
+        formData.append('diem_den', $('#addDiemDen').val());
+        formData.append('loai_tour', $('#addLoaiTour').val());
+        formData.append('diem_khoi_hanh', $('#addDiemKhoiHanh').val());
+        formData.append('gia_tour', $('#addGiaTour').val());
+        formData.append('trang_thai', $('#addTrangThai').val());
+        formData.append('ngay_khoi_hanh', $('#addNgayKhoiHanh').val());
+        formData.append('ngay_ket_thuc', $('#addNgayKetThuc').val());
+        formData.append('gioi_thieu_tour', $('#addGioiThieuTour').val());
+        formData.append('noi_dung_tour', $('#addNoiDungTour').val());
+        formData.append('anh_dai_dien', imageFile);
         
-            $.ajax({
+        console.log('Adding tour with image:', imageFile.name);
+        
+        $.ajax({
             url: '/api/tour/add',
             method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-                success: function(response) {
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
                 console.log('Add tour response:', response);
                 alert(response.message || 'Thêm tour thành công!');
                 $('#addTourModal').modal('hide');
                 $('#addTourForm')[0].reset();
+                $('#addImagePreview').hide();
                 loadTourStatistics();
                 loadTours();
-                },
-                error: function(xhr, status, error) {
+            },
+            error: function(xhr, status, error) {
                 console.error('Error adding tour:', error);
                 alert('Thêm tour thất bại! Vui lòng kiểm tra lại thông tin.');
-                }
-            });
+            }
+        });
     });
 
     // Sửa tour
@@ -832,8 +891,21 @@
                     
                     $('#editGioiThieuTour').val(tour.gioi_thieu_tour || '');
                     $('#editNoiDungTour').val(tour.noi_dung_tour || '');
-                    $('#editSalePrice').val(tour.sale_price || '');
-                    $('#editAnhDaiDien').val(tour.anh_dai_dien || '');
+
+                    // Hiển thị ảnh hiện tại
+                    if (tour.anh_dai_dien) {
+                        console.log('Tour has image:', tour.anh_dai_dien);
+                        const imageUrl = '/public/img/' + tour.anh_dai_dien;
+                        console.log('Setting image URL:', imageUrl);
+                        $('#editPreviewImg').attr('src', imageUrl);
+                        $('#editImagePreview').show();
+                    } else {
+                        console.log('Tour has no image');
+                        $('#editImagePreview').hide();
+                    }
+                    
+                    // Reset ảnh mới
+                    $('#editAnhDaiDien').val('');
                     
                     $('#editTourModal').modal('show');
                 }
@@ -845,39 +917,76 @@
         });
     }
 
+    // Event listener cho việc chọn ảnh mới trong edit form
+    $('#editAnhDaiDien').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#editPreviewImg').attr('src', e.target.result);
+                $('#editImagePreview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#editImagePreview').hide();
+        }
+    });
+
     $('#editTourForm').submit(function(e) {
         e.preventDefault();
         
         const id = $('#editId').val();
-        const formData = {
-            ten_tour: $('#editTenTour').val(),
-            so_ngay: parseInt($('#editSoNgay').val()),
-            diem_den: $('#editDiemDen').val(),
-            loai_tour: $('#editLoaiTour').val(),
-            diem_khoi_hanh: $('#editDiemKhoiHanh').val(),
-            gia_tour: parseFloat($('#editGiaTour').val()),
-            trang_thai: $('#editTrangThai').val(),
-            ngay_khoi_hanh: $('#editNgayKhoiHanh').val(),
-            ngay_ket_thuc: $('#editNgayKetThuc').val(),
-            gioi_thieu_tour: $('#editGioiThieuTour').val(),
-            noi_dung_tour: $('#editNoiDungTour').val(),
-            sale_price: $('#editSalePrice').val() ? parseFloat($('#editSalePrice').val()) : null,
-            anh_dai_dien: $('#editAnhDaiDien').val()
-        };
+        const imageFile = $('#editAnhDaiDien')[0].files[0];
         
-        console.log('Updating tour:', formData);
+        const formData = new FormData();
+        formData.append('ten_tour', $('#editTenTour').val());
+        formData.append('so_ngay', $('#editSoNgay').val());
+        formData.append('diem_den', $('#editDiemDen').val());
+        formData.append('loai_tour', $('#editLoaiTour').val());
+        formData.append('diem_khoi_hanh', $('#editDiemKhoiHanh').val());
+        formData.append('gia_tour', $('#editGiaTour').val());
+        formData.append('trang_thai', $('#editTrangThai').val());
+        formData.append('ngay_khoi_hanh', $('#editNgayKhoiHanh').val());
+        formData.append('ngay_ket_thuc', $('#editNgayKetThuc').val());
+        formData.append('gioi_thieu_tour', $('#editGioiThieuTour').val());
+        formData.append('noi_dung_tour', $('#editNoiDungTour').val());
+        
+        // Xử lý ảnh: nếu có file ảnh mới thì upload, nếu không thì giữ ảnh cũ
+        if (imageFile) {
+            formData.append('anh_dai_dien', imageFile);
+            console.log('Updating tour with NEW image:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type);
+        } else {
+            console.log('Updating tour - keeping OLD image');
+        }
+        
+        // Log formData để debug
+        console.log('FormData contents:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ':', value);
+        }
         
         $.ajax({
             url: `/api/tour/update/${id}`,
             method: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
                 console.log('Update tour response:', response);
                 alert(response.message || 'Cập nhật tour thành công!');
                 $('#editTourModal').modal('hide');
+                
+                // Reset form
+                $('#editTourForm')[0].reset();
+                
+                // Refresh lại dữ liệu tour để hiển thị ảnh mới
                 loadTourStatistics();
                 loadTours();
+                
+                // Đóng modal và refresh lại trang nếu cần
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             },
             error: function(xhr, status, error) {
                 console.error('Error updating tour:', error);
@@ -885,6 +994,10 @@
             }
         });
     });
+
+
+    
+
 
     // Xóa tour
     function deleteTour(id) {

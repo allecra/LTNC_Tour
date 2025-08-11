@@ -146,7 +146,7 @@ public class TourServiceImpl implements TourService {
 			tour.setDiem_khoi_hanh(tourDTO.getDiem_khoi_hanh());
 			tour.setSo_ngay(tourDTO.getSo_ngay());
 			tour.setTrang_thai(tourDTO.getTrang_thai());
-			tour.setSale_price(tourDTO.getSale_price());
+			// tour.setSale_price(tourDTO.getSale_price()); // Đã xóa trường này
 
 			// Lưu tour trước
 			Tour savedTour = this.tourRepository.save(tour);
@@ -243,7 +243,7 @@ public class TourServiceImpl implements TourService {
 				updatedTour.setDiem_khoi_hanh(newTour.getDiem_khoi_hanh());
 				updatedTour.setSo_ngay(newTour.getSo_ngay());
 				updatedTour.setTrang_thai(newTour.getTrang_thai());
-				updatedTour.setSale_price(newTour.getSale_price());
+				// updatedTour.setSale_price(newTour.getSale_price()); // Đã xóa trường này
 
 				// Lưu tour trước
 				Tour savedTour = this.tourRepository.save(updatedTour);

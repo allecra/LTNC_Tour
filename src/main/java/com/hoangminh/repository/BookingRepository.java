@@ -49,12 +49,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "CONCAT('GD', LPAD(b.id, 5, '0'), ' - ', u.ho_ten) AS ma_noi_dung_chuyen_khoan, " +
             "u.ho_ten AS khach_hang, " +
             "b.tong_tien AS so_tien, " +
-            "CONCAT(p.so_tai_khoan, ' - ', p.ten_ngan_hang) AS tai_khoan_nhan_tien, " +
             "b.booking_at AS thoi_gian, " +
-            "b.payment_status AS trang_thai " +
+            "CASE " +
+            "    WHEN b.trang_thai = 'huy' THEN 'Đã hủy' " +
+            "    WHEN b.payment_status = 'da_thanh_toan' THEN 'Đã thanh toán' " +
+            "    WHEN b.payment_status = 'chua_thanh_toan' THEN 'Chưa thanh toán' " +
+            "    ELSE b.payment_status " +
+            "END AS trang_thai " +
             "FROM booking b " +
             "JOIN user u ON b.user_id = u.id " +
-            "LEFT JOIN payment p ON b.id = p.booking_id " +
             "ORDER BY b.booking_at DESC", nativeQuery = true)
     List<Object[]> findTransactionTable();
     
@@ -64,14 +67,23 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "CONCAT('GD', LPAD(b.id, 5, '0'), ' - ', u.ho_ten) AS ma_noi_dung_chuyen_khoan, " +
             "u.ho_ten AS khach_hang, " +
             "b.tong_tien AS so_tien, " +
-            "CONCAT(p.so_tai_khoan, ' - ', p.ten_ngan_hang) AS tai_khoan_nhan_tien, " +
             "b.booking_at AS thoi_gian, " +
-            "b.payment_status AS trang_thai " +
+            "CASE " +
+            "    WHEN b.trang_thai = 'huy' THEN 'Đã hủy' " +
+            "    WHEN b.payment_status = 'da_thanh_toan' THEN 'Đã thanh toán' " +
+            "    WHEN b.payment_status = 'chua_thanh_toan' THEN 'Chưa thanh toán' " +
+            "    ELSE b.payment_status " +
+            "END AS trang_thai " +
             "FROM booking b " +
             "JOIN user u ON b.user_id = u.id " +
-            "LEFT JOIN payment p ON b.id = p.booking_id " +
             "WHERE (:khachHang IS NULL OR u.ho_ten LIKE %:khachHang%) " +
-            "AND (:trangThai IS NULL OR b.payment_status = :trangThai) " +
+            "AND (:trangThai IS NULL OR " +
+            "    CASE " +
+            "        WHEN b.trang_thai = 'huy' THEN 'Đã hủy' " +
+            "        WHEN b.payment_status = 'da_thanh_toan' THEN 'Đã thanh toán' " +
+            "        WHEN b.payment_status = 'chua_thanh_toan' THEN 'Chưa thanh toán' " +
+            "        ELSE b.payment_status " +
+            "    END = :trangThai) " +
             "AND (:maNoiDung IS NULL OR CONCAT('GD', LPAD(b.id, 5, '0'), ' - ', u.ho_ten) LIKE %:maNoiDung%) " +
             "ORDER BY b.booking_at DESC", nativeQuery = true)
     List<Object[]> findTransactionTableWithFilter(

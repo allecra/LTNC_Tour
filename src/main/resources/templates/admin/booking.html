@@ -194,6 +194,45 @@
           text-overflow: ellipsis;
           white-space: nowrap;
         }
+        
+        /* Statistics Cards Improvements */
+        .card.bg-primary .h4,
+        .card.bg-success .h4,
+        .card.bg-warning .h4,
+        .card.bg-danger .h4 {
+          font-weight: 700;
+          margin-bottom: 0;
+        }
+        
+        .card.bg-primary .small,
+        .card.bg-success .small,
+        .card.bg-warning .small,
+        .card.bg-danger .small {
+          font-weight: 500;
+          opacity: 0.9;
+        }
+        
+        .card.bg-primary i,
+        .card.bg-success i,
+        .card.bg-warning i,
+        .card.bg-danger i {
+          opacity: 0.8;
+        }
+        
+        /* Loading state for refresh button */
+        .btn-refresh-loading {
+          pointer-events: none;
+          opacity: 0.7;
+        }
+        
+        .btn-refresh-loading i {
+          animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
@@ -386,9 +425,14 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Bảng Booking Chi Tiết</h5>
-                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                                <i class="fas fa-plus"></i> Thêm mới booking
-                            </button>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-info btn-sm" onclick="refreshStatistics()" title="Làm mới thống kê">
+                                    <i class="fas fa-sync-alt"></i> Làm mới
+                                </button>
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                                    <i class="fas fa-plus"></i> Thêm mới booking
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -792,7 +836,9 @@
         tbody.empty();
         
         if (bookings.length === 0) {
-            tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu booking</td></tr>');
+            tbody.append('<tr><td colspan="13" class="text-center">Không có dữ liệu booking</td></tr>');
+            // Cập nhật thống kê về 0
+            calculateStatisticsFromTable([]);
             return;
         }
         
@@ -837,25 +883,80 @@
             `;
                 tbody.append(row);
         });
+        
+        // Tự động cập nhật thống kê từ dữ liệu bảng
+        calculateStatisticsFromTable(bookings);
     }
     
     function loadBookingStatistics() {
+        console.log('Đang tải thống kê booking...');
         $.ajax({
             url: '/api/transaction/booking-statistics',
             method: 'GET',
             success: function(response) {
+                console.log('Thống kê booking response:', response);
                 if (response.data) {
-                    $('#totalBookings').text(response.data.totalBookings);
-                    $('#confirmedBookings').text(response.data.confirmedBookings);
-                    $('#pendingBookings').text(response.data.pendingBookings);
-                    $('#cancelledBookings').text(response.data.cancelledBookings);
-
+                    $('#totalBookings').text(response.data.totalBookings || 0);
+                    $('#confirmedBookings').text(response.data.confirmedBookings || 0);
+                    $('#pendingBookings').text(response.data.pendingBookings || 0);
+                    $('#cancelledBookings').text(response.data.cancelledBookings || 0);
+                    console.log('Đã cập nhật thống kê:', {
+                        total: response.data.totalBookings,
+                        confirmed: response.data.confirmedBookings,
+                        pending: response.data.pendingBookings,
+                        cancelled: response.data.cancelledBookings
+                    });
+                } else {
+                    console.warn('Response không có data:', response);
+                    // Set default values
+                    $('#totalBookings').text('0');
+                    $('#confirmedBookings').text('0');
+                    $('#pendingBookings').text('0');
+                    $('#cancelledBookings').text('0');
                 }
             },
-            error: function() {
-                console.error('Lỗi khi tải thống kê booking');
+            error: function(xhr, status, error) {
+                console.error('Lỗi khi tải thống kê booking:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText
+                });
+                // Set default values on error
+                $('#totalBookings').text('0');
+                $('#confirmedBookings').text('0');
+                $('#pendingBookings').text('0');
+                $('#cancelledBookings').text('0');
             }
         });
+    }
+    
+    // Function để tính toán thống kê từ dữ liệu bảng booking
+    function calculateStatisticsFromTable(bookings) {
+        if (!bookings || bookings.length === 0) {
+            $('#totalBookings').text('0');
+            $('#confirmedBookings').text('0');
+            $('#pendingBookings').text('0');
+            $('#cancelledBookings').text('0');
+            return;
+        }
+        
+        const total = bookings.length;
+        const confirmed = bookings.filter(b => b[11] === 'da_xac_nhan').length;
+        const pending = bookings.filter(b => b[11] === 'cho_xac_nhan').length;
+        const cancelled = bookings.filter(b => b[11] === 'huy').length;
+        
+        $('#totalBookings').text(total);
+        $('#confirmedBookings').text(confirmed);
+        $('#pendingBookings').text(pending);
+        $('#cancelledBookings').text(cancelled);
+        
+        console.log('Thống kê từ bảng:', { total, confirmed, pending, cancelled });
+    }
+    
+    // Function để refresh thống kê
+    function refreshStatistics() {
+        // Gọi API để lấy dữ liệu mới nhất
+        loadBookingDetailTable();
     }
     
     function loadToursForAddBooking() {

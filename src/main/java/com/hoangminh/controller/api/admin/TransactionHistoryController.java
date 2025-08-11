@@ -83,15 +83,18 @@ public class TransactionHistoryController {
         // Tính toán thống kê
         long totalTransactions = allTransactions.size();
         long completedTransactions = allTransactions.stream()
-                .filter(t -> "da_thanh_toan".equals(t[6])) // payment_status ở index 6
+                .filter(t -> "Đã thanh toán".equals(t[5])) // Trạng thái đã được map từ Repository (index 5)
                 .count();
         long pendingTransactions = allTransactions.stream()
-                .filter(t -> "chua_thanh_toan".equals(t[6]))
+                .filter(t -> "Chưa thanh toán".equals(t[5]))
+                .count();
+        long cancelledTransactions = allTransactions.stream()
+                .filter(t -> "Đã hủy".equals(t[5])) // Thêm đếm giao dịch hủy
                 .count();
         
         // Tổng doanh thu từ các giao dịch đã hoàn thành
         double totalRevenue = allTransactions.stream()
-                .filter(t -> "da_thanh_toan".equals(t[6]))
+                .filter(t -> "Đã thanh toán".equals(t[5]))
                 .mapToDouble(t -> ((Number) t[3]).doubleValue()) // tong_tien ở index 3
                 .sum();
         
@@ -100,7 +103,7 @@ public class TransactionHistoryController {
         stats.setTotalTransactions(totalTransactions);
         stats.setCompletedTransactions(completedTransactions);
         stats.setPendingTransactions(pendingTransactions);
-        stats.setCancelledTransactions(0); // Không có trạng thái hủy trong payment_status
+        stats.setCancelledTransactions(cancelledTransactions); // Cập nhật số giao dịch hủy
         stats.setTotalRevenue(totalRevenue);
         
         return new ResponseDTO("Lấy thống kê giao dịch thành công", stats);

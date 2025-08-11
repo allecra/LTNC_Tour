@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -117,13 +118,48 @@ public class TourController {
     }
 
     @PostMapping("/add")
-    public ResponseDTO createTour(@RequestBody TourDTO tourDTO) {
+    public ResponseDTO createTour(
+            @RequestParam("ten_tour") String tenTour,
+            @RequestParam("so_ngay") Integer soNgay,
+            @RequestParam("diem_den") String diemDen,
+            @RequestParam("loai_tour") String loaiTour,
+            @RequestParam("diem_khoi_hanh") String diemKhoiHanh,
+            @RequestParam("gia_tour") BigDecimal giaTour,
+            @RequestParam("trang_thai") String trangThai,
+            @RequestParam("ngay_khoi_hanh") String ngayKhoiHanh,
+            @RequestParam("ngay_ket_thuc") String ngayKetThuc,
+            @RequestParam(value = "gioi_thieu_tour", required = false) String gioiThieuTour,
+            @RequestParam(value = "noi_dung_tour", required = false) String noiDungTour,
+            @RequestParam("anh_dai_dien") MultipartFile anhDaiDien) {
+        
         try {
-            log.info("Received tour data: {}", tourDTO);
+            log.info("Received tour data - ten_tour: {}, so_ngay: {}, diem_den: {}, loai_tour: {}, diem_khoi_hanh: {}, gia_tour: {}, trang_thai: {}, ngay_khoi_hanh: {}, ngay_ket_thuc: {}, gioi_thieu_tour: {}, noi_dung_tour: {}, anh_dai_dien: {}", 
+                    tenTour, soNgay, diemDen, loaiTour, diemKhoiHanh, giaTour, trangThai, ngayKhoiHanh, ngayKetThuc, gioiThieuTour, noiDungTour, anhDaiDien.getOriginalFilename());
             
             if (!this.userService.checkAdminLogin()) {
                 return new ResponseDTO("Không có quyền truy cập", null);
             }
+
+            // Upload ảnh đại diện
+            String uploadDir = "src/main/resources/static/public/img";
+            String fileName = UUID.randomUUID().toString() + "_" + anhDaiDien.getOriginalFilename();
+            FileUploadUtil.saveFile(uploadDir, fileName, anhDaiDien);
+            log.info("Image uploaded successfully: {}", fileName);
+
+            // Tạo TourDTO từ các tham số
+            TourDTO tourDTO = new TourDTO();
+            tourDTO.setTen_tour(tenTour);
+            tourDTO.setSo_ngay(soNgay);
+            tourDTO.setDiem_den(diemDen);
+            tourDTO.setLoai_tour(loaiTour);
+            tourDTO.setDiem_khoi_hanh(diemKhoiHanh);
+            tourDTO.setGia_tour(giaTour);
+            tourDTO.setTrang_thai(trangThai);
+            tourDTO.setNgay_khoi_hanh(ngayKhoiHanh);
+            tourDTO.setNgay_ket_thuc(ngayKetThuc);
+            tourDTO.setGioi_thieu_tour(gioiThieuTour);
+            tourDTO.setNoi_dung_tour(noiDungTour);
+            tourDTO.setAnh_dai_dien(fileName);
 
             Tour tour = this.tourService.addTour(tourDTO);
             if (tour != null) {
@@ -167,20 +203,60 @@ public class TourController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseDTO updateTour(@PathVariable("id") Long id, @RequestBody TourDTO tourDTO) {
+    public ResponseDTO updateTour(
+            @PathVariable("id") Long id,
+            @RequestParam("ten_tour") String tenTour,
+            @RequestParam("so_ngay") Integer soNgay,
+            @RequestParam("diem_den") String diemDen,
+            @RequestParam("loai_tour") String loaiTour,
+            @RequestParam("diem_khoi_hanh") String diemKhoiHanh,
+            @RequestParam("gia_tour") BigDecimal giaTour,
+            @RequestParam("trang_thai") String trangThai,
+            @RequestParam("ngay_khoi_hanh") String ngayKhoiHanh,
+            @RequestParam("ngay_ket_thuc") String ngayKetThuc,
+            @RequestParam(value = "gioi_thieu_tour", required = false) String gioiThieuTour,
+            @RequestParam(value = "noi_dung_tour", required = false) String noiDungTour,
+            @RequestParam(value = "anh_dai_dien", required = false) MultipartFile anhDaiDien) {
+        
         try {
+            log.info("Updating tour ID: {} - ten_tour: {}, so_ngay: {}, diem_den: {}, loai_tour: {}, diem_khoi_hanh: {}, gia_tour: {}, trang_thai: {}, ngay_khoi_hanh: {}, ngay_ket_thuc: {}, gioi_thieu_tour: {}, noi_dung_tour: {}, has_new_image: {}", 
+                    id, tenTour, soNgay, diemDen, loaiTour, diemKhoiHanh, giaTour, trangThai, ngayKhoiHanh, ngayKetThuc, gioiThieuTour, noiDungTour, (anhDaiDien != null));
+            
             if (!this.userService.checkAdminLogin()) {
                 return new ResponseDTO("Không có quyền truy cập", null);
             }
+
+            // Tạo TourDTO từ các tham số
+            TourDTO tourDTO = new TourDTO();
+            tourDTO.setTen_tour(tenTour);
+            tourDTO.setSo_ngay(soNgay);
+            tourDTO.setDiem_den(diemDen);
+            tourDTO.setLoai_tour(loaiTour);
+            tourDTO.setDiem_khoi_hanh(diemKhoiHanh);
+            tourDTO.setGia_tour(giaTour);
+            tourDTO.setTrang_thai(trangThai);
+            tourDTO.setNgay_khoi_hanh(ngayKhoiHanh);
+            tourDTO.setNgay_ket_thuc(ngayKetThuc);
+            tourDTO.setGioi_thieu_tour(gioiThieuTour);
+            tourDTO.setNoi_dung_tour(noiDungTour);
+
+            // Xử lý ảnh: nếu có ảnh mới thì upload, nếu không thì giữ ảnh cũ
+            if (anhDaiDien != null && !anhDaiDien.isEmpty()) {
+                String uploadDir = "src/main/resources/static/public/img";
+                String fileName = UUID.randomUUID().toString() + "_" + anhDaiDien.getOriginalFilename();
+                FileUploadUtil.saveFile(uploadDir, fileName, anhDaiDien);
+                tourDTO.setAnh_dai_dien(fileName);
+                log.info("New image uploaded successfully: {}", fileName);
+            }
+
             Tour updateTour = this.tourService.updateTour(tourDTO, id);
             if (updateTour != null) {
-                // Trả về message thành công, không trả về entity gốc để tránh lỗi serialize
-                return new ResponseDTO("Thành công", null);
+                return new ResponseDTO("Cập nhật tour thành công", null);
             }
-            return new ResponseDTO("Update thất bại", null);
+            return new ResponseDTO("Cập nhật tour thất bại", null);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseDTO("Lỗi BE: " + e.getMessage(), null);
+            log.error("Error updating tour: {}", e.getMessage(), e);
+            return new ResponseDTO("Lỗi khi cập nhật tour: " + e.getMessage(), null);
         }
     }
 
