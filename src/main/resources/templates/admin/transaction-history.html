@@ -1,19 +1,61 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lịch sử giao dịch</title>
-  <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
-  <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
-  <link href="/public/admin/css/styles.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <style>
-    label { padding: 10px 0; }
-    table.dataTable tbody td:last-child { text-align: center; }
-    table.dataTable tbody td:last-child button { margin: 4px; }
-    .dataTables_wrapper td, .dataTables_wrapper thead th { font-size: 13px; }
-  </style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Lịch sử giao dịch</title>
+    <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
+    <link href="/public/admin/css/styles.css" rel="stylesheet" />
+    <style>
+        .pagination .page-item .page-link {
+            color: #333;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+            min-width: 38px;
+            text-align: center;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        .pagination .page-item .page-link:hover {
+            background: #f0f0f0;
+            color: #0d6efd;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #aaa;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        .table td, .table th {
+            padding-top: 0.35rem;
+            padding-bottom: 0.35rem;
+        }
+        .btn-sm {
+            line-height: 1;
+        }
+        .table .btn-sm {
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .table .d-flex {
+          flex-direction: row !important;
+        }
+        .pagination-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -41,7 +83,8 @@
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
                     <a class="nav-link" href="/admin/index">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Trang chủ
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Trang chủ
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
@@ -62,11 +105,11 @@
                     <a class="nav-link" href="/admin/voucher">
                         <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
                     </a>
-                    <a class="nav-link collapsed active" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="true">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
                         <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse show" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
                             <a class="nav-link active" href="/admin/transaction-history">Lịch sử giao dịch</a>
@@ -80,156 +123,171 @@
             </div>
         </nav>
     </div>
+
     <div id="layoutSidenav_content">
-        <main class="container-fluid px-4">
-            <h1 class="mt-4">Lịch sử giao dịch</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Lịch sử giao dịch</li>
+        <main>
+            <div class="container-fluid px-4">
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <h1>Lịch sử giao dịch</h1>
+                </div>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="/admin/index">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Lịch sử giao dịch</li>
                 </ol>
-            </nav>
-            
-            <!-- Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-xl-2 col-md-6">
-                    <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="small">Tổng giao dịch</div>
-                                    <div class="h4" id="totalTransactions">0</div>
+
+                <!-- Thống kê tổng quan -->
+                <div class="row">
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng giao dịch</div>
+                                        <div class="h4" id="totalTransactions">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-exchange-alt fa-2x"></i>
+                                    </div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-exchange-alt fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đã thanh toán</div>
+                                        <div class="h4" id="completedTransactions">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Chưa thanh toán</div>
+                                        <div class="h4" id="pendingTransactions">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Đã hủy</div>
+                                        <div class="h4" id="cancelledTransactions">0</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-times-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card bg-info text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="small">Tổng doanh thu</div>
+                                        <div class="h4" id="totalRevenue">0 VNĐ</div>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-money-bill-wave fa-2x"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-2 col-md-6">
-                    <div class="card bg-success text-white mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="small">Đã thanh toán</div>
-                                    <div class="h4" id="completedTransactions">0</div>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-check-circle fa-2x"></i>
+
+                <!-- Bộ lọc -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-filter me-1"></i>
+                        Bộ lọc
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="khachHangFilter" class="form-label">Khách hàng</label>
+                                <input type="text" class="form-control" id="khachHangFilter" placeholder="Tên khách hàng">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="trangThaiFilter" class="form-label">Trạng thái</label>
+                                <select class="form-select" id="trangThaiFilter">
+                                    <option value="">Tất cả</option>
+                                    <option value="Đã thanh toán">Đã thanh toán</option>
+                                    <option value="Chưa thanh toán">Chưa thanh toán</option>
+                                    <option value="Đã hủy">Đã hủy</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="maNoiDungFilter" class="form-label">Mã nội dung</label>
+                                <input type="text" class="form-control" id="maNoiDungFilter" placeholder="Mã nội dung">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-primary" onclick="filterTransactions()">
+                                        <i class="fas fa-search me-1"></i>Lọc
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                                        <i class="fas fa-times me-1"></i>Xóa lọc
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-2 col-md-6">
-                    <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="small">Chờ thanh toán</div>
-                                    <div class="h4" id="pendingTransactions">0</div>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-clock fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
+
+                <!-- Bảng giao dịch -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Danh sách giao dịch
                     </div>
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    <div class="card bg-danger text-white mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="small">Đã hủy</div>
-                                    <div class="h4" id="cancelledTransactions">0</div>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-times-circle fa-2x"></i>
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã nội dung chuyển khoản</th>
+                                        <th>Khách hàng</th>
+                                        <th>Số tiền</th>
+                                        <th>Thời gian</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionTableBody">
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-md-6">
-                    <div class="card bg-info text-white mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="small">Tổng doanh thu</div>
-                                    <div class="h4" id="totalRevenue">0 VNĐ</div>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-money-bill-wave fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Filter Section -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-filter me-1"></i>
-                    Bộ lọc
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="khachHangFilter" class="form-label">Khách hàng</label>
-                            <input type="text" class="form-control" id="khachHangFilter" placeholder="Tên khách hàng">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="trangThaiFilter" class="form-label">Trạng thái</label>
-                            <select class="form-select" id="trangThaiFilter">
-                                <option value="">Tất cả</option>
-                                <option value="Đã thanh toán">Đã thanh toán</option>
-                                <option value="Chưa thanh toán">Chưa thanh toán</option>
-                                <option value="Đã hủy">Đã hủy</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="maNoiDungFilter" class="form-label">Mã nội dung chuyển khoản</label>
-                            <input type="text" class="form-control" id="maNoiDungFilter" placeholder="Mã GD...">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">&nbsp;</label>
+                        
+                        <!-- Phân trang -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
                             <div>
-                                <button type="button" class="btn btn-primary" onclick="filterTransactions()">
-                                    <i class="fas fa-search"></i> Lọc
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="clearFilters()">
-                                    <i class="fas fa-times"></i> Xóa lọc
-                                </button>
+                                <span>Hiển thị <span id="startRecord">0</span> - <span id="endRecord">0</span> của <span id="totalRecords">0</span> giao dịch</span>
                             </div>
+                            <nav>
+                                <ul class="pagination mb-0" id="transactionHistoryPagination">
+                                </ul>
+                            </nav>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="card mb-4 rounded">
-                <div class="card-header">
-                    <i class="fas fa-table me-1"></i>
-                    Bảng Giao Dịch
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-hover" id="transactionHistoryTable">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>STT</th>
-                                <th>Mã nội dung chuyển khoản</th>
-                                <th>Khách hàng</th>
-                                <th>Số tiền</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionTableBody">
-                        </tbody>
-                    </table>
-                    <div id="transactionHistoryPagination"></div>
                 </div>
             </div>
         </main>
@@ -250,6 +308,13 @@
 <script src="/public/admin/js/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Biến phân trang
+    let currentPage = 0;
+    let pageSize = 10;
+    let totalRecords = 0;
+    let allTransactions = [];
+    let filteredTransactions = [];
+
     $(document).ready(function() {
         loadTransactionTable();
         loadStatistics();
@@ -272,32 +337,51 @@
             method: 'GET',
             success: function(response) {
                 if (response.data) {
-                    renderTransactionTable(response.data);
+                    allTransactions = response.data;
+                    filteredTransactions = response.data;
+                    totalRecords = response.data.length;
+                    currentPage = 0;
+                    renderTransactionTable();
+                    renderPagination();
+                    updatePaginationInfo();
+                    
+                    // Cập nhật thống kê từ dữ liệu mới
+                    updateStatisticsFromTable();
                 }
             },
             error: function() {
                 console.error('Lỗi khi tải dữ liệu giao dịch');
-                renderTransactionTable([]);
+                allTransactions = [];
+                filteredTransactions = [];
+                totalRecords = 0;
+                renderTransactionTable();
+                renderPagination();
+                updatePaginationInfo();
+                
+                // Cập nhật thống kê khi có lỗi
+                updateStatisticsFromTable();
             }
         });
     }
     
-    function renderTransactionTable(transactions) {
+    function renderTransactionTable() {
         const tbody = $('#transactionTableBody');
         tbody.empty();
         
-        if (transactions.length === 0) {
+        if (filteredTransactions.length === 0) {
             tbody.append('<tr><td colspan="6" class="text-center">Không có dữ liệu giao dịch</td></tr>');
             return;
         }
         
-        transactions.forEach(function(transaction, index) {
-            // transaction[0] = stt, transaction[1] = ma_noi_dung_chuyen_khoan, transaction[2] = khach_hang
-            // transaction[3] = so_tien, transaction[4] = thoi_gian, transaction[5] = trang_thai
-            
+        const startIndex = currentPage * pageSize;
+        const endIndex = Math.min(startIndex + pageSize, filteredTransactions.length);
+        const pageData = filteredTransactions.slice(startIndex, endIndex);
+        
+        pageData.forEach(function(transaction, index) {
+            const globalIndex = startIndex + index;
             const row = `
                 <tr>
-                    <td class="text-center">${transaction[0]}</td>
+                    <td class="text-center">${globalIndex + 1}</td>
                     <td><span class="badge bg-primary">${transaction[1]}</span></td>
                     <td>${transaction[2]}</td>
                     <td>${formatCurrency(transaction[3])}</td>
@@ -307,6 +391,62 @@
             `;
             tbody.append(row);
         });
+    }
+    
+    function renderPagination() {
+        let totalPages = Math.ceil(filteredTransactions.length / pageSize);
+        let paginationHtml = '';
+        
+        if (totalPages === 0) {
+            paginationHtml = '<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
+            paginationHtml += '<li class="page-item active"><a class="page-link" href="#">1</a></li>';
+            paginationHtml += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>';
+        } else {
+            // Previous button
+            paginationHtml += `<li class="page-item${currentPage === 0 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+            
+            // Page numbers - chỉ hiển thị 1 số trang ở giữa
+            if (totalPages === 1) {
+                paginationHtml += '<li class="page-item active"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>';
+            } else if (totalPages === 2) {
+                paginationHtml += `<li class="page-item${currentPage === 0 ? ' active' : ''}"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>`;
+                paginationHtml += `<li class="page-item${currentPage === 1 ? ' active' : ''}"><a class="page-link" href="#" onclick="changePage(2)">2</a></li>`;
+            } else {
+                // Hiển thị 1 số trang ở giữa
+                if (currentPage === 0) {
+                    paginationHtml += '<li class="page-item active"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>';
+                    paginationHtml += '<li class="page-item"><a class="page-link" href="#" onclick="changePage(2)">2</a></li>';
+                } else if (currentPage === totalPages - 1) {
+                    paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages - 1})">${totalPages - 1}</a></li>`;
+                    paginationHtml += `<li class="page-item active"><a class="page-link" href="#" onclick="changePage(${totalPages})">${totalPages}</a></li>`;
+                } else {
+                    paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage})">${currentPage + 1}</a></li>`;
+                }
+            }
+            
+            // Next button
+            paginationHtml += `<li class="page-item${currentPage === totalPages - 1 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
+        }
+        
+        document.getElementById('transactionHistoryPagination').innerHTML = paginationHtml;
+    }
+    
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+        if (page >= 0 && page < totalPages) {
+            currentPage = page;
+            renderTransactionTable();
+            renderPagination();
+            updatePaginationInfo();
+        }
+    }
+    
+    function updatePaginationInfo() {
+        const startRecord = filteredTransactions.length > 0 ? currentPage * pageSize + 1 : 0;
+        const endRecord = Math.min((currentPage + 1) * pageSize, filteredTransactions.length);
+        $('#startRecord').text(startRecord);
+        $('#endRecord').text(endRecord);
+        $('#totalRecords').text(filteredTransactions.length);
     }
     
     function loadStatistics() {
@@ -328,6 +468,42 @@
         });
     }
     
+    // Hàm cập nhật thống kê từ dữ liệu bảng đã được lọc
+    function updateStatisticsFromTable() {
+        if (!filteredTransactions || filteredTransactions.length === 0) {
+            $('#totalTransactions').text('0');
+            $('#completedTransactions').text('0');
+            $('#pendingTransactions').text('0');
+            $('#cancelledTransactions').text('0');
+            $('#totalRevenue').text(formatCurrency(0));
+            return;
+        }
+
+        const total = filteredTransactions.length;
+        const completed = filteredTransactions.filter(t => t[5] === 'Đã thanh toán').length;
+        const pending = filteredTransactions.filter(t => t[5] === 'Chưa thanh toán').length;
+        const cancelled = filteredTransactions.filter(t => t[5] === 'Đã hủy').length;
+
+        // Tính tổng doanh thu từ các giao dịch đã thanh toán
+        const totalRevenue = filteredTransactions
+            .filter(t => t[5] === 'Đã thanh toán')
+            .reduce((sum, t) => sum + (parseFloat(t[3]) || 0), 0);
+
+        $('#totalTransactions').text(total);
+        $('#completedTransactions').text(completed);
+        $('#pendingTransactions').text(pending);
+        $('#cancelledTransactions').text(cancelled);
+        $('#totalRevenue').text(formatCurrency(totalRevenue));
+
+        console.log('Thống kê từ bảng đã lọc:', {
+            total,
+            completed,
+            pending,
+            cancelled,
+            totalRevenue: formatCurrency(totalRevenue)
+        });
+    }
+    
     function filterTransactions() {
         const filters = {
             khachHang: $('#khachHangFilter').val(),
@@ -335,14 +511,48 @@
             maNoiDung: $('#maNoiDungFilter').val()
         };
         
-        loadTransactionTable(filters);
+        // Lọc dữ liệu local
+        filteredTransactions = allTransactions.filter(transaction => {
+            let match = true;
+            
+            if (filters.khachHang && !transaction[2].toLowerCase().includes(filters.khachHang.toLowerCase())) {
+                match = false;
+            }
+            
+            if (filters.trangThai && transaction[5] !== filters.trangThai) {
+                match = false;
+            }
+            
+            if (filters.maNoiDung && !transaction[1].toLowerCase().includes(filters.maNoiDung.toLowerCase())) {
+                match = false;
+            }
+            
+            return match;
+        });
+        
+        totalRecords = filteredTransactions.length;
+        currentPage = 0;
+        renderTransactionTable();
+        renderPagination();
+        updatePaginationInfo();
+        
+        // Cập nhật thống kê sau khi lọc
+        updateStatisticsFromTable();
     }
     
     function clearFilters() {
         $('#khachHangFilter').val('');
         $('#trangThaiFilter').val('');
         $('#maNoiDungFilter').val('');
-        loadTransactionTable();
+        filteredTransactions = [...allTransactions];
+        totalRecords = filteredTransactions.length;
+        currentPage = 0;
+        renderTransactionTable();
+        renderPagination();
+        updatePaginationInfo();
+        
+        // Cập nhật thống kê sau khi xóa lọc
+        updateStatisticsFromTable();
     }
     
     function formatCurrency(amount) {

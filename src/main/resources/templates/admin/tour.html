@@ -92,13 +92,8 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <a class="navbar-brand ps-3" href="/admin/index">Dashboard Quản trị</a>
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-        <div class="input-group">
-            <input class="form-control" type="text" placeholder="Search for..." />
-            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-        </div>
-    </form>
-    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+
+    <ul class="navbar-nav ms-auto me-0">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -119,37 +114,33 @@
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
-                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                        Quản lý người dùng
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
                     </a>
                     <a class="nav-link" href="/admin/guides">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
-                        Quản lý hướng dẫn viên
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
                     </a>
                     <a class="nav-link active" href="/admin/tour">
-                        <div class="sb-nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>
-                        Quản lý tour
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
                     </a>
                     <a class="nav-link" href="/admin/booking">
-                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
-                        Quản lý booking
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
                     </a>
                     <a class="nav-link" href="/admin/review">
-                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
-                        Quản lý đánh giá
-                    </a>
-                    <a class="nav-link" href="/admin/payment-method">
-                        <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
-                        Quản lý phương thức thanh toán
-                    </a>
-                    <a class="nav-link" href="/admin/transaction-history">
-                        <div class="sb-nav-link-icon"><i class="fas fa-history"></i></div>
-                        Lịch sử giao dịch
+                        <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>Quản lý đánh giá
                     </a>
                     <a class="nav-link" href="/admin/voucher">
-                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>
-                        Quản lý voucher
+                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>Quản lý voucher
                     </a>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -322,6 +313,13 @@
                 </div>
             </div>
         </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">&copy; 2025 Travel Admin</div>
+                </div>
+            </div>
+        </footer>
     </div>
 </div>
 
@@ -513,7 +511,7 @@
 </div>
 
 <script src="/public/admin/js/jquery.js"></script>
-<script src="/public/admin/js/boostrap-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/public/admin/js/scripts.js"></script>
 <script src="/public/admin/js/datatables.min.js"></script>
 <script src="/public/admin/js/all.min.js"></script>
