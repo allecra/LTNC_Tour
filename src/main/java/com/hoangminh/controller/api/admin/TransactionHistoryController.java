@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.math.BigDecimal;
+import com.hoangminh.entity.Voucher;
+import com.hoangminh.repository.VoucherRepository;
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -56,6 +59,9 @@ public class TransactionHistoryController {
 
     @Autowired
     private RoleRepository roleRepository;
+    
+    @Autowired
+    private VoucherRepository voucherRepository;
 
     // API cũ - lấy thông tin payment
     @GetMapping("/payment/getAll")
@@ -105,15 +111,15 @@ public class TransactionHistoryController {
     public ResponseDTO getTransactionTable(
             @RequestParam(value = "khachHang", required = false) String khachHang,
             @RequestParam(value = "trangThai", required = false) String trangThai,
-            @RequestParam(value = "phuongThuc", required = false) String phuongThuc) {
+            @RequestParam(value = "maNoiDung", required = false) String maNoiDung) {
         
         if (!userService.checkAdminLogin()) {
             return new ResponseDTO("Không có quyền truy cập", null);
         }
         
         List<Object[]> transactions;
-        if (khachHang != null || trangThai != null || phuongThuc != null) {
-            transactions = bookingService.getTransactionTableWithFilter(khachHang, trangThai, phuongThuc);
+        if (khachHang != null || trangThai != null || maNoiDung != null) {
+            transactions = bookingService.getTransactionTableWithFilter(khachHang, trangThai, maNoiDung);
         } else {
             transactions = bookingService.getTransactionTable();
         }
@@ -127,15 +133,15 @@ public class TransactionHistoryController {
             @RequestParam(value = "nguoiDung", required = false) String nguoiDung,
             @RequestParam(value = "tour", required = false) String tour,
             @RequestParam(value = "trangThai", required = false) String trangThai,
-            @RequestParam(value = "phuongThuc", required = false) String phuongThuc) {
+            @RequestParam(value = "maNoiDung", required = false) String maNoiDung) {
         
         if (!userService.checkAdminLogin()) {
             return new ResponseDTO("Không có quyền truy cập", null);
         }
         
         List<Object[]> bookings;
-        if (nguoiDung != null || tour != null || trangThai != null || phuongThuc != null) {
-            bookings = bookingService.getBookingDetailTableWithFilter(nguoiDung, tour, trangThai, phuongThuc);
+        if (nguoiDung != null || tour != null || trangThai != null || maNoiDung != null) {
+            bookings = bookingService.getBookingDetailTableWithFilter(nguoiDung, tour, trangThai, maNoiDung);
         } else {
             bookings = bookingService.getBookingDetailTable();
         }
@@ -165,10 +171,10 @@ public class TransactionHistoryController {
                 .filter(b -> "huy".equals(b[10]))
                 .count();
         
-        // Tổng doanh thu từ các booking đã xác nhận
+        // Tổng doanh thu từ các booking đã xác nhận (sau khi áp dụng voucher)
         double totalRevenue = allBookings.stream()
                 .filter(b -> "da_xac_nhan".equals(b[10]))
-                .mapToDouble(b -> ((Number) b[5]).doubleValue()) // tong_tien ở index 5
+                .mapToDouble(b -> ((Number) b[7]).doubleValue()) // thanh_tien sau voucher ở index 7
                 .sum();
         
         // Tạo object thống kê
@@ -337,6 +343,33 @@ public class TransactionHistoryController {
             tourStart.setSo_cho_con_lai(20);
             tourStart = tourStartRepository.save(tourStart);
             
+            // Xử lý voucher nếu có
+            if (bookingDTO.getVoucherCode() != null && !bookingDTO.getVoucherCode().trim().isEmpty()) {
+                // Tìm voucher theo mã
+                Optional<Voucher> voucherOpt = voucherRepository.findByMaGiamGia(bookingDTO.getVoucherCode().trim());
+                if (voucherOpt.isPresent()) {
+                    Voucher voucher = voucherOpt.get();
+                    // Kiểm tra voucher còn hạn sử dụng không
+                    if (voucher.getNgayHetHan() != null && voucher.getNgayHetHan().before(new java.util.Date())) {
+                        return new ResponseDTO("Voucher đã hết hạn", null);
+                    }
+                    // Áp dụng voucher
+                    BigDecimal giaTriGiam = bookingDTO.getTongTien().multiply(voucher.getGiaTri())
+                        .divide(BigDecimal.valueOf(100));
+                    BigDecimal tongTienSauVoucher = bookingDTO.getTongTien().subtract(giaTriGiam);
+                    
+                    // Đảm bảo giá không âm
+                    if (tongTienSauVoucher.compareTo(BigDecimal.ZERO) < 0) {
+                        tongTienSauVoucher = BigDecimal.ZERO;
+                    }
+                    
+                    // Cập nhật tổng tiền sau voucher
+                    bookingDTO.setTongTien(tongTienSauVoucher);
+                } else {
+                    return new ResponseDTO("Không tìm thấy voucher: " + bookingDTO.getVoucherCode(), null);
+                }
+            }
+            
             // Tạo booking
             Booking booking = new Booking();
             booking.setUser(user);
@@ -348,6 +381,14 @@ public class TransactionHistoryController {
             booking.setTrang_thai(bookingDTO.getTrangThai() != null ? bookingDTO.getTrangThai() : "cho_xac_nhan");
             booking.setGhi_chu(bookingDTO.getGhiChu() != null ? bookingDTO.getGhiChu() : "");
             booking.setBooking_at(new java.util.Date());
+            
+            // Gán voucher nếu có
+            if (bookingDTO.getVoucherCode() != null && !bookingDTO.getVoucherCode().trim().isEmpty()) {
+                Optional<Voucher> voucherOpt = voucherRepository.findByMaGiamGia(bookingDTO.getVoucherCode().trim());
+                if (voucherOpt.isPresent()) {
+                    booking.setVoucher(voucherOpt.get());
+                }
+            }
             
             booking = bookingRepository.save(booking);
             
@@ -367,6 +408,7 @@ public class TransactionHistoryController {
         private Integer soLuongNguoi;
         private BigDecimal giaTour;
         private BigDecimal tongTien;
+        private String voucherCode; // Thêm mã voucher
         private String paymentMethod;
         private String paymentStatus;
         private String trangThai;
@@ -402,5 +444,8 @@ public class TransactionHistoryController {
         
         public String getGhiChu() { return ghiChu; }
         public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
+        
+        public String getVoucherCode() { return voucherCode; }
+        public void setVoucherCode(String voucherCode) { this.voucherCode = voucherCode; }
     }
 } 

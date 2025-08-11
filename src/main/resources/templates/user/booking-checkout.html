@@ -133,6 +133,16 @@
                             <textarea name="ghi_chu" id="ghi_chu" cols="30" rows="5" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="voucher_code">Mã giảm giá (nếu có)</label>
+                            <div class="input-group">
+                                <input type="text" name="voucher_code" id="voucher_code" class="form-control" placeholder="Nhập mã voucher">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="validateVoucher()">Kiểm tra</button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted" id="voucherMessage"></small>
+                        </div>
+                        <div class="form-group">
                             <label for="payment_method">Phương thức thanh toán</label>
                             <select name="payment_method" id="payment_method" class="form-control">
                                 <option value="Chuyển khoản">Chuyển khoản</option>
@@ -268,18 +278,82 @@
 <!-- Template Javascript -->
 <script src="../../public/js/main.js"></script>
 <script type="text/javascript">
-    // document.getElementById("sendMessageButton").onclick = function (e) {
-    //     e.preventDefault();
-    //     if(document.getElementById("username").disabled) {
-    //         document.getElementById("select-gender").removeAttribute("disabled");
-    //         var inputs = document.querySelectorAll("input");
-    //         for (var i = 0; i < inputs.length; i++) {
-    //             inputs[i].removeAttribute("disabled");
-    //         }
-    //     }else {
-    //         document.getElementById("contactForm").submit();
-    //     }
-    // };
+    // Xử lý voucher
+    function validateVoucher() {
+        const voucherCode = document.getElementById('voucher_code').value.trim();
+        const messageElement = document.getElementById('voucherMessage');
+        
+        if (!voucherCode) {
+            messageElement.textContent = 'Vui lòng nhập mã voucher';
+            messageElement.className = 'form-text text-danger';
+            return;
+        }
+        
+        // Gọi API kiểm tra voucher
+        fetch(`/api/user/voucher/validate?code=${encodeURIComponent(voucherCode)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const voucher = data.data;
+                    if (voucher && voucher.discount) {
+                        messageElement.textContent = `Voucher hợp lệ! Giảm giá: ${voucher.discount}%`;
+                        messageElement.className = 'form-text text-success';
+                        // Cập nhật giá sau khi áp dụng voucher
+                        updatePriceWithVoucher(voucher.discount);
+                    } else {
+                        messageElement.textContent = 'Voucher hợp lệ nhưng không có thông tin giảm giá';
+                        messageElement.className = 'form-text text-warning';
+                    }
+                } else {
+                    messageElement.textContent = data.message || 'Voucher không hợp lệ';
+                    messageElement.className = 'form-text text-danger';
+                }
+            })
+            .catch(error => {
+                messageElement.textContent = 'Có lỗi xảy ra khi kiểm tra voucher';
+                messageElement.className = 'form-text text-danger';
+                console.error('Error:', error);
+            });
+    }
+    
+    function updatePriceWithVoucher(discountPercent) {
+        const soNguoi = parseInt(document.getElementById('so_luong_nguoi').value);
+        // Lấy giá từ thông tin tour được truyền từ server
+        const originalPrice = ${tourStart.gia_rieng != null ? tourStart.gia_rieng : (tour.sale_price != null ? tour.sale_price : tour.gia_tour)};
+        const discountAmount = (originalPrice * discountPercent / 100) * soNguoi;
+        const finalPrice = (originalPrice * soNguoi) - discountAmount;
+        
+        // Hiển thị thông tin giá
+        const priceInfo = document.createElement('div');
+        priceInfo.className = 'alert alert-info mt-2';
+        priceInfo.innerHTML = `
+            <strong>Thông tin giá:</strong><br>
+            Giá gốc: ${(originalPrice * soNguoi).toLocaleString('vi-VN')} VNĐ<br>
+            Giảm giá: ${discountAmount.toLocaleString('vi-VN')} VNĐ<br>
+            <strong>Tổng tiền sau giảm giá: ${finalPrice.toLocaleString('vi-VN')} VNĐ</strong>
+        `;
+        
+        // Xóa thông tin giá cũ nếu có
+        const oldPriceInfo = document.querySelector('.alert-info');
+        if (oldPriceInfo) {
+            oldPriceInfo.remove();
+        }
+        
+        // Thêm thông tin giá mới
+        document.getElementById('voucher_code').parentNode.parentNode.appendChild(priceInfo);
+    }
+    
+    // Reset voucher message khi thay đổi mã
+    document.getElementById('voucher_code').addEventListener('input', function() {
+        document.getElementById('voucherMessage').textContent = '';
+        document.getElementById('voucherMessage').className = 'form-text text-muted';
+        
+        // Xóa thông tin giá cũ
+        const oldPriceInfo = document.querySelector('.alert-info');
+        if (oldPriceInfo) {
+            oldPriceInfo.remove();
+        }
+    });
 </script>
 </body>
 

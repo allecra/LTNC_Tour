@@ -8,14 +8,69 @@
     <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
     <link href="/public/admin/css/styles.css" rel="stylesheet" />
     <style>
-        /* Refresh button styles */
-        .refresh-btn {
-            cursor: pointer;
-            transition: transform 0.2s;
+                
+        /* Chart container styles */
+        .chart-container {
+            position: relative;
+            margin: auto;
         }
         
-        .refresh-btn:hover {
-            transform: rotate(180deg);
+        /* Season legend styles */
+        .season-legend {
+            padding: 10px;
+        }
+        
+        .season-legend .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        
+        .season-legend .legend-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .season-legend .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .season-legend .legend-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #495057;
+            flex: 1;
+        }
+        
+        .season-legend .legend-value {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        /* Card improvements */
+        .card.shadow-sm {
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .card.shadow-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+        
+        .card-header {
+            border-bottom: none;
+            font-weight: 600;
         }
     </style>
     <script src="/public/admin/js/moment.min.js"></script>
@@ -53,20 +108,16 @@
                     </a>
                     <div class="sb-sidenav-menu-heading">Trang quản lý</div>
                     <a class="nav-link" href="/admin/user">
-                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                        Quản lý người dùng
-                    </a>
-                    <a class="nav-link" href="/admin/tour">
-                        <div class="sb-nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>
-                        Quản lý tour
-                    </a>
-                    <a class="nav-link" href="/admin/booking">
-                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
-                        Quản lý booking
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý người dùng
                     </a>
                     <a class="nav-link" href="/admin/guides">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
-                        Quản lý hướng dẫn viên
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Quản lý hướng dẫn viên
+                    </a>
+                    <a class="nav-link" href="/admin/tour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>Quản lý tour
+                    </a>
+                    <a class="nav-link" href="/admin/booking">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>Quản lý booking
                     </a>
                     <a class="nav-link" href="/admin/review">
                         <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
@@ -77,13 +128,12 @@
                         Quản lý voucher
                     </a>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaction" aria-expanded="false">
-                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
-                        Quản lý giao dịch
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>Quản lý giao dịch
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link" href="/admin/payment-method">Thông tin chuyển khoản</a>
                             <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
                         </nav>
                     </div>
@@ -101,9 +151,6 @@
             <div class="container-fluid px-4">
                 <div class="d-flex justify-content-between align-items-center mt-4">
                     <h1>Thống kê tổng quan</h1>
-                    <button type="button" class="btn btn-outline-primary refresh-btn" onclick="refreshDashboard()" title="Làm mới dữ liệu">
-                        <i class="fas fa-sync-alt"></i> Làm mới
-                    </button>
                 </div>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Dashboard</li>
@@ -175,28 +222,40 @@
 
                 <!-- Biểu đồ thống kê -->
                 <div class="row">
-                    <div class="col-md-6 mb-4 d-flex align-items-stretch">
-                        <div class="card h-100 w-100">
-                            <div class="card-header">
-                                <i class="fas fa-chart-bar me-1"></i>
-                                Thống kê tour theo tháng
+                    <div class="col-lg-6 col-md-12 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header" style="background: linear-gradient(135deg, #4BC0C0 0%, #36A2EB 100%); color: white;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    <h6 class="mb-0">Thống kê tour đã hoàn tất theo tháng</h6>
+                                </div>
                             </div>
-                            <div class="card-body d-flex justify-content-center align-items-center" style="height:220px;">
-                                <canvas id="tourMonthChart" style="max-width:100%; height:180px;"></canvas>
+                            <div class="card-body">
+                                <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                                    <canvas id="tourMonthChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-4 d-flex align-items-stretch">
-                        <div class="card h-100 w-100">
-                            <div class="card-header">
-                                <i class="fas fa-sun me-1"></i>
-                                Thống kê tour theo mùa
-                            </div>
-                            <div class="card-body d-flex flex-row justify-content-center align-items-center" style="height:220px;">
-                                <div class="d-flex flex-column align-items-center justify-content-center" style="min-width:120px;">
-                                    <canvas id="tourSeasonChart" style="width:120px; height:120px;"></canvas>
+                    <div class="col-lg-6 col-md-12 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-success text-white">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-sun me-2"></i>
+                                    <h6 class="mb-0">Thống kê tour đã hoàn tất theo mùa</h6>
                                 </div>
-                                <div id="seasonLegend" class="ms-3 d-flex flex-column align-items-start justify-content-center"></div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                                            <canvas id="tourSeasonChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="seasonLegend" class="season-legend"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -206,12 +265,7 @@
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; Your Website 2024</div>
-                    <div>
-                        <a href="#">Privacy Policy</a>
-                        &middot;
-                        <a href="#">Terms &amp; Conditions</a>
-                    </div>
+                    <div class="text-muted">&copy; 2025 Travel Admin</div>
                 </div>
             </div>
         </footer>
@@ -219,94 +273,185 @@
 </div>
 
 <script src="/public/admin/js/jquery.js"></script>
-<script src="/public/admin/js/boostrap-bundle.min.js"></script>
 <script src="/public/admin/js/scripts.js"></script>
 <script src="/public/admin/js/datatables.min.js"></script>
 <script src="/public/admin/js/all.min.js"></script>
 <script src="/public/admin/js/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Kiểm tra Chart.js loading
+window.addEventListener('load', function() {
+    if (typeof Chart !== 'undefined') {
+        console.log('✅ Chart.js loaded successfully from CDN');
+    } else {
+        console.error('❌ Chart.js failed to load from CDN');
+    }
+});
+</script>
+<script>
 // Global variables để lưu trữ chart instances
-let monthChart = null;
-let seasonChart = null;
+let tourMonthChart = null;
+let tourSeasonChart = null;
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log('=== FRONTEND DEBUG ===');
+    console.log('DOM loaded, starting chart initialization...');
     
-    // Lấy dữ liệu từ Thymeleaf
-    const chartData = {
-        monthLabels: /*[[${monthLabels}]]*/ [],
-        monthData: /*[[${monthData}]]*/ [],
-        seasonLabels: /*[[${seasonLabels}]]*/ [],
-        seasonData: /*[[${seasonData}]]*/ []
-    };
+    // Kiểm tra xem Chart.js đã load chưa
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js chưa được load!');
+        return;
+    }
+    console.log('Chart.js loaded successfully');
     
-    console.log('Chart data from Thymeleaf:', chartData);
-    console.log('Month labels type:', typeof chartData.monthLabels, 'Length:', chartData.monthLabels ? chartData.monthLabels.length : 'null');
-    console.log('Month data type:', typeof chartData.monthData, 'Length:', chartData.monthData ? chartData.monthData.length : 'null');
-    console.log('Season labels type:', typeof chartData.seasonLabels, 'Length:', chartData.seasonLabels ? chartData.seasonLabels.length : 'null');
-    console.log('Season data type:', typeof chartData.seasonData, 'Length:', chartData.seasonData ? chartData.seasonData.length : 'null');
+    // Kiểm tra xem jQuery đã load chưa
+    if (typeof $ === 'undefined') {
+        console.error('jQuery chưa được load!');
+        return;
+    }
+    console.log('jQuery loaded successfully');
     
-    // Tạo biểu đồ với dữ liệu từ Thymeleaf
-    createCharts(chartData);
+    // Kiểm tra canvas elements
+    const monthCanvas = document.getElementById('tourMonthChart');
+    const seasonCanvas = document.getElementById('tourSeasonChart');
+    
+    if (!monthCanvas) {
+        console.error('Không tìm thấy canvas tourMonthChart');
+    } else {
+        console.log('Found tourMonthChart canvas');
+    }
+    
+    if (!seasonCanvas) {
+        console.error('Không tìm thấy canvas tourSeasonChart');
+    } else {
+        console.log('Found tourSeasonChart canvas');
+    }
+    
+    // Tải dữ liệu tour đã hoàn tất từ API
+    loadCompletedTourCharts();
     
     console.log('=== END FRONTEND DEBUG ===');
 });
 
-// Function để refresh dữ liệu (reload trang)
-function refreshDashboard() {
-    location.reload();
+
+
+// Function để tải dữ liệu tour đã hoàn tất và tạo biểu đồ
+function loadCompletedTourCharts() {
+    console.log('Starting to load chart data...');
+    
+    // Tải dữ liệu tour đã hoàn tất theo tháng
+    $.ajax({
+        url: '/api/booking/completed-by-month',
+        method: 'GET',
+        success: function(response) {
+            console.log('Month API response:', response);
+            if (response && response.data && response.data.length > 0) {
+                console.log('Month data received:', response.data);
+                createTourMonthChart(response.data);
+            } else {
+                console.warn('Month API response không có data hoặc data rỗng:', response);
+                // Hiển thị thông báo không có dữ liệu
+                createTourMonthChart([]);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Lỗi khi tải dữ liệu tour đã hoàn tất theo tháng:', {
+                status: status,
+                error: error,
+                response: xhr.responseText
+            });
+            // Hiển thị thông báo lỗi
+            createTourMonthChart([]);
+        }
+    });
+
+    // Tải dữ liệu tour đã hoàn tất theo mùa
+    $.ajax({
+        url: '/api/booking/completed-by-season',
+        method: 'GET',
+        success: function(response) {
+            console.log('Season API response:', response);
+            if (response && response.data && response.data.length > 0) {
+                console.log('Season data received:', response.data);
+                createTourSeasonChart(response.data);
+            } else {
+                console.warn('Season API response không có data hoặc data rỗng:', response);
+                // Hiển thị thông báo không có dữ liệu
+                createTourSeasonChart([]);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Lỗi khi tải dữ liệu tour đã hoàn tất theo mùa:', {
+                status: status,
+                error: error,
+                response: xhr.responseText
+            });
+            // Hiển thị thông báo lỗi
+            createTourSeasonChart([]);
+        }
+    });
 }
 
-// Function để tạo biểu đồ
-function createCharts(chartData) {
-    console.log('Creating charts with data:', chartData);
-    
-    const monthLabels = chartData.monthLabels || [];
-    const monthData = chartData.monthData || [];
-    const seasonLabels = chartData.seasonLabels || [];
-    const seasonData = chartData.seasonData || [];
-    
-    console.log('Processed data:', {
-        monthLabels: monthLabels,
-        monthData: monthData,
-        seasonLabels: seasonLabels,
-        seasonData: seasonData
-    });
-    
-    // Kiểm tra dữ liệu trước khi tạo biểu đồ
-    if (monthLabels.length === 0 || monthData.length === 0) {
-        console.warn('Month data is empty or invalid');
+// Function để tạo biểu đồ booking theo tháng
+function createTourMonthChart(data) {
+    if (tourMonthChart) {
+        tourMonthChart.destroy();
     }
     
-    if (seasonLabels.length === 0 || seasonData.length === 0) {
-        console.warn('Season data is empty or invalid');
-    }
-    
-    // Tạo biểu đồ tour theo tháng
-    if (monthChart) {
-        monthChart.destroy();
-    }
-    
-    const monthCtx = document.getElementById('tourMonthChart');
-    if (!monthCtx) {
+    const ctx = document.getElementById('tourMonthChart');
+    if (!ctx) {
         console.error('Cannot find tourMonthChart canvas element');
         return;
     }
+
+    // Kiểm tra và xử lý dữ liệu
+    if (!data || data.length === 0) {
+        console.warn('No data provided for month chart');
+        // Hiển thị thông báo không có dữ liệu
+        ctx.style.display = 'none';
+        const container = ctx.parentElement;
+        if (container) {
+            container.innerHTML = '<div class="text-center text-muted" style="padding: 50px;">Không có dữ liệu booking hoàn tất theo tháng</div>';
+        }
+        return;
+    }
+
+    // Sắp xếp dữ liệu theo tháng
+    const sortedData = data.sort((a, b) => (a.month || 0) - (b.month || 0));
     
-    monthChart = new Chart(monthCtx.getContext('2d'), {
+    // Xử lý dữ liệu từ bảng tour
+    const labels = sortedData.map(item => `Tháng ${item.month || 'N/A'}`);
+    const values = sortedData.map(item => item.count || 0);
+    
+    console.log('Month chart data:', { labels, values });
+    
+    tourMonthChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
-            labels: monthLabels,
+            labels: labels,
             datasets: [{
-                label: 'Số tour',
-                data: monthData,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointRadius: 3,
-                tension: 0.3
+                label: 'Số tour hoàn tất',
+                data: values,
+                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 4,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                pointHoverBorderWidth: 4,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(75, 192, 192, 0.1)',
+                    below: 'rgba(255, 99, 132, 0.1)'
+                },
+                tension: 0.3,
+                borderDash: [0, 0],
+                pointStyle: 'circle'
             }]
         },
         options: {
@@ -316,53 +461,144 @@ function createCharts(chartData) {
                 y: { 
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1,
+                        precision: 0,
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
                     }
-                } 
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
             },
             plugins: {
                 title: { display: false },
                 legend: {
                     display: true,
-                    position: 'top'
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                                                 label: function(context) {
+                             return `Số tour: ${context.parsed.y}`;
+                         }
+                    }
                 }
             }
         }
     });
+}
 
-    // Tạo biểu đồ tour theo mùa
-    if (seasonChart) {
-        seasonChart.destroy();
+// Function để tạo biểu đồ booking theo mùa
+function createTourSeasonChart(data) {
+    if (tourSeasonChart) {
+        tourSeasonChart.destroy();
     }
     
-    const seasonCtx = document.getElementById('tourSeasonChart');
-    if (!seasonCtx) {
+    const ctx = document.getElementById('tourSeasonChart');
+    if (!ctx) {
         console.error('Cannot find tourSeasonChart canvas element');
         return;
     }
+
+    // Kiểm tra và xử lý dữ liệu
+    if (!data || data.length === 0) {
+        console.warn('No data provided for season chart');
+        // Hiển thị thông báo không có dữ liệu
+        ctx.style.display = 'none';
+        const container = ctx.parentElement;
+        if (container) {
+            container.innerHTML = '<div class="text-center text-muted" style="padding: 50px;">Không có dữ liệu booking hoàn tất theo mùa</div>';
+        }
+        return;
+    }
+
+    console.log('Raw season data received:', data);
+
+    // Xử lý dữ liệu từ bảng tour kết hợp với bảng season
+    // Chuyển đổi tên mùa từ tiếng Anh sang tiếng Việt
+    const seasonNameMap = {
+        'Xuan': 'Xuân',
+        'Ha': 'Hạ', 
+        'Thu': 'Thu',
+        'Dong': 'Đông'
+    };
     
-    seasonChart = new Chart(seasonCtx.getContext('2d'), {
+    // Sắp xếp dữ liệu theo thứ tự mùa
+    const sortedData = data.sort((a, b) => {
+        const seasonOrder = { 'Xuan': 1, 'Ha': 2, 'Thu': 3, 'Dong': 4 };
+        return (seasonOrder[a.seasonName] || 0) - (seasonOrder[b.seasonName] || 0);
+    });
+    
+    // Xử lý dữ liệu từ API
+    const labels = sortedData.map(item => {
+        const seasonName = item.seasonName || 'N/A';
+        return seasonNameMap[seasonName] || seasonName;
+    });
+    const values = sortedData.map(item => item.count || 0);
+    
+    console.log('Processed season data:', { 
+        sortedData: sortedData,
+        labels: labels, 
+        values: values 
+    });
+    
+    // Tạo màu sắc động theo dữ liệu
+    const seasonColors = {
+        'Xuân': 'rgba(255, 99, 132, 0.8)',   // Hồng
+        'Hạ': 'rgba(255, 206, 86, 0.8)',     // Vàng
+        'Thu': 'rgba(75, 192, 192, 0.8)',    // Xanh lá
+        'Đông': 'rgba(153, 102, 255, 0.8)'   // Tím
+    };
+    
+    const seasonBorderColors = {
+        'Xuân': 'rgba(255, 99, 132, 1)',
+        'Hạ': 'rgba(255, 206, 86, 1)',
+        'Thu': 'rgba(75, 192, 192, 1)',
+        'Đông': 'rgba(153, 102, 255, 1)'
+    };
+    
+    const backgroundColor = labels.map(label => seasonColors[label] || 'rgba(128, 128, 128, 0.8)');
+    const borderColor = labels.map(label => seasonBorderColors[label] || 'rgba(128, 128, 128, 1)');
+    
+    console.log('Chart colors:', { backgroundColor, borderColor });
+    
+    tourSeasonChart = new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
-            labels: seasonLabels,
+            labels: labels,
             datasets: [{
-                label: 'Số tour',
-                data: seasonData,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
-                ],
-                borderWidth: 2,
-                hoverOffset: 8,
-                cutout: '65%'
+                label: 'Số tour hoàn tất',
+                data: values,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                borderWidth: 3,
+                hoverOffset: 15,
+                cutout: '60%'
             }]
         },
         options: {
@@ -370,23 +606,39 @@ function createCharts(chartData) {
             maintainAspectRatio: false,
             plugins: {
                 title: { display: false },
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.parsed} (${percentage}%)`;
+                        }
+                    }
+                }
             }
         }
     });
 
-    // Tạo custom legend cho biểu đồ mùa
-    createSeasonLegend(seasonLabels);
+    // Tạo custom legend
+    createSeasonLegend(labels, values);
 }
 
 // Function để tạo legend cho biểu đồ mùa
-function createSeasonLegend(seasonLabels) {
-    const legendColors = [
-        'rgba(255, 99, 132, 0.7)',
-        'rgba(255, 206, 86, 0.7)',
-        'rgba(75, 192, 192, 0.7)',
-        'rgba(153, 102, 255, 0.7)'
-    ];
+function createSeasonLegend(labels, values) {
+    // Map màu sắc theo tên mùa tiếng Việt
+    const seasonColors = {
+        'Xuân': 'rgba(255, 99, 132, 0.8)',   // Hồng
+        'Hạ': 'rgba(255, 206, 86, 0.8)',     // Vàng
+        'Thu': 'rgba(75, 192, 192, 0.8)',    // Xanh lá
+        'Đông': 'rgba(153, 102, 255, 0.8)'   // Tím
+    };
     
     const legendContainer = document.getElementById('seasonLegend');
     if (!legendContainer) {
@@ -396,21 +648,29 @@ function createSeasonLegend(seasonLabels) {
     
     legendContainer.innerHTML = '';
     
-    if (!seasonLabels || seasonLabels.length === 0) {
-        console.warn('Season labels are empty');
+    if (!labels || labels.length === 0) {
+        legendContainer.innerHTML = '<div class="text-center text-muted">Không có dữ liệu</div>';
         return;
     }
     
-    seasonLabels.forEach(function(label, idx) {
+    labels.forEach(function(label, idx) {
         if (!label) {
             console.warn('Empty label at index:', idx);
             return;
         }
         
-        const color = legendColors[idx % legendColors.length];
+        const color = seasonColors[label] || 'rgba(128, 128, 128, 0.8)';
+        const count = values[idx] || 0;
+        const total = values.reduce((a, b) => a + b, 0);
+        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+        
         const legendItem = document.createElement('div');
-        legendItem.className = 'd-flex align-items-center my-1';
-        legendItem.innerHTML = `<span style="display:inline-block;width:14px;height:14px;background:${color};border-radius:3px;margin-right:6px;"></span><span style="font-size:13px">${label}</span>`;
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+            <div class="legend-color" style="background-color: ${color};"></div>
+            <div class="legend-label">${label}</div>
+            <div class="legend-value">${count} (${percentage}%)</div>
+        `;
         legendContainer.appendChild(legendItem);
     });
 }
@@ -423,6 +683,5 @@ function createSeasonLegend(seasonLabels) {
 </script>
 </body>
 </html>
-
 
 

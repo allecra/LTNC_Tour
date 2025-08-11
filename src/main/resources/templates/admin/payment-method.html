@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Phương thức thanh toán</title>
+  <title>Thông tin người nhận tiền</title>
   <link rel="stylesheet" href="/public/admin/css/fontawesome.min.css">
   <link rel="stylesheet" type="text/css" href="/public/admin/css/datatables.min.css"/>
   <link href="/public/admin/css/styles.css" rel="stylesheet" />
@@ -69,7 +69,7 @@
                     </a>
                     <div class="collapse show" id="collapseTransaction" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link active" href="/admin/payment-method">Phương thức thanh toán</a>
+                            <a class="nav-link active" href="/admin/payment-method">Thông tin người nhận tiền</a>
                             <a class="nav-link" href="/admin/transaction-history">Lịch sử giao dịch</a>
                         </nav>
                     </div>
@@ -83,27 +83,29 @@
     </div>
     <div id="layoutSidenav_content">
         <main class="container-fluid px-4">
-            <h1 class="mt-4">Phương thức thanh toán</h1>
+            <h1 class="mt-4">Thông tin người nhận tiền</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/admin/index">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Phương thức thanh toán</li>
+                    <li class="breadcrumb-item active" aria-current="page">Thông tin người nhận tiền</li>
                 </ol>
             </nav>
             <div class="card mb-4 rounded">
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col">
-                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm..." id="searchPaymentMethodInput" />
+                            <input type="text" class="form-control ms-2" placeholder="Tìm kiếm thông tin người nhận tiền..." id="searchPaymentMethodInput" />
                         </div>
                     </div>
                     <table class="table table-bordered table-hover" id="paymentMethodTable">
                         <thead class="table-dark">
                             <tr>
                                 <th>STT</th>
-                                <th>Tên phương thức</th>
-                                <th>Mô tả</th>
-                                <th>Trạng thái</th>
+                                <th>Họ tên người nhận</th>
+                                <th>Số tài khoản</th>
+                                <th>Tên ngân hàng</th>
+                                <th>Chi nhánh</th>
+                                <th>Số điện thoại</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
@@ -138,7 +140,7 @@
         const pageSize = 10;
         function fetchPaymentMethods() {
             $.ajax({
-                url: '/api/payment-method/getAll',
+                url: '/api/payment/getAll',
                 method: 'GET',
                 success: function(response) {
                     window.paymentMethods = response.data || [];
@@ -158,9 +160,11 @@
             const keyword = $(this).val().toLowerCase();
             window.filteredPaymentMethods = window.paymentMethods.filter(function(p) {
                 return (
-                    (p.name || '').toLowerCase().includes(keyword) ||
-                    (p.description || '').toLowerCase().includes(keyword) ||
-                    (p.status || '').toLowerCase().includes(keyword)
+                    (p.hoTenNguoiNhan || '').toLowerCase().includes(keyword) ||
+                    (p.soTaiKhoan || '').toLowerCase().includes(keyword) ||
+                    (p.tenNganHang || '').toLowerCase().includes(keyword) ||
+                    (p.chiNhanh || '').toLowerCase().includes(keyword) ||
+                    (p.sdt || '').toLowerCase().includes(keyword)
                 );
             });
             currentPage = 1;
@@ -176,9 +180,11 @@
                 const p = data[i];
                 var row = `<tr>
                     <td class="text-center">${i + 1}</td>
-                    <td>${p.name || ''}</td>
-                    <td>${p.description || ''}</td>
-                    <td>${p.status || ''}</td>
+                    <td>${p.hoTenNguoiNhan || ''}</td>
+                    <td>${p.soTaiKhoan || ''}</td>
+                    <td>${p.tenNganHang || ''}</td>
+                    <td>${p.chiNhanh || ''}</td>
+                    <td>${p.sdt || ''}</td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center align-items-center gap-1">
                             <button type="button" class="btn btn-primary btn-sm" onclick="editPaymentMethod(${p.id})" title="Sửa">
@@ -231,11 +237,11 @@
         });
     });
 
-    // Xóa phương thức thanh toán
+    // Xóa thông tin người nhận tiền
     function deletePaymentMethod(id) {
-        if (confirm("Bạn có chắc chắn muốn xóa phương thức này?")) {
+        if (confirm("Bạn có chắc chắn muốn xóa thông tin này?")) {
             $.ajax({
-                url: '/api/payment-method/' + id,
+                url: '/api/payment/' + id,
                 type: 'DELETE',
                 success: function(response) {
                     alert(response.message || "Xóa thành công!");
@@ -248,30 +254,38 @@
         }
     }
 
-    // Sửa phương thức thanh toán
+    // Sửa thông tin người nhận tiền
     function editPaymentMethod(id) {
         const p = (window.paymentMethods || []).find(pm => pm.id === id) || (window.filteredPaymentMethods || []).find(pm => pm.id === id);
-        if (!p) return alert("Không tìm thấy phương thức!");
+        if (!p) return alert("Không tìm thấy thông tin!");
         let modalHtml = `
         <div class="modal fade" id="editPaymentMethodModal" tabindex="-1" aria-labelledby="editPaymentMethodModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form class="modal-content" id="formEditPaymentMethod">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editPaymentMethodModalLabel">Sửa phương thức thanh toán</h5>
+                        <h5 class="modal-title" id="editPaymentMethodModalLabel">Sửa thông tin người nhận tiền</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label>Tên phương thức</label>
-                            <input type="text" name="name" class="form-control" value="${p.name || ''}" required />
+                            <label>Họ tên người nhận</label>
+                            <input type="text" name="hoTenNguoiNhan" class="form-control" value="${p.hoTenNguoiNhan || ''}" required />
                         </div>
                         <div class="mb-3">
-                            <label>Mô tả</label>
-                            <input type="text" name="description" class="form-control" value="${p.description || ''}" />
+                            <label>Số tài khoản</label>
+                            <input type="text" name="soTaiKhoan" class="form-control" value="${p.soTaiKhoan || ''}" required />
                         </div>
                         <div class="mb-3">
-                            <label>Trạng thái</label>
-                            <input type="text" name="status" class="form-control" value="${p.status || ''}" />
+                            <label>Tên ngân hàng</label>
+                            <input type="text" name="tenNganHang" class="form-control" value="${p.tenNganHang || ''}" required />
+                        </div>
+                        <div class="mb-3">
+                            <label>Chi nhánh</label>
+                            <input type="text" name="chiNhanh" class="form-control" value="${p.chiNhanh || ''}" />
+                        </div>
+                        <div class="mb-3">
+                            <label>Số điện thoại</label>
+                            <input type="text" name="sdt" class="form-control" value="${p.sdt || ''}" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -287,12 +301,14 @@
         $('#formEditPaymentMethod').submit(function(e) {
             e.preventDefault();
             var data = {
-                name: $(this).find('input[name="name"]').val(),
-                description: $(this).find('input[name="description"]').val(),
-                status: $(this).find('input[name="status"]').val()
+                hoTenNguoiNhan: $(this).find('input[name="hoTenNguoiNhan"]').val(),
+                soTaiKhoan: $(this).find('input[name="soTaiKhoan"]').val(),
+                tenNganHang: $(this).find('input[name="tenNganHang"]').val(),
+                chiNhanh: $(this).find('input[name="chiNhanh"]').val(),
+                sdt: $(this).find('input[name="sdt"]').val()
             };
             $.ajax({
-                url: '/api/payment-method/' + id,
+                url: '/api/payment/' + id,
                 type: 'PUT',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",

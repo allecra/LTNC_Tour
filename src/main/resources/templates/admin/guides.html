@@ -187,15 +187,17 @@
                                     <div>
                                         <div class="small">Nữ</div>
                                         <div class="h4" id="femaleGuides">0</div>
-                </div>
+                                    </div>
                                     <div class="align-self-center">
                                         <i class="fas fa-female fa-2x"></i>
-                            </div>
-                            </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-  </div>
+                    
+
+                </div>
 
                 <!-- Filter Section -->
                 <div class="card mb-4">
@@ -241,12 +243,14 @@
                     </div>
                 </div>
                 
+
+                
                 <!-- Bảng dữ liệu -->
                 <div class="card mb-4 rounded">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Bảng Hướng Dẫn Viên</h5>
-                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGuideModal">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGuideModal">
                                 <i class="fas fa-plus"></i> Thêm mới hướng dẫn viên
                             </button>
                         </div>
@@ -432,7 +436,6 @@
     let totalPages = 0;
     let totalRecords = 0;
     let deleteGuideId = null;
-    let searchTerm = '';
 
     $(document).ready(function() {
         console.log('Document ready, initializing guides page...');
@@ -546,46 +549,34 @@
     });
     
     function loadGuides() {
-        console.log('Loading guides with params:', { currentPage, pageSize, searchTerm });
+        console.log('Loading guides with params:', { currentPage, pageSize });
         
-        // Lấy tất cả dữ liệu và lọc client-side để đảm bảo lấy được hướng dẫn viên
+        // Sử dụng API riêng cho guides
         $.ajax({
-            url: '/api/admin/user/getAll?pageIndex=0&pageSize=1000',
+            url: '/api/admin/user/getAllGuides',
             method: 'GET',
+            data: {
+                pageIndex: currentPage,
+                pageSize: pageSize,
+                hoTen: $('#hoTenFilter').val().trim() || null,
+                email: $('#emailFilter').val().trim() || null,
+                sdt: $('#sdtFilter').val().trim() || null,
+                gioiTinh: $('#gioiTinhFilter').val() || null
+            },
             success: function(response) {
                 console.log('API response:', response);
                 
                 if (response.data && response.data.content) {
-                    // Lọc chỉ lấy hướng dẫn viên (role_id = 3)
-                    let allGuides = response.data.content.filter(user => {
-                        const roleId = user.role && user.role.id ? user.role.id : user.role_id || user.role;
-                        console.log('User:', user.ho_ten, 'Role ID:', roleId);
-                        return roleId === 3;
-                    });
+                    let allGuides = response.data.content;
+                    console.log('Guides from API:', allGuides);
                     
-                    console.log('Filtered guides:', allGuides);
+
                     
-                    // Tìm kiếm client-side
-                    if (searchTerm) {
-                        const term = searchTerm.toLowerCase();
-                        allGuides = allGuides.filter(guide => 
-                            (guide.ho_ten && guide.ho_ten.toLowerCase().includes(term)) ||
-                            (guide.email && guide.email.toLowerCase().includes(term)) ||
-                            (guide.sdt && guide.sdt.toLowerCase().includes(term)) ||
-                            (guide.username && guide.username.toLowerCase().includes(term))
-                        );
-                    }
+                    totalRecords = response.data.totalElements;
+                    totalPages = response.data.totalPages;
                     
-                    totalRecords = allGuides.length;
-                    totalPages = Math.ceil(totalRecords / pageSize);
-                    
-                    // Phân trang client-side
-                    const startIdx = currentPage * pageSize;
-                    const endIdx = Math.min(startIdx + pageSize, totalRecords);
-                    const pageGuides = allGuides.slice(startIdx, endIdx);
-                    
-                    console.log('Page guides:', pageGuides);
-                    renderGuideTable(pageGuides);
+                    console.log('Total records:', totalRecords, 'Total pages:', totalPages);
+                    renderGuideTable(allGuides);
                     renderPagination();
                 } else {
                     console.log('No data found');
@@ -625,7 +616,6 @@
         $('#sdtFilter').val('');
         $('#gioiTinhFilter').val('');
         
-        searchTerm = '';
         currentPage = 0;
         loadGuides();
     }
@@ -643,7 +633,7 @@
         console.log('Loading guides with filters:', params); // Debug
         
         $.ajax({
-            url: '/api/admin/user/getAll',
+            url: '/api/admin/user/getAllGuides',
             method: 'GET',
             data: params,
             success: function(response) {
@@ -659,9 +649,17 @@
                     totalRecords = response.data.totalElements || 0;
                     currentPage = response.data.currentPage || 0;
                     renderPagination();
+                    
+                    // Cập nhật thống kê dựa trên dữ liệu đã filter
+                    updateStatisticsFromData(response.data.content);
                 } else {
                     console.log('No data or content found'); // Debug
                     renderGuideTable([]);
+                    // Reset thống kê khi không có dữ liệu
+                    $('#totalGuides').text('0');
+                    $('#maleGuides').text('0');
+                    $('#femaleGuides').text('0');
+                    $('#otherGuides').text('0');
                 }
             },
             error: function(xhr, status, error) {
@@ -758,18 +756,40 @@
         });
     }
     
+    function updateStatisticsFromData(guides) {
+        if (!guides || guides.length === 0) {
+            $('#totalGuides').text('0');
+            $('#maleGuides').text('0');
+            $('#femaleGuides').text('0');
+            return;
+        }
+        
+        const totalGuides = guides.length;
+        const maleGuides = guides.filter(g => g.gioi_tinh === 'Nam').length;
+        const femaleGuides = guides.filter(g => g.gioi_tinh === 'Nữ').length;
+        
+        console.log('Filtered Statistics:', { totalGuides, maleGuides, femaleGuides });
+        
+        $('#totalGuides').text(totalGuides);
+        $('#maleGuides').text(maleGuides);
+        $('#femaleGuides').text(femaleGuides);
+    }
+    
+
+    
     function loadGuideStatistics() {
         console.log('Loading guide statistics...');
         $.ajax({
-            url: '/api/admin/user/getAll?pageIndex=0&pageSize=1000',
+            url: '/api/admin/user/getAllGuides',
             method: 'GET',
+            data: {
+                pageIndex: 0,
+                pageSize: 1000
+            },
             success: function(response) {
                 console.log('Guide statistics response:', response);
                 if (response.data && response.data.content) {
-                    const guides = response.data.content.filter(user => {
-                        const roleId = user.role && user.role.id ? user.role.id : user.role_id || user.role;
-                        return roleId === 3;
-                    });
+                    const guides = response.data.content;
                     
                     console.log('Guides for statistics:', guides);
                     
@@ -794,7 +814,6 @@
                 console.error('Status:', status);
                 console.error('Response:', xhr.responseText);
                 $('#totalGuides').text('0');
-                $('#activeGuides').text('0');
                 $('#maleGuides').text('0');
                 $('#femaleGuides').text('0');
             }

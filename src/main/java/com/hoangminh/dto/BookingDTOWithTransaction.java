@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class BookingDTOWithTransaction {
 
     private Long id;
-    private String ma_giao_dich;
+    private String ma_noi_dung_chuyen_khoan;
     private Long user_id;
     private Long tour_id;
     private String ten_tour;
@@ -39,11 +39,11 @@ public class BookingDTOWithTransaction {
         this.payment_status = payment_status;
     }
 
-    public BookingDTOWithTransaction(Long id, String ma_giao_dich, Long user_id, Long tour_id, String ten_tour, 
+        public BookingDTOWithTransaction(Long id, String ma_noi_dung_chuyen_khoan, Long user_id, Long tour_id, String ten_tour,
             Integer so_luong_nguoi, Date ngay_khoi_hanh, BigDecimal tong_tien, String trang_thai, 
             String payment_method, String ghi_chu, Date booking_at) {
         this.id = id;
-        this.ma_giao_dich = ma_giao_dich;
+        this.ma_noi_dung_chuyen_khoan = ma_noi_dung_chuyen_khoan;
         this.user_id = user_id;
         this.tour_id = tour_id;
         this.ten_tour = ten_tour;

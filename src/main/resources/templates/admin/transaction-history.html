@@ -175,11 +175,8 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="phuongThucFilter" class="form-label">Phương thức</label>
-                            <select class="form-select" id="phuongThucFilter">
-                                <option value="">Tất cả</option>
-                                <option value="Chuyển khoản">Chuyển khoản</option>
-                            </select>
+                            <label for="maNoiDungFilter" class="form-label">Mã nội dung chuyển khoản</label>
+                            <input type="text" class="form-control" id="maNoiDungFilter" placeholder="Mã GD...">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">&nbsp;</label>
@@ -206,10 +203,10 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>STT</th>
-                                <th>Mã giao dịch</th>
+                                <th>Mã nội dung chuyển khoản</th>
                                 <th>Khách hàng</th>
                                 <th>Số tiền</th>
-                                <th>Phương thức</th>
+                                <th>Tài khoản nhận tiền</th>
                                 <th>Thời gian</th>
                                 <th>Trạng thái</th>
                             </tr>
@@ -249,7 +246,7 @@
         
         if (filters.khachHang) params.append('khachHang', filters.khachHang);
         if (filters.trangThai) params.append('trangThai', filters.trangThai);
-        if (filters.phuongThuc) params.append('phuongThuc', filters.phuongThuc);
+        if (filters.maNoiDung) params.append('maNoiDung', filters.maNoiDung);
         
         if (params.toString()) {
             url += '?' + params.toString();
@@ -280,8 +277,8 @@
         }
         
         transactions.forEach(function(transaction, index) {
-            // transaction[0] = stt, transaction[1] = ma_giao_dich, transaction[2] = khach_hang
-            // transaction[3] = so_tien, transaction[4] = phuong_thuc, transaction[5] = thoi_gian
+            // transaction[0] = stt, transaction[1] = ma_noi_dung_chuyen_khoan, transaction[2] = khach_hang
+            // transaction[3] = so_tien, transaction[4] = tai_khoan_nhan_tien, transaction[5] = thoi_gian
             // transaction[6] = trang_thai
             
             const row = `
@@ -290,7 +287,7 @@
                     <td><span class="badge bg-primary">${transaction[1]}</span></td>
                     <td>${transaction[2]}</td>
                     <td>${formatCurrency(transaction[3])}</td>
-                    <td>${transaction[4]}</td>
+                    <td><span class="badge bg-info">${transaction[4] || 'Chưa có thông tin'}</span></td>
                     <td>${formatDateTime(transaction[5])}</td>
                     <td class="text-center">${getStatusBadge(transaction[6])}</td>
                 </tr>
@@ -321,7 +318,7 @@
         const filters = {
             khachHang: $('#khachHangFilter').val(),
             trangThai: $('#trangThaiFilter').val(),
-            phuongThuc: $('#phuongThucFilter').val()
+            maNoiDung: $('#maNoiDungFilter').val()
         };
         
         loadTransactionTable(filters);
@@ -330,7 +327,7 @@
     function clearFilters() {
         $('#khachHangFilter').val('');
         $('#trangThaiFilter').val('');
-        $('#phuongThucFilter').val('');
+        $('#maNoiDungFilter').val('');
         loadTransactionTable();
     }
     

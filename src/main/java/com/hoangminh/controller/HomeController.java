@@ -307,7 +307,8 @@ public class HomeController {
 	ModelAndView bookingAction(@PathVariable("tour_start_id") Long tour_start_id,
 			@RequestParam("so_luong_nguoi") Integer so_luong_nguoi,
 			@RequestParam("ghi_chu") String ghi_chu,
-			@RequestParam("payment_method") String payment_method) {
+			@RequestParam("payment_method") String payment_method,
+			@RequestParam(value = "voucher_code", required = false) String voucherCode) {
 
 		ModelAndView mdv = new ModelAndView();
 
@@ -318,6 +319,7 @@ public class HomeController {
 		bookingDTO.setPayment_method(payment_method);
 		bookingDTO.setTour_id(tour_start_id);
 		bookingDTO.setUser_id(SessionUtilities.getUser().getId());
+		bookingDTO.setVoucherCode(voucherCode);
 
 		if (this.bookingService.addNewBooking(bookingDTO)) {
 			mdv.setViewName("redirect:/account");

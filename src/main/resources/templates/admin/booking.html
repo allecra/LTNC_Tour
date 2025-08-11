@@ -69,6 +69,131 @@
         .table .d-flex {
           flex-direction: row !important;
         }
+        
+        /* Căn chỉnh đều cho filter section */
+        .filter-section .row {
+          align-items: end;
+        }
+        
+        .filter-section .col-md-2 {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+        
+        .filter-section .form-label {
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+        }
+        
+        .filter-section .form-control,
+        .filter-section .form-select {
+          height: 38px;
+        }
+        
+        .filter-section .btn {
+          height: 38px;
+          margin: 0 2px;
+        }
+        
+        .filter-section .btn-group {
+          display: flex;
+          gap: 5px;
+        }
+        
+        /* Table column widths */
+        #bookingDetailTable th,
+        #bookingDetailTable td {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        #bookingDetailTable th:nth-child(1), /* STT */
+        #bookingDetailTable td:nth-child(1) {
+          width: 50px;
+          text-align: center;
+        }
+        
+        #bookingDetailTable th:nth-child(2), /* Mã GD */
+        #bookingDetailTable td:nth-child(2) {
+          width: 120px;
+          text-align: center;
+        }
+        
+        #bookingDetailTable th:nth-child(3), /* Người dùng */
+        #bookingDetailTable td:nth-child(3) {
+          width: 120px;
+        }
+        
+        #bookingDetailTable th:nth-child(4), /* Tour */
+        #bookingDetailTable td:nth-child(4) {
+          width: 200px;
+        }
+        
+        #bookingDetailTable th:nth-child(5), /* Số người */
+        #bookingDetailTable td:nth-child(5) {
+          width: 80px;
+          text-align: center;
+        }
+        
+        #bookingDetailTable th:nth-child(6), /* Tổng tiền */
+        #bookingDetailTable td:nth-child(6) {
+          width: 120px;
+          text-align: right;
+        }
+        
+        #bookingDetailTable th:nth-child(7), /* Voucher */
+        #bookingDetailTable td:nth-child(7) {
+          width: 80px;
+          text-align: center;
+        }
+        
+        #bookingDetailTable th:nth-child(8), /* Thành tiền */
+        #bookingDetailTable td:nth-child(8) {
+          width: 120px;
+          text-align: right;
+        }
+        
+        #bookingDetailTable th:nth-child(9), /* Ngày khởi hành */
+        #bookingDetailTable td:nth-child(9) {
+          width: 120px;
+        }
+        
+        #bookingDetailTable th:nth-child(10), /* Ghi chú */
+        #bookingDetailTable td:nth-child(10) {
+          width: 100px;
+        }
+        
+        #bookingDetailTable th:nth-child(11), /* Ngày đặt */
+        #bookingDetailTable td:nth-child(11) {
+          width: 120px;
+        }
+        
+        #bookingDetailTable th:nth-child(12), /* Trạng thái */
+        #bookingDetailTable td:nth-child(12) {
+          width: 100px;
+          text-align: center;
+        }
+        
+        #bookingDetailTable th:nth-child(13), /* Hành động */
+        #bookingDetailTable td:nth-child(13) {
+          width: 120px;
+          text-align: center;
+        }
+        
+        /* Responsive table */
+        .table-responsive {
+          overflow-x: auto;
+        }
+        
+        /* Text truncation for long content */
+        .text-truncate {
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
@@ -150,7 +275,7 @@
                 
                 <!-- Statistics Cards -->
                 <div class="row mb-4">
-                    <div class="col-xl-2 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="card bg-primary text-white mb-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
@@ -165,7 +290,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-2 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="card bg-success text-white mb-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
@@ -180,7 +305,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-2 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="card bg-warning text-white mb-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
@@ -195,7 +320,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-2 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="card bg-danger text-white mb-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
@@ -210,36 +335,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6">
-                        <div class="card bg-info text-white mb-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <div class="small">Tổng doanh thu</div>
-                                        <div class="h4" id="totalRevenue">0 VNĐ</div>
-                                    </div>
-                                    <div class="align-self-center">
-                                        <i class="fas fa-money-bill-wave fa-2x"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 
                 <!-- Filter Section -->
-                <div class="card mb-4">
+                <div class="card mb-4 filter-section">
                     <div class="card-header">
                         <i class="fas fa-filter me-1"></i>
                         Bộ lọc
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="nguoiDungFilter" class="form-label">Người dùng</label>
                                 <input type="text" class="form-control" id="nguoiDungFilter" placeholder="Tên người dùng">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="tourFilter" class="form-label">Tour</label>
                                 <input type="text" class="form-control" id="tourFilter" placeholder="Tên tour">
                             </div>
@@ -253,15 +363,12 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <label for="phuongThucFilter" class="form-label">Phương thức</label>
-                                <select class="form-select" id="phuongThucFilter">
-                                    <option value="">Tất cả</option>
-                                    <option value="Chuyển khoản">Chuyển khoản</option>
-                                </select>
+                                <label for="maNoiDungFilter" class="form-label">Mã nội dung chuyển khoản</label>
+                                <input type="text" class="form-control" id="maNoiDungFilter" placeholder="Mã GD...">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">&nbsp;</label>
-                                <div>
+                                <div class="btn-group">
                                     <button type="button" class="btn btn-primary" onclick="filterBookings()">
                                         <i class="fas fa-search"></i> Lọc
                                     </button>
@@ -274,6 +381,7 @@
                     </div>
                 </div>
                 
+                <!-- Booking Table Section -->
                 <div class="card mb-4 rounded">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -284,26 +392,29 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-hover" id="bookingDetailTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã giao dịch</th>
-                                    <th>Người dùng</th>
-                                    <th>Tour</th>
-                                    <th>Số lượng người</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Phương thức thanh toán</th>
-                                    <th>Ngày khởi hành</th>
-                                    <th>Ghi chú</th>
-                                    <th>Ngày đặt</th>
-                                    <th>Trạng thái</th>
-                                    <th class="text-center">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookingTableBody">
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="bookingDetailTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="width: 50px;">STT</th>
+                                        <th style="width: 120px;">Mã GD</th>
+                                        <th style="width: 120px;">Người dùng</th>
+                                        <th style="width: 200px;">Tour</th>
+                                        <th style="width: 80px;">Số người</th>
+                                        <th style="width: 120px;">Tổng tiền</th>
+                                        <th style="width: 80px;">Voucher</th>
+                                        <th style="width: 120px;">Thành tiền</th>
+                                        <th style="width: 120px;">Ngày khởi hành</th>
+                                        <th style="width: 100px;">Ghi chú</th>
+                                        <th style="width: 120px;">Ngày đặt</th>
+                                        <th style="width: 100px;">Trạng thái</th>
+                                        <th style="width: 120px;" class="text-center">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -358,19 +469,18 @@
                                                 <input type="text" class="form-control" id="ngay_khoi_hanh" disabled  name="ngay_khoi_hanh">
                                             </div>
                                             <div class="form-group">
-                                                <label for="tong_tien"> Tổng tiền </label>
+                                                <label for="tong_tien"> Tổng tiền ban đầu </label>
                                                 <input type="text" class="form-control" id="tong_tien" disabled  name="tong_tien">
                                             </div>
                                             <div class="form-group">
-                                                <label for="pt_thanh_toan">Phương thức thanh toán</label>
-                                                <select class="form-control" id="trang_thai_view" disabled name="trang_thai">
-                                                    <option value="0">Đang xử lý</option>
-                                                    <option value="1">Đã thanh toán</option>
-                                                    <option value="2">Đang tiến hành</option>
-                                                    <option value="3">Đã hoàn thành</option>
-                                                    <option value="4">Đã hủy</option>
-                                                </select>
+                                                <label for="voucher"> Mã voucher </label>
+                                                <input type="text" class="form-control" id="voucher" disabled  name="voucher">
                                             </div>
+                                            <div class="form-group">
+                                                <label for="thanh_tien"> Thành tiền cuối </label>
+                                                <input type="text" class="form-control" id="thanh_tien" disabled  name="thanh_tien">
+                                            </div>
+
 
                                             <div class="form-group">
                                                 <label for="ghi_chu"> Ghi chú </label>
@@ -433,10 +543,7 @@
               <label class="form-label">Số lượng người <span class="text-danger">*</span></label>
               <input type="number" id="editSoLuongNguoi" class="form-control" min="1" required />
         </div>
-        <div class="mb-3">
-              <label class="form-label">Phương thức thanh toán</label>
-              <input type="text" id="editPaymentMethod" class="form-control" value="Chuyển khoản" readonly />
-        </div>
+
         <div class="mb-3">
               <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
           <select id="editTrangThai" class="form-control" required>
@@ -615,6 +722,8 @@
             if (giaTour > 0 && soLuongNguoi > 0) {
                 const tongTien = giaTour * soLuongNguoi;
                 $('#editTongTien').val(formatCurrency(tongTien));
+                // Recalculate final price after total changes
+                calculateEditFinalPrice();
             }
         }
         
@@ -625,11 +734,12 @@
             const data = {
                 so_luong_nguoi: parseInt($('#editSoLuongNguoi').val()),
                 tong_tien: parseFloat($('#editTongTien').val().replace(/[^\d]/g, '')),
-            payment_method: 'Chuyển khoản', // Luôn cố định là "Chuyển khoản"
-            trang_thai: $('#editTrangThai').val(),
-            payment_status: $('#editPaymentStatus').val(),
-            ghi_chu: $('#editGhiChu').val()
-        };
+                voucher_id: $('#editVoucher').val() || null,
+                thanh_tien: parseFloat($('#editThanhTien').val().replace(/[^\d]/g, '')),
+                trang_thai: $('#editTrangThai').val(),
+                payment_status: $('#editPaymentStatus').val(),
+                ghi_chu: $('#editGhiChu').val()
+            };
             
         $.ajax({
             url: '/api/booking/update/' + id,
@@ -656,7 +766,7 @@
         if (filters.nguoiDung) params.append('nguoiDung', filters.nguoiDung);
         if (filters.tour) params.append('tour', filters.tour);
         if (filters.trangThai) params.append('trangThai', filters.trangThai);
-        if (filters.phuongThuc) params.append('phuongThuc', filters.phuongThuc);
+        if (filters.maNoiDung) params.append('maNoiDung', filters.maNoiDung);
         
         if (params.toString()) {
             url += '?' + params.toString();
@@ -687,9 +797,9 @@
         }
         
         bookings.forEach(function(booking, index) {
-            // booking[0] = stt, booking[1] = ma_giao_dich, booking[2] = nguoi_dung, booking[3] = tour
-            // booking[4] = so_luong_nguoi, booking[5] = tong_tien, booking[6] = phuong_thuc_thanh_toan
-            // booking[7] = ngay_khoi_hanh, booking[8] = ghi_chu, booking[9] = ngay_dat, booking[10] = trang_thai
+            // booking[0] = stt, booking[1] = ma_noi_dung_chuyen_khoan, booking[2] = nguoi_dung, booking[3] = tour
+            // booking[4] = so_luong_nguoi, booking[5] = tong_tien_ban_dau, booking[6] = voucher, booking[7] = thanh_tien
+            // booking[8] = ngay_khoi_hanh, booking[9] = ghi_chu, booking[10] = ngay_dat, booking[11] = trang_thai
             
             const row = `
                 <tr>
@@ -698,12 +808,21 @@
                     <td>${booking[2]}</td>
                     <td>${booking[3]}</td>
                     <td class="text-center">${booking[4]}</td>
-                    <td>${formatCurrency(booking[5])}</td>
-                    <td>${booking[6]}</td>
-                    <td>${formatDateTime(booking[7])}</td>
-                    <td>${booking[8] || '-'}</td>
-                    <td>${formatDateTime(booking[9])}</td>
-                    <td class="text-center">${getStatusBadge(booking[10])}</td>
+                    <td>
+                        ${formatCurrency(booking[5])}
+                        ${booking[6] ? `<br><small class="text-muted">Giá gốc</small>` : ''}
+                    </td>
+                    <td>${booking[6] ? `<span class="badge bg-info">${booking[6]}</span>` : '-'}</td>
+                    <td>
+                        ${formatCurrency(booking[7])}
+                        ${booking[6] && booking[7] !== booking[5] ? 
+                            `<br><small class="text-success">Đã giảm ${formatCurrency(booking[5] - booking[7])}</small>` : 
+                            ''}
+                    </td>
+                    <td>${formatDateTime(booking[8])}</td>
+                    <td>${booking[9] || '-'}</td>
+                    <td>${formatDateTime(booking[10])}</td>
+                    <td class="text-center">${getStatusBadge(booking[11])}</td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center align-items-center gap-1">
                             <button type="button" class="btn btn-primary btn-sm" onclick="editBooking(${booking[0]})" title="Sửa">
@@ -730,7 +849,7 @@
                     $('#confirmedBookings').text(response.data.confirmedBookings);
                     $('#pendingBookings').text(response.data.pendingBookings);
                     $('#cancelledBookings').text(response.data.cancelledBookings);
-                    $('#totalRevenue').text(formatCurrency(response.data.totalRevenue));
+
                 }
             },
             error: function() {
@@ -760,13 +879,134 @@
             }
         });
     }
+
+    function loadVouchers() {
+        $.ajax({
+            url: '/api/voucher/getAll',
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    const vouchers = response.data;
+                    
+                    const editSelect = $('#editVoucher');
+                    
+                    // Clear existing options
+                    editSelect.empty();
+                    
+                    // Add default option
+                    editSelect.append('<option value="">-- Chọn voucher --</option>');
+                    
+                    // Add voucher options with detailed information
+                    vouchers.forEach(function(voucher) {
+                        // Kiểm tra voucher còn hạn sử dụng không
+                        const ngayHetHan = new Date(voucher.expiry_date);
+                        const ngayHienTai = new Date();
+                        const isExpired = ngayHetHan < ngayHienTai;
+                        
+                        // Xác định loại voucher (phần trăm hoặc số tiền cố định)
+                        let optionText, discountType, discountValue;
+                        
+                        if (voucher.discount <= 100) {
+                            // Voucher giảm theo phần trăm
+                            discountType = 'percent';
+                            discountValue = voucher.discount;
+                            optionText = `${voucher.code} - Giảm ${voucher.discount}%`;
+                        } else {
+                            // Voucher giảm theo số tiền cố định
+                            discountType = 'fixed';
+                            discountValue = voucher.discount;
+                            optionText = `${voucher.code} - Giảm ${formatCurrency(voucher.discount)}`;
+                        }
+                        
+                        if (isExpired) {
+                            optionText += ' (Hết hạn)';
+                        }
+                        
+                        const optionValue = voucher.id;
+                        const optionDisabled = isExpired ? 'disabled' : '';
+                        
+                        editSelect.append(`<option value="${optionValue}" ${optionDisabled} data-discount="${voucher.discount}" data-type="${discountType}" data-expired="${isExpired}">${optionText}</option>`);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Lỗi khi tải danh sách voucher:', error);
+            }
+        });
+    }
+
+
+
+    function calculateEditFinalPrice() {
+        const tongTien = parseFloat($('#editTongTien').val().replace(/[^\d]/g, '')) || 0;
+        const voucherSelect = $('#editVoucher');
+        const selectedVoucher = voucherSelect.val();
+        const messageElement = $('#editVoucherMessage');
+        
+        if (selectedVoucher) {
+            // Lấy thông tin voucher từ option được chọn
+            const selectedOption = voucherSelect.find('option:selected');
+            const discountValue = parseFloat(selectedOption.data('discount')) || 0;
+            const discountType = selectedOption.data('type') || 'percent';
+            const isExpired = selectedOption.data('expired') || false;
+            
+            if (isExpired) {
+                messageElement.text('Voucher đã hết hạn!').removeClass('text-success').addClass('text-danger');
+                $('#editThanhTien').val(formatCurrency(tongTien));
+                return;
+            }
+            
+            if (discountValue > 0) {
+                let discountAmount, finalPrice;
+                
+                if (discountType === 'percent') {
+                    // Voucher giảm theo phần trăm
+                    discountAmount = (tongTien * discountValue) / 100;
+                    finalPrice = tongTien - discountAmount;
+                    
+                    // Hiển thị thông tin chi tiết về voucher
+                    messageElement.html(`
+                        <div class="alert alert-success p-2 mb-0">
+                            <strong>Voucher hợp lệ!</strong><br>
+                            Mã: ${selectedOption.text().split(' - ')[0]}<br>
+                            Giảm giá: ${discountValue}% (${formatCurrency(discountAmount)})<br>
+                            Thành tiền: ${formatCurrency(finalPrice)}
+                        </div>
+                    `).removeClass('text-danger').addClass('text-success');
+                } else {
+                    // Voucher giảm theo số tiền cố định
+                    discountAmount = Math.min(discountValue, tongTien); // Không giảm quá tổng tiền
+                    finalPrice = tongTien - discountAmount;
+                    
+                    // Hiển thị thông tin chi tiết về voucher
+                    messageElement.html(`
+                        <div class="alert alert-success p-2 mb-0">
+                            <strong>Voucher hợp lệ!</strong><br>
+                            Mã: ${selectedOption.text().split(' - ')[0]}<br>
+                            Giảm giá: ${formatCurrency(discountValue)}<br>
+                            Thành tiền: ${formatCurrency(finalPrice)}
+                        </div>
+                    `).removeClass('text-danger').addClass('text-success');
+                }
+                
+                $('#editThanhTien').val(formatCurrency(finalPrice));
+            } else {
+                messageElement.text('Voucher không hợp lệ!').removeClass('text-success').addClass('text-danger');
+                $('#editThanhTien').val(formatCurrency(tongTien));
+            }
+        } else {
+            // Không chọn voucher
+            messageElement.text('Chưa chọn voucher').removeClass('text-success text-danger').addClass('text-muted');
+            $('#editThanhTien').val(formatCurrency(tongTien));
+        }
+    }
     
     function filterBookings() {
         const filters = {
             nguoiDung: $('#nguoiDungFilter').val(),
             tour: $('#tourFilter').val(),
             trangThai: $('#trangThaiFilter').val(),
-            phuongThuc: $('#phuongThucFilter').val()
+            maNoiDung: $('#maNoiDungFilter').val()
         };
         
         loadBookingDetailTable(filters);
@@ -776,7 +1016,7 @@
         $('#nguoiDungFilter').val('');
         $('#tourFilter').val('');
         $('#trangThaiFilter').val('');
-        $('#phuongThucFilter').val('');
+        $('#maNoiDungFilter').val('');
         loadBookingDetailTable();
     }
     
@@ -829,10 +1069,23 @@
                         booking.tong_tien / booking.so_luong_nguoi : 0;
                     $('#editGiaTour').val(formatCurrency(giaTour));
                     $('#editTongTien').val(formatCurrency(booking.tong_tien || 0));
-                    $('#editPaymentMethod').val(booking.payment_method || 'Chuyển khoản');
                     $('#editTrangThai').val(booking.trang_thai || 'cho_xac_nhan');
                     $('#editPaymentStatus').val(booking.payment_status || 'chua_thanh_toan');
                     $('#editGhiChu').val(booking.ghi_chu || '');
+                    
+                    // Set voucher selection if exists
+                    if (booking.voucher_id) {
+                        $('#editVoucher').val(booking.voucher_id);
+                    } else {
+                        $('#editVoucher').val('');
+                    }
+                    
+                    // Calculate and display final price
+                    calculateEditFinalPrice();
+                    
+                    // Load vouchers for edit modal
+                    loadVouchers();
+                    
                     $('#editBookingModal').modal('show');
                 } else {
                     alert('Không có dữ liệu booking!');
@@ -899,13 +1152,12 @@
               <input type="text" id="addGiaTour" class="form-control" placeholder="Nhập giá tour" required />
             </div>
             <div class="mb-3">
-              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <label class="form-label">Tổng tiền ban đầu (VNĐ)</label>
               <input type="text" id="addTongTien" class="form-control" readonly />
             </div>
-            <div class="mb-3">
-              <label class="form-label">Phương thức thanh toán</label>
-              <input type="text" id="addPaymentMethod" class="form-control" value="Chuyển khoản" readonly />
-            </div>
+
+
+
         <div class="mb-3">
               <label class="form-label">Trạng thái thanh toán</label>
               <select id="addPaymentStatus" class="form-control">
@@ -978,15 +1230,21 @@
               <input type="text" id="editGiaTour" class="form-control" readonly />
             </div>
             <div class="mb-3">
-              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <label class="form-label">Tổng tiền ban đầu (VNĐ)</label>
               <input type="text" id="editTongTien" class="form-control" readonly />
             </div>
             <div class="mb-3">
-              <label class="form-label">Phương thức thanh toán <span class="text-danger">*</span></label>
-              <select id="editPaymentMethod" class="form-control" required>
-                <option value="Chuyển khoản">Chuyển khoản</option>
+              <label class="form-label">Voucher</label>
+              <select id="editVoucher" class="form-control">
+                <option value="">-- Chọn voucher --</option>
               </select>
-        </div>
+              <small class="form-text text-muted" id="editVoucherMessage"></small>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Thành tiền cuối (VNĐ)</label>
+              <input type="text" id="editThanhTien" class="form-control" readonly />
+            </div>
+
         <div class="mb-3">
               <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
               <select id="editTrangThai" class="form-control" required>
@@ -1022,5 +1280,23 @@
     </form>
   </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    // Load vouchers for edit modal only
+    loadVouchers();
+    
+    // Calculate total when tour price or number of people changes
+    $('#addSoLuongNguoi, #addGiaTour').on('input', function() {
+        calculateTotal();
+    });
+    
+    // Auto-calculate when voucher changes (only for edit modal)
+    $('#editVoucher').on('change', function() {
+        calculateEditFinalPrice();
+    });
+});
+</script>
+
 </body>
 </html>

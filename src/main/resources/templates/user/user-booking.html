@@ -116,10 +116,10 @@
                         <h5 class="text-primary text-uppercase py-4" style="letter-spacing: 5px;">Thông tin chi tiết tour đã đặt</h5>
 
                         <div class="control-group">
-                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Mã giao dịch</h6>
-                            <input type="text" class="form-control p-4" name="ma_giao_dich" id="ma_giao_dich"
-                                   placeholder="Mã giao dịch" required="required" disabled="disabled"
-                                   data-validation-required-message="Mã giao dịch" th:value="${booking.ma_giao_dich}" />
+                                            <h6 class="text-primary text-uppercase " style="letter-spacing: 5px;">Mã nội dung chuyển khoản</h6>
+                <input type="text" class="form-control p-4" name="ma_noi_dung_chuyen_khoan" id="ma_noi_dung_chuyen_khoan"
+                    placeholder="Mã nội dung chuyển khoản" required="required" disabled="disabled"
+                    data-validation-required-message="Mã nội dung chuyển khoản" th:value="${booking.ma_noi_dung_chuyen_khoan}" />
                             <p class="help-block text-danger"></p>
                         </div>
                         
@@ -171,7 +171,7 @@
                             <div class="form-row pb-2">
                                 <div class="control-group">
                                     <input type="text" class="form-control p-4" value="Chuyển khoản" disabled="disabled" />
-                                    <p class="mt-2"><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_giao_dich} + ' - ' + ${booking.ten_tour}" class="text-danger font-weight-bold"></span></p>
+                                    <p class="mt-2"><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_noi_dung_chuyen_khoan}" class="text-danger font-weight-bold"></span></p>
                                     <p><strong>Tài khoản:</strong> 084354939 - MB Bank</p>
                                 </div>
                             </div>
@@ -183,7 +183,7 @@
                                 <p><strong>Số tài khoản:</strong> 084354939</p>
                                 <p><strong>Ngân hàng:</strong> MB Bank</p>
                                 <p><strong>Chủ tài khoản:</strong> CAMPUCHIA TOUR</p>
-                                <p><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_giao_dich} + ' - ' + ${booking.ten_tour}" class="text-danger font-weight-bold"></span></p>
+                                <p><strong>Nội dung chuyển khoản:</strong> <span th:text="${booking.ma_noi_dung_chuyen_khoan}" class="text-danger font-weight-bold"></span></p>
                                 <p><strong>Số tiền:</strong> <span th:text="${#numbers.formatDecimal(booking.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'" class="text-danger font-weight-bold"></span></p>
                             </div>
                         </div>

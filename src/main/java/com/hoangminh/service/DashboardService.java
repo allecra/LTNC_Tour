@@ -9,4 +9,8 @@ public interface DashboardService {
     Double getAverageRating();
     List<Long> getTourCountByMonth(); // 12 tháng
     List<Long> getTourCountBySeason(); // 4 mùa
+    
+    // Thống kê booking đã hoàn tất
+    List<Object[]> getCompletedBookingsByMonth();
+    List<Object[]> getCompletedBookingsBySeason();
 } 

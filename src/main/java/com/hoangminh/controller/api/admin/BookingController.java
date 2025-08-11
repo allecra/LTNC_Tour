@@ -10,6 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/booking")
 public class BookingController {
@@ -96,6 +99,28 @@ public class BookingController {
         }
 
         return new ResponseDTO("Chỉ có thể xóa tour đã hoàn thành và đã hủy", null);
+    }
+
+    // API lấy thống kê booking đã hoàn tất theo tháng
+    @GetMapping("/completed-by-month")
+    public ResponseDTO getCompletedBookingsByMonth() {
+        if (!this.userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
+        
+        List<Map<String, Object>> data = bookingService.getCompletedBookingsByMonth();
+        return new ResponseDTO("Lấy thống kê booking theo tháng thành công", data);
+    }
+
+    // API lấy thống kê booking đã hoàn tất theo mùa
+    @GetMapping("/completed-by-season")
+    public ResponseDTO getCompletedBookingsBySeason() {
+        if (!this.userService.checkAdminLogin()) {
+            return new ResponseDTO("Không có quyền truy cập", null);
+        }
+        
+        List<Map<String, Object>> data = bookingService.getCompletedBookingsBySeason();
+        return new ResponseDTO("Lấy thống kê booking theo mùa thành công", data);
     }
 
 }

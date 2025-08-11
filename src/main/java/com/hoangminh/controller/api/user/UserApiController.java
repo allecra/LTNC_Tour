@@ -6,6 +6,11 @@ import com.hoangminh.dto.FavoriteDTO;
 import com.hoangminh.dto.NotificationDTO;
 import com.hoangminh.dto.BookingDTO;
 import com.hoangminh.dto.UserDTO;
+import com.hoangminh.dto.VoucherValidationRequest;
+import com.hoangminh.dto.VoucherCalculationRequest;
+import com.hoangminh.dto.VoucherCalculationResponse;
+import com.hoangminh.dto.BookingRequestDTO;
+import java.math.BigDecimal;
 import com.hoangminh.entity.Review;
 import com.hoangminh.service.FavoriteService;
 import com.hoangminh.service.NotificationService;
@@ -113,6 +118,37 @@ public class UserApiController {
         List<BookingDTO> bookings = bookingService.findBookingByUserId(userId);
         return ResponseEntity.ok(new ResponseDTO("Lấy lịch sử đặt tour thành công", bookings));
     }
+    
+    @PostMapping("/{userId}/bookings")
+    public ResponseEntity<ResponseDTO> createBooking(@PathVariable Long userId, @RequestBody BookingRequestDTO bookingRequest) {
+        try {
+            // Set userId từ path variable
+            bookingRequest.setUserId(userId);
+            
+            // Validation
+            if (!bookingRequest.isValid()) {
+                return new ResponseEntity<>(new ResponseDTO("Dữ liệu booking không hợp lệ", null), HttpStatus.BAD_REQUEST);
+            }
+            
+            // Convert BookingRequestDTO to BookingDTO
+            BookingDTO bookingDTO = new BookingDTO();
+            bookingDTO.setUser_id(bookingRequest.getUserId());
+            bookingDTO.setTour_id(bookingRequest.getTourId());
+            bookingDTO.setSo_luong_nguoi(bookingRequest.getSoLuongNguoi());
+            bookingDTO.setPayment_method(bookingRequest.getPaymentMethod());
+            bookingDTO.setGhi_chu(bookingRequest.getGhiChu());
+            bookingDTO.setVoucherCode(bookingRequest.getVoucherCode());
+            
+            boolean result = bookingService.addNewBooking(bookingDTO);
+            if (result) {
+                return new ResponseEntity<>(new ResponseDTO("Tạo booking thành công", null), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(new ResponseDTO("Tạo booking thất bại", null), HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseDTO("Lỗi khi tạo booking: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/guides")
     public ResponseEntity<ResponseDTO> getAllGuides() {
@@ -137,6 +173,47 @@ public class UserApiController {
             return ResponseEntity.ok(new ResponseDTO("Lấy danh sách hướng dẫn viên thành công", guideDTOs));
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseDTO("Lỗi khi lấy danh sách hướng dẫn viên: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // == VOUCHER API ==
+    @PostMapping("/voucher/validate")
+    public ResponseEntity<ResponseDTO> validateVoucher(@RequestBody VoucherValidationRequest request) {
+        try {
+            if (request.getVoucherCode() == null || request.getVoucherCode().trim().isEmpty()) {
+                return new ResponseEntity<>(new ResponseDTO("Mã voucher không được để trống", null), HttpStatus.BAD_REQUEST);
+            }
+            
+            boolean isValid = bookingService.isValidVoucher(request.getVoucherCode().trim());
+            if (isValid) {
+                return ResponseEntity.ok(new ResponseDTO("Voucher hợp lệ", true));
+            } else {
+                return new ResponseEntity<>(new ResponseDTO("Voucher không hợp lệ hoặc đã hết hạn", false), HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseDTO("Lỗi khi kiểm tra voucher: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @PostMapping("/voucher/calculate")
+    public ResponseEntity<ResponseDTO> calculatePriceWithVoucher(@RequestBody VoucherCalculationRequest request) {
+        try {
+            if (request.getOriginalPrice() == null || request.getVoucherCode() == null || request.getVoucherCode().trim().isEmpty()) {
+                return new ResponseEntity<>(new ResponseDTO("Giá gốc và mã voucher không được để trống", null), HttpStatus.BAD_REQUEST);
+            }
+            
+            BigDecimal finalPrice = bookingService.calculatePriceWithVoucher(request.getOriginalPrice(), request.getVoucherCode().trim());
+            BigDecimal discountAmount = request.getOriginalPrice().subtract(finalPrice);
+            
+            VoucherCalculationResponse response = new VoucherCalculationResponse();
+            response.setOriginalPrice(request.getOriginalPrice());
+            response.setFinalPrice(finalPrice);
+            response.setDiscountAmount(discountAmount);
+            response.setVoucherCode(request.getVoucherCode());
+            
+            return ResponseEntity.ok(new ResponseDTO("Tính toán giá thành công", response));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseDTO("Lỗi khi tính toán giá: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

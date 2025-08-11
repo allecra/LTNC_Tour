@@ -60,6 +60,33 @@ public class UserController {
         return new ResponseDTO("Thành công", result);
     }
     
+    @GetMapping("/getAllGuides")
+    public ResponseDTO getAllGuides(
+            @RequestParam(value = "hoTen", required = false) String hoTen,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "sdt", required = false) String sdt,
+            @RequestParam(value = "gioiTinh", required = false) String gioiTinh,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam("pageIndex") Integer pageIndex) {
+     
+        // if (!this.userService.checkAdminLogin()) {
+        //     return new ResponseDTO("Không có quyền truy cập", null);
+        // }
+
+        // Debug log
+        System.out.println("Getting guides with filters - hoTen: " + hoTen + ", email: " + email + ", sdt: " + sdt + ", gioiTinh: " + gioiTinh);
+
+        Page<UserDTO> page = this.userService.findAllGuidesWithFilters(hoTen, email, sdt, gioiTinh, PageRequest.of(pageIndex, pageSize));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", page.getContent());
+        result.put("totalElements", page.getTotalElements());
+        result.put("totalPages", page.getTotalPages());
+        result.put("currentPage", page.getNumber());
+        result.put("pageSize", page.getSize());
+
+        return new ResponseDTO("Thành công", result);
+    }
 
 
     @GetMapping("/{id}")

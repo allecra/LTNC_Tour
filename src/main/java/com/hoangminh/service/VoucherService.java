@@ -8,4 +8,6 @@ public interface VoucherService {
     boolean add(VoucherDTO dto);
     boolean update(Long id, VoucherDTO dto);
     boolean delete(Long id);
+    boolean isValidVoucher(String code);
+    VoucherDTO getByCode(String code);
 } 

@@ -1,6 +1,8 @@
 package com.hoangminh.service;
 
 import java.util.List;
+import java.util.Map;
+import java.math.BigDecimal;
 
 import com.hoangminh.dto.BookingDetailDTO;
 import org.springframework.data.domain.Page;
@@ -38,10 +40,20 @@ public interface BookingService {
 	// Bảng giao dịch
 	List<Object[]> getTransactionTable();
 	
-	List<Object[]> getTransactionTableWithFilter(String khachHang, String trangThai, String phuongThuc);
+	    List<Object[]> getTransactionTableWithFilter(String khachHang, String trangThai, String maNoiDung);
 	
 	// Bảng booking chi tiết
 	List<Object[]> getBookingDetailTable();
 	
-	List<Object[]> getBookingDetailTableWithFilter(String nguoiDung, String tour, String trangThai, String phuongThuc);
+	List<Object[]> getBookingDetailTableWithFilter(String nguoiDung, String tour, String trangThai, String maNoiDung);
+	
+	// Voucher validation methods
+	boolean isValidVoucher(String voucherCode);
+	
+	BigDecimal calculatePriceWithVoucher(BigDecimal originalPrice, String voucherCode);
+	
+	// Thống kê booking đã hoàn tất
+	List<Map<String, Object>> getCompletedBookingsByMonth();
+	
+	List<Map<String, Object>> getCompletedBookingsBySeason();
 }

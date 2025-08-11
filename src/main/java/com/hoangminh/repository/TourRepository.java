@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hoangminh.dto.TourDTO;
 import com.hoangminh.entity.Tour;
+import com.hoangminh.entity.TourStart;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -81,14 +82,16 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
     @Query("SELECT COUNT(t) FROM Tour t")
     Long countAllTours();
 
-    @Query("SELECT FUNCTION('MONTH', ts.ngay_khoi_hanh) as month, COUNT(t) as count " +
-           "FROM Tour t JOIN t.tour_starts ts " +
+    @Query("SELECT FUNCTION('MONTH', ts.ngay_khoi_hanh) as month, COUNT(ts) as count " +
+           "FROM TourStart ts " +
+           "WHERE ts.ngay_khoi_hanh IS NOT NULL " +
            "GROUP BY FUNCTION('MONTH', ts.ngay_khoi_hanh) " +
            "ORDER BY month")
     List<Object[]> countToursByMonth();
 
-    @Query("SELECT s.ten_mua as season, COUNT(t) as count " +
-           "FROM Tour t JOIN t.tour_starts ts JOIN ts.season s " +
+    @Query("SELECT s.ten_mua as season, COUNT(ts) as count " +
+           "FROM TourStart ts JOIN ts.season s " +
+           "WHERE s.ten_mua IS NOT NULL " +
            "GROUP BY s.ten_mua")
     List<Object[]> countToursBySeason();
 

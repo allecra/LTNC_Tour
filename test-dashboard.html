@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .card { border: 1px solid #ddd; padding: 20px; margin: 10px; border-radius: 8px; }
+        .chart-container { width: 400px; height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Test Dashboard - Thống kê tổng quan</h1>
+    
+    <div class="card">
+        <h3>Thống kê tour theo tháng</h3>
+        <div class="chart-container">
+            <canvas id="monthChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>Thống kê tour theo mùa</h3>
+        <div class="chart-container">
+            <canvas id="seasonChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mẫu để test
+        const monthData = [2, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1];
+        const seasonData = [2, 4, 3, 1];
+        
+        const monthLabels = [
+            'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+            'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+        ];
+        const seasonLabels = ['Xuân', 'Hạ', 'Thu', 'Đông'];
+        
+        // Tạo biểu đồ tháng
+        const monthCtx = document.getElementById('monthChart').getContext('2d');
+        new Chart(monthCtx, {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Số tour',
+                    data: monthData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    } 
+                }
+            }
+        });
+        
+        // Tạo biểu đồ mùa
+        const seasonCtx = document.getElementById('seasonChart').getContext('2d');
+        new Chart(seasonCtx, {
+            type: 'doughnut',
+            data: {
+                labels: seasonLabels,
+                datasets: [{
+                    data: seasonData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        console.log('Test charts created successfully');
+        console.log('Month data:', monthData);
+        console.log('Season data:', seasonData);
+    </script>
+</body>
+</html>

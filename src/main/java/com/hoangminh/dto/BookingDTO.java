@@ -39,6 +39,11 @@ public class BookingDTO {
 
     private String payment_status;
 
+    // Thêm thông tin voucher
+    private String voucherCode;
+    private BigDecimal giaTriVoucher;
+    private BigDecimal tongTienSauVoucher;
+
     public String getPayment_status() {
         return payment_status;
     }
@@ -59,5 +64,25 @@ public class BookingDTO {
         this.payment_method = payment_method;
         this.ghi_chu = ghi_chu;
         this.booking_at = booking_at;
+    }
+
+    // Constructor mới với thông tin voucher
+    public BookingDTO(Long id, Long user_id, Long tour_id, String ten_tour, Integer so_luong_nguoi, Date ngay_khoi_hanh,
+            BigDecimal tong_tien, String trang_thai, String payment_method, String ghi_chu, Date booking_at,
+            String voucherCode, BigDecimal giaTriVoucher, BigDecimal tongTienSauVoucher) {
+        this.id = id;
+        this.user_id = user_id;
+        this.tour_id = tour_id;
+        this.ten_tour = ten_tour;
+        this.so_luong_nguoi = so_luong_nguoi;
+        this.ngay_khoi_hanh = ngay_khoi_hanh;
+        this.tong_tien = tong_tien;
+        this.trang_thai = trang_thai;
+        this.payment_method = payment_method;
+        this.ghi_chu = ghi_chu;
+        this.booking_at = booking_at;
+        this.voucherCode = voucherCode;
+        this.giaTriVoucher = giaTriVoucher;
+        this.tongTienSauVoucher = tongTienSauVoucher;
     }
 }

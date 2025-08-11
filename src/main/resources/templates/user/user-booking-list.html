@@ -121,7 +121,7 @@
                     <tbody th:if="${bookingList.size()>0}" class="w-100 text-center text-primary">
                         <tr th:each="booking : ${bookingList}">
                             <th class="col-lg-2">
-                                <span th:text="${booking.ma_giao_dich}" class="badge badge-primary"></span>
+                                <span th:text="${booking.ma_noi_dung_chuyen_khoan}" class="badge badge-primary"></span>
                             </th>
                             <th class="col-lg-4" title="Click để xem chi tiết">
                                 <a th:href="@{/user/booking/{id}(id=${booking.id})}" th:text="${booking.ten_tour}">Du lịch biển nha trang thật tuyệt vời</a>

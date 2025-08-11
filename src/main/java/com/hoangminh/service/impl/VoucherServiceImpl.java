@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,5 +73,36 @@ public class VoucherServiceImpl implements VoucherService {
         dto.setExpiry_date(v.getNgayHetHan() != null ? sdf.format(v.getNgayHetHan()) : null);
         dto.setDieuKien(v.getDieuKienApDung());
         return dto;
+    }
+    
+    @Override
+    public boolean isValidVoucher(String code) {
+        try {
+            Optional<Voucher> voucherOpt = voucherRepository.findByMaGiamGia(code);
+            if (voucherOpt.isPresent()) {
+                Voucher voucher = voucherOpt.get();
+                // Kiểm tra voucher còn hạn sử dụng không
+                if (voucher.getNgayHetHan() != null && voucher.getNgayHetHan().before(new Date())) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    @Override
+    public VoucherDTO getByCode(String code) {
+        try {
+            Optional<Voucher> voucherOpt = voucherRepository.findByMaGiamGia(code);
+            if (voucherOpt.isPresent()) {
+                return toDTO(voucherOpt.get());
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 } 

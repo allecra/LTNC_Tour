@@ -89,10 +89,17 @@ INSERT INTO `tin_tuc` (`id`, `tieu_de`, `tom_tat`, `noi_dung`, `ngay_dang`, `tra
 (3, 'Kinh nghiệm săn vé máy bay giá rẻ cho dân du lịch', 'Bí quyết và mẹo vặt giúp bạn có một chuyến đi tiết kiệm chi phí.', 'Nội dung chi tiết...', NOW(), 'da_dang');
 
 -- Dữ liệu mẫu cho bảng 'booking'
-INSERT INTO `booking` (`id`, `tour_start_id`, `user_id`, `so_luong_nguoi`, `tong_tien`, `payment_method`, `payment_status`, `trang_thai`, `ghi_chu`, `booking_at`) VALUES
-(1, 1, 2, 2, 9000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', 'Yêu cầu phòng có view đẹp.', NOW()),
-(2, 3, 2, 4, 28000000.00, 'Chuyển khoản', 'chua_thanh_toan', 'cho_xac_nhan', 'Gia đình có trẻ nhỏ', NOW()),
-(3, 4, 2, 2, 57000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', NULL, NOW());
+INSERT INTO `booking` (`id`, `tour_start_id`, `user_id`, `so_luong_nguoi`, `tong_tien`, `payment_method`, `payment_status`, `trang_thai`, `ghi_chu`, `voucher_id`, `booking_at`) VALUES
+(1, 1, 2, 2, 9000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', 'Yêu cầu phòng có view đẹp.', NULL, NOW()),
+(2, 3, 2, 4, 28000000.00, 'Chuyển khoản', 'chua_thanh_toan', 'cho_xac_nhan', 'Gia đình có trẻ nhỏ', NULL, NOW()),
+(3, 4, 2, 2, 57000000.00, 'Chuyển khoản', 'da_thanh_toan', 'da_xac_nhan', NULL, NULL, NOW());
+
+-- Dữ liệu mẫu cho bảng 'voucher'
+INSERT INTO `voucher` (`id`, `ma_giam_gia`, `gia_tri`, `ngay_het_han`, `dieu_kien_ap_dung`) VALUES
+(1, 'SUMMER2024', 10.00, '2024-12-31', 'Áp dụng cho tất cả tour mùa hè'),
+(2, 'WELCOME20', 20.00, '2024-12-31', 'Áp dụng cho khách hàng mới'),
+(3, 'VIP15', 15.00, '2024-12-31', 'Áp dụng cho khách hàng VIP'),
+(4, 'HOLIDAY25', 25.00, '2024-12-31', 'Áp dụng cho tour ngày lễ');
 
 -- Dữ liệu mẫu cho bảng 'review'
 INSERT INTO `review` (`id`, `tour_id`, `user_id`, `rating`, `comment`, `created_at`, `trang_thai`) VALUES
@@ -116,16 +123,17 @@ INSERT INTO `payment_method` (`id`, `ten_phuong_thuc`, `booking_id`) VALUES
 (2, 'Chuyển khoản', 2),
 (3, 'Chuyển khoản', 3);
 
--- Dữ liệu mẫu cho bảng 'voucher'
+-- Dữ liệu mẫu cho bảng 'voucher' (bổ sung)
 INSERT INTO `voucher` (`id`, `ma_giam_gia`, `gia_tri`, `ngay_het_han`, `dieu_kien_ap_dung`) VALUES
-(1, 'HE2024', 100000.00, '2024-09-30', 'Áp dụng cho các tour trong nước có giá trị từ 5,000,000 VNĐ'),
-(2, 'SUMMER10', 500000.00, '2024-08-31', 'Giảm 10% cho các tour nước ngoài');
+(5, 'HE2024', 100000.00, '2024-09-30', 'Áp dụng cho các tour trong nước có giá trị từ 5,000,000 VNĐ'),
+(6, 'SUMMER10', 500000.00, '2024-08-31', 'Giảm 10% cho các tour nước ngoài');
 
--- Dữ liệu mẫu cho bảng 'payment'
-INSERT INTO `payment` (`id`, `ho_ten_nguoi_nhan`, `so_tai_khoan`, `ten_ngan_hang`, `chi_nhanh`, `email`, `sdt`, `payment_method_id`, `booking_id`) VALUES
-(1, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 1, 1),
-(2, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 2, 2),
-(3, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', 'thienkt179@gmail.com', '0329175309', 3, 3); 
+
+INSERT INTO `payment` (`id`, `ho_ten_nguoi_nhan`, `so_tai_khoan`, `ten_ngan_hang`, `chi_nhanh`, `sdt`, `booking_id`) VALUES 
+(1, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', '0329175309', 1),
+(2, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', '0329175309', 2),
+(3, 'Hoang Minh Thien', '0329175309', 'MBbank', 'Hà Nội', '0329175309', 3);
+
 
 -- Dữ liệu mẫu cho bảng 'notification'
 INSERT INTO `notification` (`user_id`, `message`, `is_read`, `created_at`) VALUES

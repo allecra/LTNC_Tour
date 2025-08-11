@@ -53,6 +53,10 @@ public class Booking {
 
     private String ghi_chu;
 
+    @ManyToOne
+    @JoinColumn(name = "voucher_id")
+    private Voucher voucher;
+
     @PrePersist
     public void onCreate() {
         this.booking_at = new Date();

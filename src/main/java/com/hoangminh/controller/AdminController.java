@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -149,6 +153,128 @@ public class AdminController {
             return "redirect:/account";
         }
         return "admin/voucher";
+    }
+
+    @GetMapping("/test-stats")
+    public String testStats(Model model) {
+        System.out.println("=== TEST STATS DEBUG ===");
+        
+        // Test từng service riêng biệt
+        System.out.println("User count: " + dashboardService.getUserCount());
+        System.out.println("Tour count: " + dashboardService.getTourCount());
+        System.out.println("Total revenue: " + dashboardService.getTotalRevenue());
+        System.out.println("Average rating: " + dashboardService.getAverageRating());
+        System.out.println("Tour by month: " + dashboardService.getTourCountByMonth());
+        System.out.println("Tour by season: " + dashboardService.getTourCountBySeason());
+        
+        System.out.println("=== END TEST STATS DEBUG ===");
+        
+        return "redirect:/admin/index";
+    }
+
+    @GetMapping("/debug-data")
+    public String debugData(Model model) {
+        System.out.println("=== DEBUG DATA ===");
+        
+        // Kiểm tra dữ liệu trực tiếp từ repository
+        try {
+            // Test tour count
+            Long tourCount = dashboardService.getTourCount();
+            System.out.println("Tour count: " + tourCount);
+            
+            // Test month data
+            List<Long> monthData = dashboardService.getTourCountByMonth();
+            System.out.println("Month data: " + monthData);
+            
+            // Test season data  
+            List<Long> seasonData = dashboardService.getTourCountBySeason();
+            System.out.println("Season data: " + seasonData);
+            
+        } catch (Exception e) {
+            System.out.println("Error in debug: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        System.out.println("=== END DEBUG DATA ===");
+        return "redirect:/admin/index";
+    }
+
+    @GetMapping("/api/stats")
+    @ResponseBody
+    public Map<String, Object> getStats() {
+        Map<String, Object> stats = new HashMap<>();
+        
+        try {
+            stats.put("userCount", dashboardService.getUserCount());
+            stats.put("tourCount", dashboardService.getTourCount());
+            stats.put("totalRevenue", dashboardService.getTotalRevenue());
+            stats.put("averageRating", dashboardService.getAverageRating());
+            stats.put("tourByMonth", dashboardService.getTourCountByMonth());
+            stats.put("tourBySeason", dashboardService.getTourCountBySeason());
+            
+            System.out.println("=== API STATS DEBUG ===");
+            System.out.println("Stats data: " + stats);
+            System.out.println("=== END API STATS DEBUG ===");
+            
+        } catch (Exception e) {
+            System.out.println("Error getting stats: " + e.getMessage());
+            e.printStackTrace();
+            stats.put("error", e.getMessage());
+        }
+        
+        return stats;
+    }
+
+    @GetMapping("/api/booking/completed-by-month")
+    @ResponseBody
+    public Map<String, Object> getCompletedBookingsByMonth() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            List<Object[]> data = dashboardService.getCompletedBookingsByMonth();
+            response.put("success", true);
+            response.put("message", "Lấy thống kê booking theo tháng thành công");
+            response.put("data", data);
+            
+            System.out.println("=== COMPLETED BOOKINGS BY MONTH API ===");
+            System.out.println("Response: " + response);
+            System.out.println("=== END COMPLETED BOOKINGS BY MONTH API ===");
+            
+        } catch (Exception e) {
+            System.out.println("Error in completed-by-month API: " + e.getMessage());
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            response.put("data", new ArrayList<>());
+        }
+        
+        return response;
+    }
+
+    @GetMapping("/api/booking/completed-by-season")
+    @ResponseBody
+    public Map<String, Object> getCompletedBookingsBySeason() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            List<Object[]> data = dashboardService.getCompletedBookingsBySeason();
+            response.put("success", true);
+            response.put("message", "Lấy thống kê booking theo mùa thành công");
+            response.put("data", data);
+            
+            System.out.println("=== COMPLETED BOOKINGS BY SEASON API ===");
+            System.out.println("Response: " + response);
+            System.out.println("=== END COMPLETED BOOKINGS BY SEASON API ===");
+            
+        } catch (Exception e) {
+            System.out.println("Error in completed-by-season API: " + e.getMessage());
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            response.put("data", new ArrayList<>());
+        }
+        
+        return response;
     }
 
     @GetMapping("/logout")

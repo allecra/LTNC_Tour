@@ -32,4 +32,27 @@ public class PaymentServiceImpl implements PaymentService {
         dto.setBookingId(p.getBooking() != null ? p.getBooking().getId() : null);
         return dto;
     }
+
+    @Override
+    public Payment update(Long id, Payment payment) {
+        Payment existingPayment = repo.findById(id).orElse(null);
+        if (existingPayment != null) {
+            existingPayment.setHoTenNguoiNhan(payment.getHoTenNguoiNhan());
+            existingPayment.setSoTaiKhoan(payment.getSoTaiKhoan());
+            existingPayment.setTenNganHang(payment.getTenNganHang());
+            existingPayment.setChiNhanh(payment.getChiNhanh());
+            existingPayment.setSdt(payment.getSdt());
+            return repo.save(existingPayment);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 } 
